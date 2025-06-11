@@ -24,8 +24,8 @@ import type { FlowStep, UploadedFiles, Person, FlowPathEntry, FlowData, Document
 
 // --- AI Document Validation Function ---
 async function validateDocumentWithAI(base64Image: string, documentType: string, messages: Messages) { // Added messages argument
-  const prompt = `Usted es una IA de verificación de documentos para una oficina de padrón municipal española. Analice esta imagen. ¿Es un documento '${documentType}' válido y legible? Si es un documento de identidad (DNI, NIE, Pasaporte, TIE, Pasaporte extranjero), extraiga el nombre completo y el número de identificación. Si no, indique la razón claramente en español. Responda en formato JSON: { "isValid": boolean, "reason": "string", "extractedData": { "name": "string", "id_number": "string" } }.`;
-
+  const prompt = `Usted es una IA de verificación de documentos para una oficina de padrón municipal española. Analice esta imagen. ¿Es un documento '${documentType}' válido y legible? Si es un documento de identidad (DNI, NIE, Pasaporte, TIE, Pasaporte extranjero), extraiga el nombre completo y el número de identificación. Si es otro tipo saca toda la informacion relevante para el padron (direcciones, padres/hijos...). Si no, indique la razón claramente en catalan y en ${idioma}. Responda SOLO con un JSON formateado asi: { "isValid": boolean, "reason": "string", "extractedData": { "name": "string", "id_number": "string" , ...} }. No incluyas nada despues ni antes del JSON.`; // Updated prompt to include documentType and messages
+  //const prompt = `You are an AI document verification assistant for a Spanish municipal register office. Analyze this image. Is it a valid and legible '${documentType}' document? If it is an identity document (DNI, NIE, Passport, TIE, Foreign Passport), extract the full name and identification number. If not, clearly state the reason in Spanish. Respond ONLY with a JSON object in this format: { "isValid": boolean, "reason": "string", "extractedData": { "name": "string", "id_number": "string" } }. Do not include any other text before or after the JSON.`;
   const chatHistory = [{
     role: "user",
     parts: [
