@@ -77,7 +77,7 @@ async function validateDocumentWithAI(base64Image: string, documentType: string)
     } else {
       return { isValid: false, reason: messages.ai_response_error, extractedData: {} };
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("Error al llamar a la API de Gemini:", errorMessage);
     return { isValid: false, reason: `${messages.ai_connection_error} ${errorMessage}`, extractedData: {} };
@@ -108,7 +108,7 @@ function App() {
 
   useEffect(() => {
     if (rawFlowDataJson && messages) {
-      const processedFlow = rawFlowDataJson.flow.map((item: any) => { // Changed FlowStep to any for item to avoid type errors before full processing
+      const processedFlow = rawFlowDataJson.flow.map((item: any) => { // REVERTED TO any
         if (item.id === "final_document_review" && item.text === "final_document_review_instructions_key") {
           return { ...item, text: messages.final_document_review_instructions };
         }
@@ -148,13 +148,13 @@ function App() {
           try {
             await signInWithCustomToken(auth, initialAuthToken);
             // Assuming onAuthStateChanged will be triggered again with the new user
-          } catch (error: any) {
+          } catch (error: unknown) {
             console.error("Error signing in with custom token:", error instanceof Error ? error.message : String(error));
             // Fallback to anonymous sign-in if custom token fails
             try {
               const anonUser = await signInAnonymously(auth);
               setUserId(anonUser.user.uid);
-            } catch (anonError: any) {
+            } catch (anonError: unknown) {
               console.error("Error signing in anonymously after custom token failure:", anonError instanceof Error ? anonError.message : String(anonError));
             }
             setIsAuthReady(true);
@@ -163,7 +163,7 @@ function App() {
           try {
             const anonUser = await signInAnonymously(auth);
             setUserId(anonUser.user.uid);
-          } catch (anonError: any) {
+          } catch (anonError: unknown) {
             console.error("Error signing in anonymously:", anonError instanceof Error ? anonError.message : String(anonError));
           }
           setIsAuthReady(true);
@@ -196,7 +196,7 @@ function App() {
             flowPath // Save flowPath
           }, { merge: true });
           console.log("Data saved to Firestore.");
-        } catch (e: any) {
+        } catch (e: unknown) {
           console.error("Error saving document: ", e instanceof Error ? e.message : String(e));
         }
       }
@@ -208,7 +208,7 @@ function App() {
 
 
   // --- Flow Navigation Logic ---
-  const currentQuestion: FlowStep | null | undefined = flowData ? flowData.flow.find((q: any) => q.id === currentQuestionId) : null; // q to any temporarily
+  const currentQuestion: FlowStep | null | undefined = flowData ? flowData.flow.find((q: FlowStep) => q.id === currentQuestionId) : null;
 
   useEffect(() => {
     if (currentQuestion && currentQuestion.type === "info_block") {
@@ -232,7 +232,7 @@ function App() {
     if (!flowData) return; // Ensure flowData is loaded
     setQuestionsAnswered(prev => [...prev, currentQuestionId]);
 
-    const nextQuestionObj: FlowStep | undefined = flowData.flow.find((q: any) => q.id === nextId); // q to any temporarily
+    const nextQuestionObj: FlowStep | undefined = flowData.flow.find((q: FlowStep) => q.id === nextId);
     if (nextQuestionObj) {
         const stepText = nextQuestionObj.question || nextQuestionObj.text || nextQuestionObj.id;
         setFlowPath(prev => [...prev, { id: nextQuestionObj.id, text: stepText as string }]);
@@ -340,7 +340,7 @@ function App() {
         // return; // Removed to avoid issues if this path is hit unexpectedly
       }
     };
-    reader.onerror = (error: any) => {
+    reader.onerror = (error: unknown) => {
       console.error("Error reading file:", error instanceof Error ? error.message : String(error));
       setUploadedFiles((prev: UploadedFiles) => {
         const newFiles: UploadedFiles = { ...prev };
@@ -475,11 +475,12 @@ function App() {
         acc[docName] = uploadedFiles[docName].map((fileEntry: UploadedFileEntry) => ({
           name: fileEntry.name,
           validation_status: fileEntry.validation_status,
+          validation_message: fileEntry.validation_message, // ADDED
           extracted_data: fileEntry.extracted_data,
           base64: fileEntry.base64 // Include base64 data for submission
         }));
         return acc;
-      }, {} as {[key: string]: any[]}), // Added type assertion for acc
+      }, {} as { [key: string]: Array<Omit<UploadedFileEntry, 'file'>> }),
       flowPath: flowPath
     };
 
@@ -503,7 +504,7 @@ function App() {
       } else {
         setApiResponseMessage(messages.send_error_message);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("API Error:", error instanceof Error ? error.message : String(error));
       setApiResponseMessage(messages.send_error_message);
     } finally {
