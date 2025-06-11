@@ -1,26 +1,25 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'; // Added useMemo to main React import
-import { signInAnonymously, signInWithCustomToken, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth'; // Import FirebaseUser type
+import { signInAnonymously, signInWithCustomToken, onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth'; // Import FirebaseUser type
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { Upload, XCircle, CheckCircle, Trash2, Home, User, FileText, CheckSquare, Settings, Send } from 'lucide-react'; // Icons
-import { db, auth, initialAuthToken, aId as appId } from './src/firebaseConfig'; // Removed firebaseApp
-import messages from './src/locales/es.json';
-import rawFlowDataJson from './src/data/flowData.es.json';
+//import { Upload, XCircle, CheckCircle, Trash2, Home, User, FileText, CheckSquare, Settings, Send } from 'lucide-react'; // Icons
+import { db, auth, initialAuthToken, aId as appId } from './firebaseConfig';
+import messages from './locales/es.json';
+import rawFlowDataJson from './data/flowData.es.json';
 // Import new components
-import Breadcrumbs from './src/components/Breadcrumbs';
-import ConfirmationModal from './src/components/ConfirmationModal';
-import QuestionnaireScreen from './src/components/QuestionnaireScreen';
-import FinalDocumentReviewScreen from './src/components/FinalDocumentReviewScreen';
-import SummaryScreen from './src/components/SummaryScreen';
+/* import Breadcrumbs from './components/Breadcrumbs';
+import ConfirmationModal from './components/ConfirmationModal';
+import QuestionnaireScreen from './components/QuestionnaireScreen';
+import FinalDocumentReviewScreen from './components/FinalDocumentReviewScreen';
+import SummaryScreen from './components/SummaryScreen'; */
 // Import necessary types/interfaces
-import {
-    FlowData,
-    DocumentRequirement,
-    UploadedFiles,
-    Person,
-    FlowPathEntry,
-    UploadedFileEntry,
-    FlowStep
-} from './src/interfaces';
+// Import new components
+/* import Breadcrumbs from './components/Breadcrumbs';
+import ConfirmationModal from './components/ConfirmationModal';
+import QuestionnaireScreen from './components/QuestionnaireScreen';
+import FinalDocumentReviewScreen from './components/FinalDocumentReviewScreen';
+import SummaryScreen from './components/SummaryScreen'; */
+// Import necessary types/interfaces
+import type { FlowStep, UploadedFiles, Person, FlowPathEntry, FlowData, DocumentRequirement, UploadedFileEntry } from './interfaces';
 
 
 // --- AI Document Validation Function ---
