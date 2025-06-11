@@ -1,7 +1,7 @@
 // src/components/FinalDocumentReviewScreen.tsx
 import React from 'react';
 import DocumentUpload from './DocumentUpload';
-import { FinalDocumentReviewScreenProps } from '../interfaces';
+import { type FinalDocumentReviewScreenProps } from '../interfaces';
 import { FileText } from 'lucide-react';
 
 const FinalDocumentReviewScreen: React.FC<FinalDocumentReviewScreenProps> = ({

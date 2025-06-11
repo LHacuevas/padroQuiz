@@ -6,11 +6,11 @@ import { db, auth, initialAuthToken, aId as appId } from './firebaseConfig';
 import messages from './locales/es.json';
 import rawFlowDataJson from './data/flowData.es.json';
 // Import new components
-/* import Breadcrumbs from './components/Breadcrumbs';
+import Breadcrumbs from './components/Breadcrumbs';
 import ConfirmationModal from './components/ConfirmationModal';
 import QuestionnaireScreen from './components/QuestionnaireScreen';
 import FinalDocumentReviewScreen from './components/FinalDocumentReviewScreen';
-import SummaryScreen from './components/SummaryScreen'; */
+import SummaryScreen from './components/SummaryScreen'; 
 // Import necessary types/interfaces
 // Import new components
 /* import Breadcrumbs from './components/Breadcrumbs';
@@ -304,7 +304,7 @@ function App() {
             newFiles[docName][fileIndex].base64 = base64Data; // Store base64 for persistence
 
             // If it's an identity document and valid, add/update peopleToRegister
-            const docRequirement: DocumentRequirement | undefined = (currentQuestion?.documents || []).find(d => d.name === docName) || flowData?.flow.flatMap(f => f.documents || []).find(d => f.id === questionsAnswered[questionsAnswered.length-1] && d.name === docName);
+            //const docRequirement: DocumentRequirement | undefined = (currentQuestion?.documents || []).find(d => d.name === docName) || flowData?.flow.flatMap(f => f.documents || []).find(d => f.id === questionsAnswered[questionsAnswered.length-1] && d.name === docName);
             // If it's an identity document and valid, add/update peopleToRegister
             const docRequirementFromFlow: DocumentRequirement | undefined = flowData?.flow.flatMap(f => f.documents || []).find(d => d.name === docName); // Simplified search
             const currentQDocs = currentQuestion?.documents?.find(d => d.name === docName);
@@ -323,7 +323,6 @@ function App() {
               }
             }
           }
-        }
           return newFiles; // Ensure newFiles is returned
         });
         setLoadingValidation(false);
