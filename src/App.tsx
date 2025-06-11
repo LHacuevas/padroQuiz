@@ -3,14 +3,14 @@ import { signInAnonymously, signInWithCustomToken, onAuthStateChanged, type User
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 //import { Upload, XCircle, CheckCircle, Trash2, Home, User, FileText, CheckSquare, Settings, Send } from 'lucide-react'; // Icons
 import { db, auth, initialAuthToken, aId as appId } from './firebaseConfig';
-import messages from './locales/es.json';
-import rawFlowDataJson from './data/flowData.es.json';
+import { useLanguage } from './contexts/LanguageContext'; // Import useLanguage
 // Import new components
 import Breadcrumbs from './components/Breadcrumbs';
 import ConfirmationModal from './components/ConfirmationModal';
 import QuestionnaireScreen from './components/QuestionnaireScreen';
 import FinalDocumentReviewScreen from './components/FinalDocumentReviewScreen';
-import SummaryScreen from './components/SummaryScreen'; 
+import SummaryScreen from './components/SummaryScreen';
+import LanguageSelectionScreen from './components/LanguageSelectionScreen'; // Import LanguageSelectionScreen
 // Import necessary types/interfaces
 // Import new components
 /* import Breadcrumbs from './components/Breadcrumbs';
@@ -19,11 +19,11 @@ import QuestionnaireScreen from './components/QuestionnaireScreen';
 import FinalDocumentReviewScreen from './components/FinalDocumentReviewScreen';
 import SummaryScreen from './components/SummaryScreen'; */
 // Import necessary types/interfaces
-import type { FlowStep, UploadedFiles, Person, FlowPathEntry, FlowData, DocumentRequirement, UploadedFileEntry } from './interfaces';
+import type { FlowStep, UploadedFiles, Person, FlowPathEntry, FlowData, DocumentRequirement, UploadedFileEntry, Messages } from './interfaces'; // Added Messages type
 
 
 // --- AI Document Validation Function ---
-async function validateDocumentWithAI(base64Image: string, documentType: string) {
+async function validateDocumentWithAI(base64Image: string, documentType: string, messages: Messages) { // Added messages argument
   const prompt = `Usted es una IA de verificación de documentos para una oficina de padrón municipal española. Analice esta imagen. ¿Es un documento '${documentType}' válido y legible? Si es un documento de identidad (DNI, NIE, Pasaporte, TIE, Pasaporte extranjero), extraiga el nombre completo y el número de identificación. Si no, indique la razón claramente en español. Responda en formato JSON: { "isValid": boolean, "reason": "string", "extractedData": { "name": "string", "id_number": "string" } }.`;
 
   const chatHistory = [{
@@ -86,7 +86,15 @@ async function validateDocumentWithAI(base64Image: string, documentType: string)
 
 // --- Main App Component ---
 function App() {
-  const [flowData, setFlowData] = useState<FlowData | null>(null); // State for processed flowData
+  const {
+    currentLang, // Though currentLang from context might not be directly used in App if not needed for logic here
+    loadedMessages,
+    loadedFlowData,
+    isLoading: isLanguageLoading
+  } = useLanguage();
+
+  // const [flowData, setFlowData] = useState<FlowData | null>(null); // Removed, use loadedFlowData from context
+  const [isLanguageSelected, setIsLanguageSelected] = useState<boolean>(false); // State for language selection
   const [currentQuestionId, setCurrentQuestionId] = useState<string>("q1_action_type");
   const [questionsAnswered, setQuestionsAnswered] = useState<string[]>([]); // To track history for 'Atrás'
   const [currentStepDocs, setCurrentStepDocs] = useState<DocumentRequirement[]>([]); // Documents for the current step (not cumulative)
@@ -104,19 +112,46 @@ function App() {
   const [sendingData, setSendingData] = useState<boolean>(false);
   const [apiResponseMessage, setApiResponseMessage] = useState<string>("");
   // New state for breadcrumbs
-  const [flowPath, setFlowPath] = useState<FlowPathEntry[]>([{ id: "start", text: messages.breadcrumb_home }]);
+  const [flowPath, setFlowPath] = useState<FlowPathEntry[]>([{ id: "start", text: "Inicio" }]); // Initial text, will be updated by effect below
 
+  const handleLanguageSelected = () => {
+    setIsLanguageSelected(true);
+  };
+
+  // This effect rebuilds the entire flowPath when the language changes,
+  // ensuring all breadcrumb texts are in the current language.
   useEffect(() => {
-    if (rawFlowDataJson && messages) {
-      const processedFlow = rawFlowDataJson.flow.map((item: any) => { // REVERTED TO any
-        if (item.id === "final_document_review" && item.text === "final_document_review_instructions_key") {
-          return { ...item, text: messages.final_document_review_instructions };
+    if (loadedMessages && loadedFlowData) {
+      const newFlowPath: FlowPathEntry[] = [{ id: "start", text: loadedMessages.breadcrumb_home }];
+
+      questionsAnswered.forEach(questionId => {
+        const step = loadedFlowData.flow.find(q => q.id === questionId);
+        if (step) {
+          const stepText = step.question || step.text || step.id;
+          newFlowPath.push({ id: step.id, text: stepText as string });
         }
-        return item;
       });
-      setFlowData({ flow: processedFlow as FlowStep[] });
+
+      // Add the current question to the path, if it's not already the start
+      if (currentQuestionId !== "start" && !questionsAnswered.includes(currentQuestionId)) {
+         const currentStepDetails = loadedFlowData.flow.find(q => q.id === currentQuestionId);
+         if (currentStepDetails) {
+            const currentStepText = currentStepDetails.question || currentStepDetails.text || currentStepDetails.id;
+            // Avoid duplicating the last step if it's already the current question
+            if (newFlowPath.length === 0 || newFlowPath[newFlowPath.length -1].id !== currentQuestionId) {
+                 newFlowPath.push({id: currentQuestionId, text: currentStepText as string});
+            }
+         }
+      }
+       // If flowPath is just "start" and currentQuestionId is also "start", it's fine.
+      // If flowPath has history, and currentQuestionId is "start", it means user navigated back to home.
+      // In this case, newFlowPath is already correctly set to just the home entry.
+      // However, if questionsAnswered is empty and currentQuestionId is not 'start' (e.g. initial load to a deep link - though not supported yet)
+      // this logic needs to be robust. The current logic for adding currentQuestionId handles this.
+
+      setFlowPath(newFlowPath);
     }
-  }, [rawFlowDataJson, messages]);
+  }, [currentLang, loadedMessages, loadedFlowData, questionsAnswered, currentQuestionId]); // Ensure all dependencies are listed
 
 
   // --- Firebase Integration ---
@@ -140,7 +175,19 @@ function App() {
           setUploadedFiles(savedData.uploadedFiles || {});
           setPeopleToRegister(savedData.peopleToRegister || []);
           setRegistrationAddress(savedData.registrationAddress || "Dirección de empadronamiento");
-          setFlowPath(savedData.flowPath || [{ id: "start", text: messages.breadcrumb_home }]);
+          // flowPath will be rebuilt by the specific useEffect listening to currentLang,
+          // loadedMessages, loadedFlowData, questionsAnswered, and currentQuestionId.
+          // So, we just set the IDs here, and the text will be repopulated.
+          const savedFlowPathIds = (savedData.flowPath || []).map((entry: FlowPathEntry) => entry.id);
+          if (savedFlowPathIds.length > 0 && savedData.flowPath[0].id === "start") {
+             // We'll let the main effect rebuild it with correct text
+          } else if (loadedMessages) { // Fallback if savedFlowPath is weird or empty
+            setFlowPath([{ id: "start", text: loadedMessages.breadcrumb_home }]);
+          } else {
+            setFlowPath([{ id: "start", text: "Inicio" }]);
+          }
+        } else if (loadedMessages) { // If no saved data, initialize with home breadcrumb
+            setFlowPath([{ id: "start", text: loadedMessages.breadcrumb_home }]);
         }
         setIsAuthReady(true);
       } else {
@@ -208,7 +255,8 @@ function App() {
 
 
   // --- Flow Navigation Logic ---
-  const currentQuestion: FlowStep | null | undefined = flowData ? flowData.flow.find((q: FlowStep) => q.id === currentQuestionId) : null;
+  // Directly use loadedFlowData from context instead of local flowData state
+  const currentQuestion: FlowStep | null | undefined = loadedFlowData ? loadedFlowData.flow.find((q: FlowStep) => q.id === currentQuestionId) : null;
 
   useEffect(() => {
     if (currentQuestion && currentQuestion.type === "info_block") {
@@ -226,13 +274,13 @@ function App() {
     } else {
       setCurrentStepDocs([]); // Clear docs if not an info block
     }
-  }, [currentQuestionId, currentQuestion, flowData]); // Added flowData as currentQuestion depends on it
+  }, [currentQuestionId, currentQuestion, loadedFlowData]); // Depend on loadedFlowData from context
 
   const handleAnswer = (nextId: string): void => {
-    if (!flowData) return; // Ensure flowData is loaded
+    if (!loadedFlowData) return; // Ensure loadedFlowData is loaded
     setQuestionsAnswered(prev => [...prev, currentQuestionId]);
 
-    const nextQuestionObj: FlowStep | undefined = flowData.flow.find((q: FlowStep) => q.id === nextId);
+    const nextQuestionObj: FlowStep | undefined = loadedFlowData.flow.find((q: FlowStep) => q.id === nextId);
     if (nextQuestionObj) {
         const stepText = nextQuestionObj.question || nextQuestionObj.text || nextQuestionObj.id;
         setFlowPath(prev => [...prev, { id: nextQuestionObj.id, text: stepText as string }]);
@@ -284,7 +332,7 @@ function App() {
     setLoadingValidation(true);
     const fileToValidate: UploadedFileEntry = uploadedFiles[docName][fileIndex];
 
-    if (!fileToValidate || !fileToValidate.file) {
+    if (!fileToValidate || !fileToValidate.file || !loadedMessages) { // Added !loadedMessages check
       setLoadingValidation(false);
       return;
     }
@@ -293,7 +341,7 @@ function App() {
     reader.onload = async (event: ProgressEvent<FileReader>) => {
       if (event.target && typeof event.target.result === 'string') {
         const base64Data = event.target.result.split(',')[1];
-        const validationResult = await validateDocumentWithAI(base64Data, docName);
+        const validationResult = await validateDocumentWithAI(base64Data, docName, loadedMessages); // Pass loadedMessages
 
         setUploadedFiles((prev: UploadedFiles) => {
           const newFiles: UploadedFiles = { ...prev };
@@ -304,9 +352,9 @@ function App() {
             newFiles[docName][fileIndex].base64 = base64Data; // Store base64 for persistence
 
             // If it's an identity document and valid, add/update peopleToRegister
-            //const docRequirement: DocumentRequirement | undefined = (currentQuestion?.documents || []).find(d => d.name === docName) || flowData?.flow.flatMap(f => f.documents || []).find(d => f.id === questionsAnswered[questionsAnswered.length-1] && d.name === docName);
+            //const docRequirement: DocumentRequirement | undefined = (currentQuestion?.documents || []).find(d => d.name === docName) || loadedFlowData?.flow.flatMap(f => f.documents || []).find(d => f.id === questionsAnswered[questionsAnswered.length-1] && d.name === docName);
             // If it's an identity document and valid, add/update peopleToRegister
-            const docRequirementFromFlow: DocumentRequirement | undefined = flowData?.flow.flatMap(f => f.documents || []).find(d => d.name === docName); // Simplified search
+            const docRequirementFromFlow: DocumentRequirement | undefined = loadedFlowData?.flow.flatMap(f => f.documents || []).find(d => d.name === docName); // Simplified search
             const currentQDocs = currentQuestion?.documents?.find(d => d.name === docName);
             const finalDocRequirement = currentQDocs || docRequirementFromFlow;
 
@@ -332,7 +380,7 @@ function App() {
           const newFiles: UploadedFiles = { ...prev };
           if (newFiles[docName] && newFiles[docName][fileIndex]) {
             newFiles[docName][fileIndex].validation_status = 'invalid';
-            newFiles[docName][fileIndex].validation_message = messages.file_read_error;
+            newFiles[docName][fileIndex].validation_message = loadedMessages.file_read_error; // Use loadedMessages
           }
           return newFiles;
         });
@@ -346,7 +394,7 @@ function App() {
         const newFiles: UploadedFiles = { ...prev };
         if (newFiles[docName] && newFiles[docName][fileIndex]) {
           newFiles[docName][fileIndex].validation_status = 'invalid';
-          newFiles[docName][fileIndex].validation_message = messages.file_read_error;
+          newFiles[docName][fileIndex].validation_message = loadedMessages.file_read_error; // Use loadedMessages
         }
         return newFiles;
       });
@@ -360,7 +408,10 @@ function App() {
             const newFiles = {...prev};
             if (newFiles[docName] && newFiles[docName][fileIndex]) {
                 newFiles[docName][fileIndex].validation_status = 'invalid';
-                newFiles[docName][fileIndex].validation_message = "Archivo no encontrado para validación.";
+                // Use loadedMessages, ensuring loadedMessages is available or providing a fallback.
+                // For simplicity in this specific change, we'll assume loadedMessages is available here,
+                // as it's checked at the beginning of handleValidateDocument.
+                newFiles[docName][fileIndex].validation_message = loadedMessages!.file_not_found_for_validation;
             }
             return newFiles;
         });
@@ -411,7 +462,9 @@ function App() {
       }
     } else {
       // You might want a custom modal here instead of alert for better UX
-      alert(messages.alert_all_required_docs_needed);
+      if (loadedMessages) { // Check if loadedMessages is available
+        alert(loadedMessages.alert_all_required_docs_needed);
+      }
     }
   };
 
@@ -436,11 +489,11 @@ function App() {
   };
 
   const proceedToSummary = (): void => {
-    if (!flowData) return; // Ensure flowData is loaded
+    if (!loadedFlowData) return; // Ensure loadedFlowData is loaded
     setCurrentQuestionId("summary_screen");
-    const summaryScreen = flowData.flow.find((q: FlowStep) => q.id === "summary_screen");
-    if (summaryScreen) {
-        setFlowPath(prev => [...prev, { id: summaryScreen.id, text: messages.summary_title }]);
+    const summaryScreen = loadedFlowData.flow.find((q: FlowStep) => q.id === "summary_screen");
+    if (summaryScreen && loadedMessages) { // Check if loadedMessages is available
+        setFlowPath(prev => [...prev, { id: summaryScreen.id, text: loadedMessages.summary_title }]);
     }
   };
 
@@ -500,13 +553,13 @@ function App() {
       const success = Math.random() > 0.3; // 70% chance of success
 
       if (success) {
-        setApiResponseMessage(messages.send_success_message);
+        setApiResponseMessage(loadedMessages.send_success_message); // Use loadedMessages
       } else {
-        setApiResponseMessage(messages.send_error_message);
+        setApiResponseMessage(loadedMessages.send_error_message); // Use loadedMessages
       }
     } catch (error: unknown) {
       console.error("API Error:", error instanceof Error ? error.message : String(error));
-      setApiResponseMessage(messages.send_error_message);
+      setApiResponseMessage(loadedMessages.send_error_message); // Use loadedMessages
     } finally {
       setSendingData(false);
     }
@@ -514,42 +567,66 @@ function App() {
 
 
   const orderedAllRequiredDocuments = useMemo((): DocumentRequirement[] => {
-    if (!flowData) return []; // currentContent check is removed as it depends on flowData
+    if (!loadedFlowData) return [];
     const allDocs: { [key: string]: DocumentRequirement } = {};
     questionsAnswered.forEach((qId: string) => {
-        const q: FlowStep | undefined = flowData.flow.find((f: FlowStep) => f.id === qId);
+        const q: FlowStep | undefined = loadedFlowData.flow.find((f: FlowStep) => f.id === qId);
         if (q && q.type === "info_block" && q.documents) {
             q.documents.forEach((docReq: DocumentRequirement) => {
                 allDocs[docReq.name] = docReq;
             });
         }
     });
-    // currentContent is derived from currentQuestion which itself depends on flowData
-    const currentQ = flowData.flow.find((f: FlowStep) => f.id === currentQuestionId);
+    // currentContent is derived from currentQuestion which itself depends on loadedFlowData
+    const currentQ = loadedFlowData.flow.find((f: FlowStep) => f.id === currentQuestionId);
     if (currentQ && currentQ.type === "info_block" && currentQ.documents) {
         currentQ.documents.forEach((docReq: DocumentRequirement) => {
             allDocs[docReq.name] = docReq;
         });
     }
     return Object.values(allDocs);
-  }, [flowData, questionsAnswered, currentQuestionId]); // currentContent removed, currentQuestionId added
+  }, [loadedFlowData, questionsAnswered, currentQuestionId]);
 
-  if (!currentContent || !flowData || !messages) {
+  // Updated loading condition to use isLanguageLoading and ensure loadedMessages & loadedFlowData are available.
+  // currentContent depends on loadedFlowData so it's implicitly covered.
+  if (!isAuthReady || isLanguageLoading || !loadedMessages || !loadedFlowData) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
         <div className="text-center text-gray-700">
-          <p className="text-lg">{messages ? messages.loading_app : "Loading application..."}</p>
-          <p className="text-sm">{messages ? messages.loading_fallback_message : "If it takes time, please reload."}</p>
+          <p className="text-lg">{loadedMessages ? loadedMessages.loading_app : "Loading application..."}</p>
+          <p className="text-sm">{loadedMessages ? loadedMessages.loading_fallback_message : "If it takes time, please reload."}</p>
         </div>
       </div>
     );
   }
 
+  if (!isLanguageSelected) {
+    return <LanguageSelectionScreen onLanguageSelected={handleLanguageSelected} messages={loadedMessages} />;
+  }
+
+  // After the loading check, currentContent should be derivable if loadedFlowData is present.
+  // However, to be absolutely safe, especially if there's a brief moment currentQuestionId might not match anything in newly loaded flow:
+  const safeCurrentContent = loadedFlowData.flow.find((q: FlowStep) => q.id === currentQuestionId) || null;
+
+  if (!safeCurrentContent) {
+    // This case should ideally not be reached if flow data is consistent and currentQuestionId is valid.
+    // Could be a sign of an issue or a very brief transitional state.
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+            <div className="text-center text-gray-700">
+                <p className="text-lg">{loadedMessages.loading_app}</p>
+                <p className="text-sm">Preparing content...</p>
+            </div>
+        </div>
+    );
+  }
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-6 flex flex-col items-center font-sans">
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl mt-8">
-        <h1 className="text-3xl font-extrabold text-indigo-800 mb-6 text-center">{messages.app_title}</h1>
-        <p className="text-center text-gray-600 mb-8">{messages.app_subtitle}</p>
+        <h1 className="text-3xl font-extrabold text-indigo-800 mb-6 text-center">{loadedMessages.app_title}</h1>
+        <p className="text-center text-gray-600 mb-8">{loadedMessages.app_subtitle}</p>
 
         <Breadcrumbs flowPath={flowPath} />
 
@@ -567,7 +644,7 @@ function App() {
             handleSendAll={handleSendAll}
             sendingData={sendingData}
             goBack={goBack}
-            messages={messages}
+            messages={loadedMessages} // Use loadedMessages
             userId={userId}
           />
         ) : currentQuestionId === "final_document_review" ? (
@@ -579,7 +656,7 @@ function App() {
             loadingValidation={loadingValidation}
             proceedToSummary={proceedToSummary}
             fileInputRefs={fileInputRefs}
-            messages={messages}
+            messages={loadedMessages} // Use loadedMessages
           />
         ) : (
           currentContent && // Ensure currentContent is available
@@ -595,7 +672,7 @@ function App() {
             handleContinueWithValidation={handleContinueWithValidation}
             handleContinueWithoutValidationClick={handleContinueWithoutValidationClick}
             fileInputRefs={fileInputRefs}
-            messages={messages}
+            messages={loadedMessages} // Use loadedMessages
             orderedAllRequiredDocuments={orderedAllRequiredDocuments} // Pass this prop
           />
         )}
@@ -605,7 +682,7 @@ function App() {
                     onClick={goBack}
                     className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 transition-colors font-semibold"
                   >
-                    {messages.back_button}
+                    {loadedMessages.back_button}
                   </button>
             </div>
         )}
@@ -613,15 +690,15 @@ function App() {
 
       <ConfirmationModal
         showModal={showConfirmationModal}
-        title={messages.confirm_no_validation_title}
-        message={messages.confirm_no_validation_message}
+        title={loadedMessages.confirm_no_validation_title} // Use loadedMessages
+        message={loadedMessages.confirm_no_validation_message} // Use loadedMessages
         onConfirm={handleConfirmContinue}
         onCancel={handleCancelContinue}
-        yesButtonText={messages.confirm_no_validation_yes_button}
-        noButtonText={messages.confirm_no_validation_no_button}
+        yesButtonText={loadedMessages.confirm_no_validation_yes_button} // Use loadedMessages
+        noButtonText={loadedMessages.confirm_no_validation_no_button} // Use loadedMessages
       />
 
-      <p className="text-xs text-gray-500 mt-4">{messages.user_id_label} {userId || (messages ? messages.loading_app : "...")}</p>
+      <p className="text-xs text-gray-500 mt-4">{loadedMessages.user_id_label} {userId || (loadedMessages ? loadedMessages.loading_app : "...")}</p>
     </div>
   );
 }
