@@ -1,7 +1,8 @@
 
 # Padrón Municipal Interactive Guide
 
-## Proceso de generacion.
+## Proceso de generacion
+
 GEMINI. Le subo el PDF del BOP y le digo algo de este tipo.
             Dado este pdf donde se explica todo el procedimiento del padron. 
         Quiero que te centres solo en la casuistica exhaustiva de los procedimientos de alta. 
@@ -22,7 +23,6 @@ JULES. Le digo que coja ese tsx y lo separe en los json con datos y el codigo, a
 La idea es que generara varios ficheros que hara una rama que mergeare y al bajarmela tendre algo decente.
 
 Estoy trabajandolo en el portatil.
-
 
 This application is an interactive guide to help users understand the documentation and steps required for municipal registration (empadronamiento) in Spain. It uses React and Firebase.
 
