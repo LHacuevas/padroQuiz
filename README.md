@@ -1,4 +1,3 @@
-
 # Padrón Municipal Interactive Guide
 
 ## Proceso de generacion
@@ -46,10 +45,12 @@ These instructions will get you a copy of the project up and running on your loc
     (Replace `my-padron-app` with your desired project name).
 
 2.  **Copy Application Files:**
-    *   Place the `padroQuiz.tsx` file into the `src/` directory of your new Vite project (e.g., `my-padron-app/src/padroQuiz.tsx`). You might want to rename it to `App.tsx` and update imports accordingly if it's the main app component, or import it into the existing `src/App.tsx`. For simplicity, let's assume you replace `src/App.tsx` with `padroQuiz.tsx` (renaming `padroQuiz.tsx` to `App.tsx`).
+    *   Place the `padroQuiz.tsx` file into the `src/` directory of your new Vite project (e.g., `my-padron-app/src/padroQuiz.tsx`). You might want to rename it to `App.tsx` and update imports accordingly if it's the main app component. For simplicity, let's assume you replace `src/App.tsx` with `padroQuiz.tsx` (renaming `padroQuiz.tsx` to `App.tsx`).
     *   Copy the entire `src/components/`, `src/data/`, `src/interfaces.ts`, `src/locales/`, and `src/firebaseConfig.ts` from this refactored structure into your new project's `src/` directory. The structure should look like:
         ```
         my-padron-app/
+        ├── .env.example  (This file should be in the root)
+        ├── .gitignore    (Ensure .env is listed here)
         ├── src/
         │   ├── components/
         │   │   ├── Breadcrumbs.tsx
@@ -100,11 +101,25 @@ These instructions will get you a copy of the project up and running on your loc
     yarn add firebase lucide-react
     ```
 
-4.  **Configure Firebase:**
-    *   Open `src/firebaseConfig.ts`.
-    *   You will see placeholder values for the Firebase configuration (`apiKey`, `authDomain`, etc.). Replace these with your actual Firebase project's configuration. You can get these details from the Firebase console when you set up a new web app in your Firebase project.
-    *   The `__app_id`, `__firebase_config`, and `__initial_auth_token` variables are intended to be injected by an external environment (like a Canvas LMS). For local development, `firebaseConfig.ts` uses placeholders if these are not found. Ensure your Firebase project is properly set up and the configuration in `firebaseConfig.ts` is correct for local development if these global variables are not defined.
-    *   **Gemini API Key for Document Validation**: The `validateDocumentWithAI` function in `App.tsx` (formerly `padroQuiz.tsx`) uses a variable `apiKey` for the Google Gemini API, which is currently an empty string. You will need to obtain an API key for Gemini and place it there or manage it through environment variables for the document validation feature to work.
+4.  **Configure Environment Variables:**
+    This project uses environment variables for Firebase configuration and the Google Gemini API Key. Vite uses `VITE_` prefixed environment variables.
+    *   **Create a `.env` file:** In the root directory of your project (e.g., `my-padron-app/`), create a file named `.env`.
+    *   **Copy from `.env.example`:** Copy the contents of `.env.example` (located in the root of this project structure) into your new `.env` file.
+    *   **Fill in your credentials:** Replace the placeholder values in your `.env` file with your actual Firebase project configuration details and your Google Gemini API key.
+        ```env
+        VITE_FIREBASE_API_KEY="YOUR_FIREBASE_API_KEY"
+        VITE_FIREBASE_AUTH_DOMAIN="YOUR_FIREBASE_AUTH_DOMAIN"
+        VITE_FIREBASE_PROJECT_ID="YOUR_FIREBASE_PROJECT_ID"
+        VITE_FIREBASE_STORAGE_BUCKET="YOUR_FIREBASE_STORAGE_BUCKET"
+        VITE_FIREBASE_MESSAGING_SENDER_ID="YOUR_FIREBASE_MESSAGING_SENDER_ID"
+        VITE_FIREBASE_APP_ID="YOUR_FIREBASE_APP_ID"
+
+        VITE_GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
+        VITE_APP_ID="default-app-id" # Or your specific app ID if not using Firebase's
+        ```
+    *   **Important:** The `.env` file contains sensitive credentials and should NOT be committed to version control. The `.gitignore` file in this project is already configured to ignore `.env`.
+    *   The `src/firebaseConfig.ts` file is set up to read these `VITE_` prefixed environment variables. It also contains fallbacks for global variables like `__firebase_config` or `__app_id` if they are injected by an external environment (e.g., Canvas LMS), but the `.env` variables will take precedence for local development.
+    *   The `validateDocumentWithAI` function in `App.tsx` (formerly `padroQuiz.tsx`) will use `VITE_GEMINI_API_KEY` from your `.env` file.
 
 5.  **Set up Tailwind CSS (Optional but Recommended):**
     The component JSX uses Tailwind CSS classes (e.g., `min-h-screen`, `bg-gradient-to-br`). If you created a new Vite project, you'll need to set up Tailwind CSS:
@@ -152,14 +167,9 @@ This will start the development server, and you can view the application in your
 *   **`src/components/`:** Contains all the reusable UI components.
 *   **`src/data/`:** Contains data files like `flowData.es.json`.
 *   **`src/locales/`:** Contains localization files (e.g., `es.json`).
-*   **`src/firebaseConfig.ts`:** Firebase initialization and configuration.
+*   **`src/firebaseConfig.ts`:** Firebase initialization and configuration (reads from `.env`).
 *   **`src/interfaces.ts`:** TypeScript interfaces for props and data structures.
+*   **`.env.example`:** Example environment variables file.
+*   **`.env`:** (You create this locally) Stores your actual environment variables. Ignored by Git.
 
-
-
-
-
-
-
-
-
+```

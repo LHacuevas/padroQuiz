@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect, useRef, useMemo } from 'react'; // Added useMemo to main React import
-import { signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
+import { signInAnonymously, signInWithCustomToken, onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth'; // Import FirebaseUser type
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 //import { Upload, XCircle, CheckCircle, Trash2, Home, User, FileText, CheckSquare, Settings, Send } from 'lucide-react'; // Icons
-import { db, auth, initialAuthToken, aId as appId, firebaseApp } from './firebaseConfig';
+import { db, auth, initialAuthToken, aId as appId } from './firebaseConfig';
 import messages from './locales/es.json';
 import rawFlowDataJson from './data/flowData.es.json';
 // Import new components
@@ -11,13 +10,20 @@ import Breadcrumbs from './components/Breadcrumbs';
 import ConfirmationModal from './components/ConfirmationModal';
 import QuestionnaireScreen from './components/QuestionnaireScreen';
 import FinalDocumentReviewScreen from './components/FinalDocumentReviewScreen';
-import SummaryScreen from './components/SummaryScreen';
+import SummaryScreen from './components/SummaryScreen'; 
 // Import necessary types/interfaces
-//import { FlowStep, UploadedFiles, Person, FlowPathEntry, FlowData, DocumentRequirement } from './interfaces';
+// Import new components
+/* import Breadcrumbs from './components/Breadcrumbs';
+import ConfirmationModal from './components/ConfirmationModal';
+import QuestionnaireScreen from './components/QuestionnaireScreen';
+import FinalDocumentReviewScreen from './components/FinalDocumentReviewScreen';
+import SummaryScreen from './components/SummaryScreen'; */
+// Import necessary types/interfaces
+import type { FlowStep, UploadedFiles, Person, FlowPathEntry, FlowData, DocumentRequirement, UploadedFileEntry } from './interfaces';
 
 
 // --- AI Document Validation Function ---
-async function validateDocumentWithAI(base64Image, documentType) {
+async function validateDocumentWithAI(base64Image: string, documentType: string) {
   const prompt = `Usted es una IA de verificación de documentos para una oficina de padrón municipal española. Analice esta imagen. ¿Es un documento '${documentType}' válido y legible? Si es un documento de identidad (DNI, NIE, Pasaporte, TIE, Pasaporte extranjero), extraiga el nombre completo y el número de identificación. Si no, indique la razón claramente en español. Responda en formato JSON: { "isValid": boolean, "reason": "string", "extractedData": { "name": "string", "id_number": "string" } }.`;
 
   const chatHistory = [{
@@ -49,11 +55,14 @@ async function validateDocumentWithAI(base64Image, documentType) {
     }
   };
 
-  const apiKey = "";
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
+  if (!apiKey) {
+      console.warn("Gemini API Key is not configured. Please check your .env file (VITE_GEMINI_API_KEY). Document validation will likely fail.");
+  }
+  const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
   try {
-    const response = await fetch(apiUrl, {
+    const response = await fetch(geminiApiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -68,9 +77,10 @@ async function validateDocumentWithAI(base64Image, documentType) {
     } else {
       return { isValid: false, reason: messages.ai_response_error, extractedData: {} };
     }
-  } catch (error) {
-    console.error("Error al llamar a la API de Gemini:", error);
-    return { isValid: false, reason: `${messages.ai_connection_error} ${error.message}`, extractedData: {} };
+  } catch (error: any) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("Error al llamar a la API de Gemini:", errorMessage);
+    return { isValid: false, reason: `${messages.ai_connection_error} ${errorMessage}`, extractedData: {} };
   }
 }
 
@@ -98,16 +108,17 @@ function App() {
 
   useEffect(() => {
     if (rawFlowDataJson && messages) {
-      const processedFlow = rawFlowDataJson.flow.map(item => {
+      const processedFlow = rawFlowDataJson.flow.map((item: any) => { // Changed FlowStep to any for item to avoid type errors before full processing
         if (item.id === "final_document_review" && item.text === "final_document_review_instructions_key") {
           return { ...item, text: messages.final_document_review_instructions };
         }
-        // Potential place for more comprehensive i18n processing of questions/descriptions if needed
         return item;
       });
-      setFlowData({ flow: processedFlow });
+      setFlowData({ flow: processedFlow as FlowStep[] });
     }
   }, [rawFlowDataJson, messages]);
+
+
   // --- Firebase Integration ---
   useEffect(() => {
     if (!auth || !db) {
@@ -116,7 +127,7 @@ function App() {
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user: FirebaseUser | null) => {
       if (user) {
         setUserId(user.uid);
         // Load user data from Firestore
@@ -137,14 +148,14 @@ function App() {
           try {
             await signInWithCustomToken(auth, initialAuthToken);
             // Assuming onAuthStateChanged will be triggered again with the new user
-          } catch (error) {
-            console.error("Error signing in with custom token:", error);
+          } catch (error: any) {
+            console.error("Error signing in with custom token:", error instanceof Error ? error.message : String(error));
             // Fallback to anonymous sign-in if custom token fails
             try {
               const anonUser = await signInAnonymously(auth);
               setUserId(anonUser.user.uid);
-            } catch (anonError) {
-              console.error("Error signing in anonymously after custom token failure:", anonError);
+            } catch (anonError: any) {
+              console.error("Error signing in anonymously after custom token failure:", anonError instanceof Error ? anonError.message : String(anonError));
             }
             setIsAuthReady(true);
           }
@@ -152,24 +163,25 @@ function App() {
           try {
             const anonUser = await signInAnonymously(auth);
             setUserId(anonUser.user.uid);
-          } catch (anonError) {
-            console.error("Error signing in anonymously:", anonError);
+          } catch (anonError: any) {
+            console.error("Error signing in anonymously:", anonError instanceof Error ? anonError.message : String(anonError));
           }
           setIsAuthReady(true);
         }
       }
     });
     return () => unsubscribe();
-  }, [auth, db, appId, initialAuthToken]); // Add auth, db, appId, initialAuthToken to dependency array
+  }, [auth, db, appId, initialAuthToken]);
+
   // Save data to Firestore whenever relevant state changes
   useEffect(() => {
     const saveData = async () => {
       if (isAuthReady && userId && db && appId) { // Ensure db and appId are available
         try {
-          const filesToSave = {};
+          const filesToSave: { [key: string]: Partial<Omit<UploadedFileEntry, 'file'>>[] } = {};
           for (const docName in uploadedFiles) {
-            filesToSave[docName] = uploadedFiles[docName].map(fileEntry => {
-              const { file, ...rest } = fileEntry; // Destructure to omit 'file' object
+            filesToSave[docName] = uploadedFiles[docName].map((fileEntry: UploadedFileEntry) => {
+              const { file: _unusedFile, ...rest } = fileEntry; // Explicitly mark 'file' as unused
               return rest;
             });
           }
@@ -184,8 +196,8 @@ function App() {
             flowPath // Save flowPath
           }, { merge: true });
           console.log("Data saved to Firestore.");
-        } catch (e) {
-          console.error("Error saving document: ", e);
+        } catch (e: any) {
+          console.error("Error saving document: ", e instanceof Error ? e.message : String(e));
         }
       }
     };
@@ -196,14 +208,15 @@ function App() {
 
 
   // --- Flow Navigation Logic ---
-  const currentQuestion = flowData ? flowData.flow.find(q => q.id === currentQuestionId) : null;
+  const currentQuestion: FlowStep | null | undefined = flowData ? flowData.flow.find((q: any) => q.id === currentQuestionId) : null; // q to any temporarily
+
   useEffect(() => {
     if (currentQuestion && currentQuestion.type === "info_block") {
       setCurrentStepDocs(currentQuestion.documents || []);
 
-      setUploadedFiles(prev => {
-        const newUploadedFiles = { ...prev };
-        (currentQuestion.documents || []).forEach(doc => {
+      setUploadedFiles((prev: UploadedFiles) => {
+        const newUploadedFiles: UploadedFiles = { ...prev };
+        (currentQuestion.documents || []).forEach((doc: DocumentRequirement) => {
           if (!newUploadedFiles[doc.name]) {
             newUploadedFiles[doc.name] = [];
           }
@@ -213,22 +226,21 @@ function App() {
     } else {
       setCurrentStepDocs([]); // Clear docs if not an info block
     }
-  }, [currentQuestionId, currentQuestion]); // currentQuestion will change when flowData changes
+  }, [currentQuestionId, currentQuestion, flowData]); // Added flowData as currentQuestion depends on it
 
-  const handleAnswer = (nextId) => {
+  const handleAnswer = (nextId: string): void => {
     if (!flowData) return; // Ensure flowData is loaded
     setQuestionsAnswered(prev => [...prev, currentQuestionId]);
 
-    // Update flowPath for breadcrumbs
-    const nextQuestionObj = flowData.flow.find(q => q.id === nextId);
+    const nextQuestionObj: FlowStep | undefined = flowData.flow.find((q: any) => q.id === nextId); // q to any temporarily
     if (nextQuestionObj) {
         const stepText = nextQuestionObj.question || nextQuestionObj.text || nextQuestionObj.id;
-        setFlowPath(prev => [...prev, { id: nextQuestionObj.id, text: stepText }]);
+        setFlowPath(prev => [...prev, { id: nextQuestionObj.id, text: stepText as string }]);
     }
     setCurrentQuestionId(nextId);
   };
 
-  const goBack = () => {
+  const goBack = (): void => {
     if (questionsAnswered.length > 0) {
       const prevId = questionsAnswered[questionsAnswered.length - 1];
       setQuestionsAnswered(prev => prev.slice(0, -1));
@@ -238,39 +250,39 @@ function App() {
   };
 
   // --- Document Upload and Validation Logic ---
-  const handleFileChange = (e, docName) => {
-    const files = Array.from(e.target.files);
-    setUploadedFiles(prev => {
-      const newFiles = { ...prev };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, docName: string): void => {
+    const files = Array.from(e.target.files || []);
+    setUploadedFiles((prev: UploadedFiles) => {
+      const newFiles: UploadedFiles = { ...prev };
       // If single file expected, clear existing and add new. If multiple, append.
-      const docRequirement = currentStepDocs.find(d => d.name === docName) || orderedAllRequiredDocuments.find(d => d.name === docName);
+      const docRequirement: DocumentRequirement | undefined = currentStepDocs.find(d => d.name === docName) || orderedAllRequiredDocuments.find(d => d.name === docName);
 
       if (!newFiles[docName] || !docRequirement?.multiple_files) {
-         newFiles[docName] = files.map(file => ({
+         newFiles[docName] = files.map((file: File) => ({
             file, // Keep the File object in state for FileReader operations
             name: file.name,
-            base64: null, // Will be populated after reading
+            base64: null,
             validation_status: 'pending',
             validation_message: '',
             extracted_data: {}
-          }));
+          } as UploadedFileEntry));
       } else {
-          newFiles[docName] = [...newFiles[docName], ...files.map(file => ({
+          newFiles[docName] = [...newFiles[docName], ...files.map((file: File) => ({
             file,
             name: file.name,
             base64: null,
             validation_status: 'pending',
             validation_message: '',
             extracted_data: {}
-          }))];
+          } as UploadedFileEntry))];
       }
       return newFiles;
     });
   };
 
-  const handleValidateDocument = async (docName, fileIndex) => {
+  const handleValidateDocument = async (docName: string, fileIndex: number): Promise<void> => {
     setLoadingValidation(true);
-    const fileToValidate = uploadedFiles[docName][fileIndex];
+    const fileToValidate: UploadedFileEntry = uploadedFiles[docName][fileIndex];
 
     if (!fileToValidate || !fileToValidate.file) {
       setLoadingValidation(false);
@@ -278,43 +290,60 @@ function App() {
     }
 
     const reader = new FileReader();
-    reader.onload = async (event) => {
-      const base64Data = event.target.result.split(',')[1]; // Get base64 string without prefix
-      const validationResult = await validateDocumentWithAI(base64Data, docName);
+    reader.onload = async (event: ProgressEvent<FileReader>) => {
+      if (event.target && typeof event.target.result === 'string') {
+        const base64Data = event.target.result.split(',')[1];
+        const validationResult = await validateDocumentWithAI(base64Data, docName);
 
-      setUploadedFiles(prev => {
-        const newFiles = { ...prev };
-        if (newFiles[docName] && newFiles[docName][fileIndex]) {
-          newFiles[docName][fileIndex].validation_status = validationResult.isValid ? 'valid' : 'invalid';
-          newFiles[docName][fileIndex].validation_message = validationResult.reason;
-          newFiles[docName][fileIndex].extracted_data = validationResult.extractedData || {};
-          newFiles[docName][fileIndex].base64 = base64Data; // Store base64 for persistence
+        setUploadedFiles((prev: UploadedFiles) => {
+          const newFiles: UploadedFiles = { ...prev };
+          if (newFiles[docName] && newFiles[docName][fileIndex]) {
+            newFiles[docName][fileIndex].validation_status = validationResult.isValid ? 'valid' : 'invalid';
+            newFiles[docName][fileIndex].validation_message = validationResult.reason;
+            newFiles[docName][fileIndex].extracted_data = validationResult.extractedData || {};
+            newFiles[docName][fileIndex].base64 = base64Data; // Store base64 for persistence
 
-          // If it's an identity document and valid, add/update peopleToRegister
-          const docRequirement = (currentQuestion.documents || []).find(d => d.name === docName) || flowData.flow.flatMap(f => f.documents || []).find(d => f.id === questionsAnswered[questionsAnswered.length-1] && d.name === docName); // Find the original doc requirement to check id_extractable
-          if (validationResult.isValid && docRequirement && docRequirement.id_extractable) {
-            const existingPersonIndex = peopleToRegister.findIndex(p => p.id_number === validationResult.extractedData.id_number);
-            if (validationResult.extractedData.name && validationResult.extractedData.id_number) {
-              if (existingPersonIndex > -1) {
-                // Update existing person
-                const updatedPeople = [...peopleToRegister];
-                updatedPeople[existingPersonIndex] = { ...updatedPeople[existingPersonIndex], ...validationResult.extractedData };
-                setPeopleToRegister(updatedPeople);
-              } else {
-                // Add new person
-                setPeopleToRegister(prevPeople => [...prevPeople, validationResult.extractedData]);
+            // If it's an identity document and valid, add/update peopleToRegister
+            //const docRequirement: DocumentRequirement | undefined = (currentQuestion?.documents || []).find(d => d.name === docName) || flowData?.flow.flatMap(f => f.documents || []).find(d => f.id === questionsAnswered[questionsAnswered.length-1] && d.name === docName);
+            // If it's an identity document and valid, add/update peopleToRegister
+            const docRequirementFromFlow: DocumentRequirement | undefined = flowData?.flow.flatMap(f => f.documents || []).find(d => d.name === docName); // Simplified search
+            const currentQDocs = currentQuestion?.documents?.find(d => d.name === docName);
+            const finalDocRequirement = currentQDocs || docRequirementFromFlow;
+
+            if (validationResult.isValid && finalDocRequirement && finalDocRequirement.id_extractable) {
+              const existingPersonIndex = peopleToRegister.findIndex(p => p.id_number === validationResult.extractedData.id_number);
+              if (validationResult.extractedData.name && validationResult.extractedData.id_number) {
+                if (existingPersonIndex > -1) {
+                  const updatedPeople = [...peopleToRegister];
+                  updatedPeople[existingPersonIndex] = { ...updatedPeople[existingPersonIndex], ...(validationResult.extractedData as Person) };
+                  setPeopleToRegister(updatedPeople);
+                } else {
+                  setPeopleToRegister(prevPeople => [...prevPeople, validationResult.extractedData as Person]);
+                }
               }
             }
           }
-        }
-        return newFiles;
-      });
-      setLoadingValidation(false);
+          return newFiles; // Ensure newFiles is returned
+        });
+        setLoadingValidation(false);
+      } else {
+        console.error("File could not be read as a base64 string or event.target is null.");
+        setUploadedFiles((prev: UploadedFiles) => {
+          const newFiles: UploadedFiles = { ...prev };
+          if (newFiles[docName] && newFiles[docName][fileIndex]) {
+            newFiles[docName][fileIndex].validation_status = 'invalid';
+            newFiles[docName][fileIndex].validation_message = messages.file_read_error;
+          }
+          return newFiles;
+        });
+        setLoadingValidation(false);
+        // return; // Removed to avoid issues if this path is hit unexpectedly
+      }
     };
-    reader.onerror = (error) => {
-      console.error("Error reading file:", error);
-      setUploadedFiles(prev => {
-        const newFiles = { ...prev };
+    reader.onerror = (error: any) => {
+      console.error("Error reading file:", error instanceof Error ? error.message : String(error));
+      setUploadedFiles((prev: UploadedFiles) => {
+        const newFiles: UploadedFiles = { ...prev };
         if (newFiles[docName] && newFiles[docName][fileIndex]) {
           newFiles[docName][fileIndex].validation_status = 'invalid';
           newFiles[docName][fileIndex].validation_message = messages.file_read_error;
@@ -323,23 +352,36 @@ function App() {
       });
       setLoadingValidation(false);
     };
-    reader.readAsDataURL(fileToValidate.file);
+    if (fileToValidate.file) { // Ensure file object exists before reading
+        reader.readAsDataURL(fileToValidate.file);
+    } else {
+        // Handle case where file is missing, e.g., set status to invalid
+        setUploadedFiles((prev: UploadedFiles) => {
+            const newFiles = {...prev};
+            if (newFiles[docName] && newFiles[docName][fileIndex]) {
+                newFiles[docName][fileIndex].validation_status = 'invalid';
+                newFiles[docName][fileIndex].validation_message = "Archivo no encontrado para validación.";
+            }
+            return newFiles;
+        });
+        setLoadingValidation(false);
+    }
   };
 
-  const handleRemoveFile = (docName, fileIndex) => {
-    setUploadedFiles(prev => {
-      const newFiles = { ...prev };
+  const handleRemoveFile = (docName: string, fileIndex: number): void => {
+    setUploadedFiles((prev: UploadedFiles) => {
+      const newFiles: UploadedFiles = { ...prev };
       if (newFiles[docName]) {
-        const removedFile = newFiles[docName][fileIndex];
+        const removedFile: UploadedFileEntry = newFiles[docName][fileIndex];
         newFiles[docName] = newFiles[docName].filter((_, i) => i !== fileIndex);
 
         // Remove person if their ID document was removed and they were the only source
         if (removedFile.extracted_data && removedFile.extracted_data.id_number) {
-          const isIdSourceUnique = Object.values(newFiles).every(filesArray =>
-            filesArray.every(f => f && f.extracted_data && f.extracted_data.id_number !== removedFile.extracted_data.id_number)
+          const isIdSourceUnique = Object.values(newFiles).every((filesArray: UploadedFileEntry[]) =>
+            filesArray.every((f: UploadedFileEntry) => f && f.extracted_data && f.extracted_data.id_number !== removedFile.extracted_data.id_number)
           );
           if (isIdSourceUnique) {
-            setPeopleToRegister(prevPeople =>
+            setPeopleToRegister((prevPeople: Person[]) =>
               prevPeople.filter(p => p.id_number !== removedFile.extracted_data.id_number)
             );
           }
@@ -349,32 +391,38 @@ function App() {
     });
   };
 
-  const isCurrentStepRequiredDocumentsValidated = () => {
-    if (!currentQuestion || !currentQuestion.documents) return true; // If no documents or not an info_block, consider it valid to proceed
+  const isCurrentStepRequiredDocumentsValidated = (): boolean => {
+    if (!currentQuestion || !currentQuestion.documents) return true;
 
     for (const docRequirement of currentQuestion.documents) {
         const uploaded = uploadedFiles[docRequirement.name];
         if (!uploaded || uploaded.length === 0) return false;
-        if (uploaded.some(f => f.validation_status !== 'valid')) return false;
+        if (uploaded.some((f: UploadedFileEntry) => f.validation_status !== 'valid')) return false;
     }
     return true;
   };
 
-  const handleContinueWithValidation = () => {
+  const handleContinueWithValidation = (): void => {
     if (isCurrentStepRequiredDocumentsValidated()) {
-      handleAnswer(currentContent.next_question_id);
+      if (currentContent && currentContent.next_question_id) { // currentContent might be null
+        handleAnswer(currentContent.next_question_id);
+      } else if (currentQuestion && currentQuestion.next_question_id) { // fallback to currentQuestion if currentContent is null but currentQuestion is not
+        handleAnswer(currentQuestion.next_question_id);
+      }
     } else {
       // You might want a custom modal here instead of alert for better UX
       alert(messages.alert_all_required_docs_needed);
     }
   };
 
-  const handleContinueWithoutValidationClick = () => {
-    setNextIdAfterConfirmation(currentContent.next_question_id);
-    setShowConfirmationModal(true);
+  const handleContinueWithoutValidationClick = (): void => {
+    if (currentContent && currentContent.next_question_id) {
+      setNextIdAfterConfirmation(currentContent.next_question_id);
+      setShowConfirmationModal(true);
+    }
   };
 
-  const handleConfirmContinue = () => {
+  const handleConfirmContinue = (): void => {
     setShowConfirmationModal(false);
     if (nextIdAfterConfirmation) {
       handleAnswer(nextIdAfterConfirmation);
@@ -382,41 +430,39 @@ function App() {
     }
   };
 
-  const handleCancelContinue = () => {
+  const handleCancelContinue = (): void => {
     setShowConfirmationModal(false);
     setNextIdAfterConfirmation(null); // Clear the ID
   };
 
-  const proceedToSummary = () => {
+  const proceedToSummary = (): void => {
     if (!flowData) return; // Ensure flowData is loaded
-    // This function is now only called from the 'final_document_review' block
     setCurrentQuestionId("summary_screen");
-    // Add the summary screen to the flowPath
-    const summaryScreen = flowData.flow.find(q => q.id === "summary_screen");
+    const summaryScreen = flowData.flow.find((q: FlowStep) => q.id === "summary_screen");
     if (summaryScreen) {
         setFlowPath(prev => [...prev, { id: summaryScreen.id, text: messages.summary_title }]);
     }
   };
 
-  const handleRemovePerson = (idNumber) => {
-    setPeopleToRegister(prev => prev.filter(p => p.id_number !== idNumber));
+  const handleRemovePerson = (idNumber: string): void => {
+    setPeopleToRegister((prev: Person[]) => prev.filter((p: Person) => p.id_number !== idNumber));
   };
 
-  const handleAddressEditToggle = () => {
+  const handleAddressEditToggle = (): void => {
     if (!showAddressEdit) {
       setTempAddress(registrationAddress);
     }
     setShowAddressEdit(!showAddressEdit);
   };
 
-  const handleAddressSave = () => {
+  const handleAddressSave = (): void => {
     setRegistrationAddress(tempAddress);
     setShowAddressEdit(false);
   };
 
-  const currentContent = currentQuestion; // currentQuestion is already potentially null if flowData is null
+  const currentContent: FlowStep | null | undefined = currentQuestion;
 
-  const handleSendAll = async () => {
+  const handleSendAll = async (): Promise<void> => {
     setSendingData(true);
     setApiResponseMessage("");
 
@@ -426,15 +472,15 @@ function App() {
       registrationAddress: registrationAddress,
       people: peopleToRegister,
       documents: Object.keys(uploadedFiles).reduce((acc, docName) => {
-        acc[docName] = uploadedFiles[docName].map(fileEntry => ({
+        acc[docName] = uploadedFiles[docName].map((fileEntry: UploadedFileEntry) => ({
           name: fileEntry.name,
           validation_status: fileEntry.validation_status,
           extracted_data: fileEntry.extracted_data,
           base64: fileEntry.base64 // Include base64 data for submission
         }));
         return acc;
-      }, {}),
-      flowPath: flowPath // Include the complete flow path
+      }, {} as {[key: string]: any[]}), // Added type assertion for acc
+      flowPath: flowPath
     };
 
     console.log("Simulating API send with data:", dataToSend);
@@ -457,8 +503,8 @@ function App() {
       } else {
         setApiResponseMessage(messages.send_error_message);
       }
-    } catch (error) {
-      console.error("API Error:", error);
+    } catch (error: any) {
+      console.error("API Error:", error instanceof Error ? error.message : String(error));
       setApiResponseMessage(messages.send_error_message);
     } finally {
       setSendingData(false);
@@ -466,28 +512,28 @@ function App() {
   };
 
 
-
   const orderedAllRequiredDocuments = useMemo((): DocumentRequirement[] => {
-    if (!flowData || !currentContent) return []; // Handle null flowData or currentContent
-    const allDocs: {[key: string]: DocumentRequirement} = {};
-    questionsAnswered.forEach(qId => {
-        const q = flowData.flow.find(f => f.id === qId);
+    if (!flowData) return []; // currentContent check is removed as it depends on flowData
+    const allDocs: { [key: string]: DocumentRequirement } = {};
+    questionsAnswered.forEach((qId: string) => {
+        const q: FlowStep | undefined = flowData.flow.find((f: FlowStep) => f.id === qId);
         if (q && q.type === "info_block" && q.documents) {
-            q.documents.forEach(docReq => {
+            q.documents.forEach((docReq: DocumentRequirement) => {
                 allDocs[docReq.name] = docReq;
             });
         }
     });
-    // Also add documents from the current step if it's an info_block and currentContent is available
-    if (currentContent && currentContent.type === "info_block" && currentContent.documents) {
-        currentContent.documents.forEach(docReq => {
+    // currentContent is derived from currentQuestion which itself depends on flowData
+    const currentQ = flowData.flow.find((f: FlowStep) => f.id === currentQuestionId);
+    if (currentQ && currentQ.type === "info_block" && currentQ.documents) {
+        currentQ.documents.forEach((docReq: DocumentRequirement) => {
             allDocs[docReq.name] = docReq;
         });
     }
     return Object.values(allDocs);
-  }, [flowData, questionsAnswered, currentContent]);
+  }, [flowData, questionsAnswered, currentQuestionId]); // currentContent removed, currentQuestionId added
 
-  if (!currentContent || !flowData || !messages) { // Added !messages check for safety
+  if (!currentContent || !flowData || !messages) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
         <div className="text-center text-gray-700">
@@ -503,7 +549,6 @@ function App() {
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl mt-8">
         <h1 className="text-3xl font-extrabold text-indigo-800 mb-6 text-center">{messages.app_title}</h1>
         <p className="text-center text-gray-600 mb-8">{messages.app_subtitle}</p>
-
 
         <Breadcrumbs flowPath={flowPath} />
 

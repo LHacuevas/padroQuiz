@@ -5,7 +5,7 @@ import { CheckSquare, Home, User, Settings, Send, Trash2 } from 'lucide-react';
 
 const SummaryScreen: React.FC<SummaryScreenProps> = ({
   registrationAddress, peopleToRegister, showAddressEdit, tempAddress, setTempAddress,
-  handleAddressSave, handleAddressEditToggle, handleRemovePerson, apiResponseMessage,
+  handleAddressSave, handleAddressEditToggle, handleRemovePerson, apiResponseMessage,  
   handleSendAll, sendingData, goBack, messages //, userId // userId is passed but not used in current JSX, can be added if needed
 }) => {
   return (

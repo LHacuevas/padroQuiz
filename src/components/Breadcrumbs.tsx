@@ -1,6 +1,6 @@
 // src/components/Breadcrumbs.tsx
 import React from 'react';
-import { type BreadcrumbsProps } from '../interfaces';
+import type { BreadcrumbsProps } from '../interfaces';
 
 const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ flowPath }) => {
   return (
