@@ -96,7 +96,7 @@ export interface QuestionnaireScreenProps {
     handleRemoveFile: (docName: string, fileIndex: number) => void;
     loadingValidation: boolean;
     isCurrentStepRequiredDocumentsValidated: () => boolean;
-    handleContinueWithValidation: ()_=> void;
+    handleContinueWithValidation: () => void;
     handleContinueWithoutValidationClick: () => void;
     fileInputRefs: React.MutableRefObject<{ [key: string]: HTMLInputElement | null }>;
     messages: MessageTexts;
