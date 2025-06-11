@@ -1,6 +1,6 @@
 // src/components/ConfirmationModal.tsx
 import React from 'react';
-import { ConfirmationModalProps } from '../interfaces';
+import { type ConfirmationModalProps } from '../interfaces';
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   showModal, title, message, onConfirm, onCancel, yesButtonText, noButtonText

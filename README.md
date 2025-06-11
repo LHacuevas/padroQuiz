@@ -1,7 +1,5 @@
 # Padrón Municipal Interactive Guide
 
-<<<<<<< HEAD
-=======
 ## Proceso de generacion
 
 GEMINI. Le subo el PDF del BOP y le digo algo de este tipo.
@@ -25,7 +23,6 @@ La idea es que generara varios ficheros que hara una rama que mergeare y al baja
 
 Estoy trabajandolo en el portatil.
 
->>>>>>> origin/main
 This application is an interactive guide to help users understand the documentation and steps required for municipal registration (empadronamiento) in Spain. It uses React and Firebase.
 
 ## Getting Started

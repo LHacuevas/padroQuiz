@@ -1,14 +1,14 @@
 // src/components/QuestionnaireScreen.tsx
 import React from 'react';
 import DocumentUpload from './DocumentUpload';
-import { QuestionnaireScreenProps } from '../interfaces';
+import { type QuestionnaireScreenProps } from '../interfaces';
 import { FileText } from 'lucide-react';
 
 const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
   currentContent, handleAnswer, uploadedFiles, handleFileChange, handleValidateDocument,
   handleRemoveFile, loadingValidation, isCurrentStepRequiredDocumentsValidated,
-  handleContinueWithValidation, handleContinueWithoutValidationClick, fileInputRefs, messages,
-  orderedAllRequiredDocuments // This prop is actually used by handleFileChange in App.tsx, not directly here for rendering loop
+  handleContinueWithValidation, handleContinueWithoutValidationClick, fileInputRefs, messages,  
+  //orderedAllRequiredDocuments // This prop is actually used by handleFileChange in App.tsx, not directly here for rendering loop
 }) => {
 
   // Determine current step documents directly from currentContent
