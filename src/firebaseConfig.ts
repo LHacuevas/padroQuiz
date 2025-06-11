@@ -2,57 +2,49 @@ import { initializeApp, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 
-// Global variables that would typically be provided by an environment or build process
-// For now, we use the same logic as in the original padroQuiz.tsx
-const appId = typeof (globalThis as any).__app_id !== 'undefined' ? (globalThis as any).__app_id : 'default-app-id';
+// Read from environment variables, with fallbacks to potential global vars or placeholders
+const firebaseConfigValues = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || (typeof (globalThis as any).__firebase_config !== 'undefined' ? JSON.parse((globalThis as any).__firebase_config).apiKey : "YOUR_API_KEY"),
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || (typeof (globalThis as any).__firebase_config !== 'undefined' ? JSON.parse((globalThis as any).__firebase_config).authDomain : "YOUR_AUTH_DOMAIN"),
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || (typeof (globalThis as any).__firebase_config !== 'undefined' ? JSON.parse((globalThis as any).__firebase_config).projectId : "YOUR_PROJECT_ID"),
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || (typeof (globalThis as any).__firebase_config !== 'undefined' ? JSON.parse((globalThis as any).__firebase_config).storageBucket : "YOUR_STORAGE_BUCKET"),
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || (typeof (globalThis as any).__firebase_config !== 'undefined' ? JSON.parse((globalThis as any).__firebase_config).messagingSenderId : "YOUR_MESSAGING_SENDER_ID"),
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || (typeof (globalThis as any).__firebase_config !== 'undefined' ? JSON.parse((globalThis as any).__firebase_config).appId : "YOUR_APP_ID")
+};
 
-// Attempt to parse __firebase_config if it exists, otherwise use a default empty object or a placeholder
-let firebaseConfigObj = {};
-if (typeof (globalThis as any).__firebase_config !== 'undefined') {
-  try {
-    firebaseConfigObj = JSON.parse((globalThis as any).__firebase_config);
-  } catch (e) {
-    console.error("Error parsing __firebase_config:", e);
-    // Fallback to a default/empty config or handle error as appropriate
-    firebaseConfigObj = {
-      apiKey: "YOUR_API_KEY", // Placeholder
-      authDomain: "YOUR_AUTH_DOMAIN", // Placeholder
-      projectId: "YOUR_PROJECT_ID", // Placeholder
-      storageBucket: "YOUR_STORAGE_BUCKET", // Placeholder
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID", // Placeholder
-      appId: "YOUR_APP_ID" // Placeholder
-    };
-  }
-} else {
-    // Fallback for when __firebase_config is not defined (e.g. local development without the Canvas environment)
-    console.warn("__firebase_config not found, using placeholder Firebase config. Please ensure this is configured for your environment.");
-    firebaseConfigObj = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
+// Check if any essential Firebase config values are still placeholders from .env file OR fallback
+if (firebaseConfigValues.apiKey === "YOUR_API_KEY" || !firebaseConfigValues.apiKey) {
+    console.warn("Firebase API Key is not configured. Please check your .env file or __firebase_config global variable. Some Firebase services may not work.");
+}
+if (firebaseConfigValues.projectId === "YOUR_PROJECT_ID" || !firebaseConfigValues.projectId) {
+    console.warn("Firebase Project ID is not configured. Please check your .env file or __firebase_config global variable. Some Firebase services may not work.");
 }
 
-export const firebaseConfig = firebaseConfigObj;
+
+export const firebaseConfig = firebaseConfigValues;
+
+// Use VITE_APP_ID from .env as a primary source if __app_id is not defined
+export const aId = typeof (globalThis as any).__app_id !== 'undefined' ? (globalThis as any).__app_id : (import.meta.env.VITE_APP_ID || 'default-app-id');
 
 export const initialAuthToken = typeof (globalThis as any).__initial_auth_token !== 'undefined' ? (globalThis as any).__initial_auth_token : null;
-export const aId = appId; // Exporting appId as aId to avoid naming conflicts if imported directly
 
-let firebaseApp: FirebaseApp;
-let db: Firestore;
-let auth: Auth;
+let firebaseAppInstance: FirebaseApp;
+let dbInstance: Firestore;
+let authInstance: Auth;
 
 try {
-  firebaseApp = initializeApp(firebaseConfig);
-  db = getFirestore(firebaseApp);
-  auth = getAuth(firebaseApp);
-} catch (error) {
-  console.error("Error initializing Firebase in firebaseConfig.ts:", error);
-  // Handle initialization error, perhaps by setting db and auth to null or re-throwing
-  // For now, we'll let them be potentially undefined, and the app should handle this.
+  // Only initialize if essential config is present
+  if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY" && firebaseConfig.projectId && firebaseConfig.projectId !== "YOUR_PROJECT_ID") {
+    firebaseAppInstance = initializeApp(firebaseConfig);
+    dbInstance = getFirestore(firebaseAppInstance);
+    authInstance = getAuth(firebaseAppInstance);
+  } else {
+    console.error("Firebase could not be initialized due to missing core configuration (apiKey or projectId).");
+    // Set instances to undefined or a state that indicates failure if your app needs to handle this
+  }
+} catch (error: any) {
+  console.error("Error initializing Firebase in firebaseConfig.ts:", error instanceof Error ? error.message : String(error));
+  // Set instances to undefined or a state that indicates failure
 }
 
-export { db, auth, firebaseApp };
+export { dbInstance as db, authInstance as auth, firebaseAppInstance as firebaseApp };
