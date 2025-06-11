@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useMemo } from 'react'; // Added useMemo to main React import
 import { signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -107,8 +108,6 @@ function App() {
       setFlowData({ flow: processedFlow });
     }
   }, [rawFlowDataJson, messages]);
-
-
   // --- Firebase Integration ---
   useEffect(() => {
     if (!auth || !db) {
@@ -162,7 +161,6 @@ function App() {
     });
     return () => unsubscribe();
   }, [auth, db, appId, initialAuthToken]); // Add auth, db, appId, initialAuthToken to dependency array
-
   // Save data to Firestore whenever relevant state changes
   useEffect(() => {
     const saveData = async () => {
@@ -199,7 +197,6 @@ function App() {
 
   // --- Flow Navigation Logic ---
   const currentQuestion = flowData ? flowData.flow.find(q => q.id === currentQuestionId) : null;
-
   useEffect(() => {
     if (currentQuestion && currentQuestion.type === "info_block") {
       setCurrentStepDocs(currentQuestion.documents || []);
@@ -469,6 +466,7 @@ function App() {
   };
 
 
+
   const orderedAllRequiredDocuments = useMemo((): DocumentRequirement[] => {
     if (!flowData || !currentContent) return []; // Handle null flowData or currentContent
     const allDocs: {[key: string]: DocumentRequirement} = {};
@@ -505,6 +503,7 @@ function App() {
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl mt-8">
         <h1 className="text-3xl font-extrabold text-indigo-800 mb-6 text-center">{messages.app_title}</h1>
         <p className="text-center text-gray-600 mb-8">{messages.app_subtitle}</p>
+
 
         <Breadcrumbs flowPath={flowPath} />
 
