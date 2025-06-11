@@ -60,7 +60,7 @@ async function validateDocumentWithAI(base64Image: string, documentType: string,
       console.warn("Gemini API Key is not configured. Please check your .env file (VITE_GEMINI_API_KEY). Document validation will likely fail.");
   }
   const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
+let jsonText = ""; // Initialize jsonText variable
   try {
     const response = await fetch(geminiApiUrl, {
       method: 'POST',
@@ -71,7 +71,7 @@ async function validateDocumentWithAI(base64Image: string, documentType: string,
     if (result.candidates && result.candidates.length > 0 &&
         result.candidates[0].content && result.candidates[0].content.parts &&
         result.candidates[0].content.parts.length > 0) {
-      const jsonText = result.candidates[0].content.parts[0].text;
+       jsonText = result.candidates[0].content.parts[0].text;
       const parsedJson = JSON.parse(jsonText);
       return parsedJson;
     } else {
@@ -80,7 +80,7 @@ async function validateDocumentWithAI(base64Image: string, documentType: string,
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("Error al llamar a la API de Gemini:", errorMessage);
-    return { isValid: false, reason: `${messages.ai_connection_error} ${errorMessage}`, extractedData: {} };
+    return { isValid: false, reason: `${messages.ai_connection_error} ${errorMessage}`, extractedData: {jsonText} };
   }
 }
 

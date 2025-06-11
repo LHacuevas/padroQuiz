@@ -35,9 +35,20 @@ let authInstance: Auth;
 try {
   // Only initialize if essential config is present
   if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY" && firebaseConfig.projectId && firebaseConfig.projectId !== "YOUR_PROJECT_ID") {
+    console.log("Configuración de Firebase encontrada. Inicializando app...");
     firebaseAppInstance = initializeApp(firebaseConfig);
+    console.log("Firebase App inicializada correctamente.");
+
+    // 2. Intenta obtener la instancia de Firestore
+    console.log("Obteniendo instancia de Firestore...");
     dbInstance = getFirestore(firebaseAppInstance);
+    console.log("Instancia de Firestore obtenida correctamente.");
+
+    // 3. Intenta obtener la instancia de Auth
+    console.log("Obteniendo instancia de Auth...");
     authInstance = getAuth(firebaseAppInstance);
+    console.log("Instancia de Auth obtenida correctamente.");
+
   } else {
     console.error("Firebase could not be initialized due to missing core configuration (apiKey or projectId).");
     // Set instances to undefined or a state that indicates failure if your app needs to handle this

@@ -19,7 +19,48 @@ GITHUB. Creo una carpeta y un repositorio subo el fichero .tsx que me he descarg
 
 JULES. Le digo que coja ese tsx y lo separe en los json con datos y el codigo, asi como que me diga como poder arrancarlo en mi maquina. 
 
-La idea es que generara varios ficheros que hara una rama que mergeare y al bajarmela tendre algo decente.
+      La idea es que generara varios ficheros que hara una rama que mergeare y al bajarmela tendre algo decente.
+      Cuando le he dicho que me lo haga multiidioma me ha creado los ficheros pero me ha dicho que no está para traducir.
+
+FIREBASE. Cuando he ido a poner las claves del Firebase, parece que tienen tambien un studio ligado al GitHub y si que me esta haciendo las traducciones y parece que tambien modifica en el GitHub. Desde compilacion creo la FireBase Database
+
+          Sigue estos pasos, que solucionarán el problema en el 95% de los casos:
+
+          Ve a la Consola de Firebase.
+
+          Selecciona tu proyecto.
+
+          En el menú de la izquierda, en la sección "Compilación" (Build), haz clic en Firestore Database.
+
+          Si nunca lo has activado, verás una pantalla de bienvenida. Haz clic en el botón "Crear base de datos".
+
+          Te preguntará si quieres empezar en modo de producción o en modo de prueba.
+
+          Para empezar a desarrollar, elige el "modo de prueba". Esto establece reglas de seguridad que permiten leer y escribir durante 30 días, lo cual es ideal para no tener problemas de permisos al principio. ¡Recuerda cambiar estas reglas antes de ir a producción!
+          Haz clic en "Siguiente".
+          Te pedirá que elijas una ubicación para tus datos (ej. eur3 (europe-west)).
+
+          ¡Importante! No podrás cambiar esta ubicación más tarde. Elige la que esté más cerca de tus usuarios.
+          Haz clic en "Habilitar".
+
+Me sigue sin ir, en la consola tengo que habilitar la anonimous
+
+          Sigue estos sencillos pasos en la consola de Firebase:
+
+          Ve a la Consola de Firebase y selecciona tu proyecto.
+
+          En el menú de la izquierda, en la sección "Compilación" (Build), haz clic en Authentication.
+
+          Dentro de Authentication, ve a la pestaña "Sign-in method" (Método de inicio de sesión).
+
+          Verás una lista de posibles proveedores (Email/Contraseña, Google, etc.). Busca en la lista "Anónimo" (Anonymous) y haz clic en el icono del lápiz para editarlo.
+
+          Habilita el interruptor y haz clic en "Guardar".
+
+
+
+google AI studio Entro para generar y coger para coger la clave API de Gemini.
+
 
 Estoy trabajandolo en el portatil.
 
