@@ -1,12 +1,12 @@
 // src/components/SummaryScreen.tsx
 import React from 'react';
-import { SummaryScreenProps } from '../interfaces';
+import { type SummaryScreenProps } from '../interfaces';
 import { CheckSquare, Home, User, Settings, Send, Trash2 } from 'lucide-react';
 
 const SummaryScreen: React.FC<SummaryScreenProps> = ({
   registrationAddress, peopleToRegister, showAddressEdit, tempAddress, setTempAddress,
   handleAddressSave, handleAddressEditToggle, handleRemovePerson, apiResponseMessage,
-  handleSendAll, sendingData, goBack, messages, userId // userId is passed but not used in current JSX, can be added if needed
+  handleSendAll, sendingData, goBack, messages //, userId // userId is passed but not used in current JSX, can be added if needed
 }) => {
   return (
     <div className="space-y-6">

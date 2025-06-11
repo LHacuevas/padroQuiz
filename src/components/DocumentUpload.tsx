@@ -1,6 +1,6 @@
 // src/components/DocumentUpload.tsx
 import React from 'react';
-import { DocumentUploadProps } from '../interfaces';
+import { type DocumentUploadProps } from '../interfaces';
 import { Upload, XCircle, CheckCircle, Trash2 } from 'lucide-react';
 
 const DocumentUpload: React.FC<DocumentUploadProps> = ({
