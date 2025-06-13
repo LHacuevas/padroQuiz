@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Messages } from '../interfaces';
+//import { IoArrowBack } from 'react-icons/io5';
 
 interface LanguageSelectionScreenProps {
   onLanguageSelected: () => void;
@@ -17,10 +18,19 @@ const LanguageSelectionScreen: React.FC<LanguageSelectionScreenProps> = ({ onLan
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
-      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl max-w-md w-full text-center">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-indigo-700">
-          {messages ? messages.language_selection_title : 'Select Your Language'}
-        </h2>
+      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl max-w-md w-full">
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={onLanguageSelected}
+            className="p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+            aria-label="Go back"
+          >
+            {/* <IoArrowBack className="text-indigo-700 text-2xl" /> */}
+          </button>
+          <h2 className="text-2xl sm:text-3xl font-bold text-indigo-700 flex-grow text-center pr-10"> {/* Added pr-10 to offset the back button space */}
+            {messages ? messages.language_selection_title : 'Select Your Language'}
+          </h2>
+        </div>
         <div className="space-y-3">
           {availableLanguages.map((lang) => (
             <button
