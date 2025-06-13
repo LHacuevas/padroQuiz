@@ -6,7 +6,8 @@ import { FileText } from 'lucide-react';
 
 const FinalDocumentReviewScreen: React.FC<FinalDocumentReviewScreenProps> = ({
   orderedAllRequiredDocuments, uploadedFiles, handleValidateDocument, handleRemoveFile,
-  loadingValidation, proceedToSummary, fileInputRefs, messages
+  loadingValidation, proceedToSummary, fileInputRefs, messages,
+  handleShowAttributesModal // ADDED
 }) => {
   return (
     <div className="space-y-6">
@@ -34,6 +35,7 @@ const FinalDocumentReviewScreen: React.FC<FinalDocumentReviewScreenProps> = ({
                     loadingValidation={loadingValidation}
                     fileInputRef={el => fileInputRefs.current[`final-${docReq.name}-${docIndex}`] = el}
                     messages={messages}
+                    handleShowAttributesModal={handleShowAttributesModal} // ADDED
                 />
             ))
         ) : (

@@ -43,5 +43,22 @@
   "sending_data": "Enviant dades...",
   "breadcrumb_home": "Inici",
   "file_not_found_for_validation": "Arxiu no trobat per a validació.",
-  "language_selection_title": "Seleccioneu el vostre Idioma"
+  "language_selection_title": "Seleccioneu el vostre Idioma",
+  "change_language_button": "Canviar Idioma",
+  "attributes_button_text": "Atributs",
+  "attributes_modal_title": "Atributs Extrets",
+  "get_ai_verification_button": "Consultar IA per a Verificació",
+  "ai_suggestion_title": "Suggeriment de la IA",
+  "loading_ai_summary": "Consultant IA...",
+  "ai_summary_error_message": "Error en obtenir resum d'IA:",
+  "ai_suggested_address": "Adreça Suggerida:",
+  "ai_address_not_determined": "No determinada per IA",
+  "ai_suggested_people": "Persones Suggerides per Registrar:",
+  "ai_relation_unknown": "Relació desconeguda",
+  "ai_no_people_suggested": "IA no ha suggerit persones específiques.",
+  "ai_confidence_score": "Puntuació de Confiança:",
+  "ai_reasoning": "Raonament de la IA:",
+  "ai_api_key_not_configured": "Clau API per a resum IA no configurada.",
+  "use_ai_suggestions_button": "Aplicar Suggeriments de IA",
+  "ai_suggestions_applied_message": "Suggeriments de IA aplicats!"
 }

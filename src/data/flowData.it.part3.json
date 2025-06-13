@@ -1,0 +1,141 @@
+{
+  "flow": [
+    {
+      "id": "docs_with_consent_non_eu_short",
+      "type": "info_block",
+      "text": "Para empadronarse con autorización del titular de la vivienda (extranjero no comunitario sin residencia de larga duración), necesitará:",
+      "documents": [
+        {"name": "Pasaporte o documento de identidad del solicitante en vigor", "description": "Pasaporte o documento de identidad del país de origen en vigor. Si aplica, también Resguardo de presentación de solicitud de protección internacional o Documentos acreditativos de la condición de solicitante de protección internacional.", "multiple_files": true, "id_extractable": true},
+        {"name": "Autorización expresa de un mayor de edad ya empadronado", "description": "Documento firmado por el autorizante que reside en el domicilio, autorizando su empadronamiento.", "multiple_files": false},
+        {"name": "Documento de identidad del autorizante", "description": "DNI, NIE, Pasaporte en vigor del autorizante.", "multiple_files": true, "id_extractable": true},
+        {"name": "Documento que acredite el uso de la vivienda por el autorizante", "description": "Título de propiedad (escritura, nota simple), Contrato de arrendamiento en vigor del autorizante y último recibo de alquiler, etc.", "multiple_files": false}
+      ],
+      "next_question_id": "q_add_more_people"
+    },
+    {
+        "id": "q_add_more_people",
+        "question": "¿Desea añadir a más personas (cónyuge, hijos, etc.) que se empadronarán en el mismo domicilio?",
+        "type": "single_choice",
+        "options": [
+            {"text": "Sí, quiero añadir más personas", "next_question_id": "q_type_of_additional_person"},
+            {"text": "No, continua solo con le persone già mostrate", "next_question_id": "final_document_review"}
+        ]
+    },
+    {
+        "id": "q_type_of_additional_person",
+        "question": "¿Qué tipo de persona adicional desea empadronar?",
+        "type": "single_choice",
+        "options": [
+            {"text": "Un adulto", "next_question_id": "docs_additional_adult"},
+            {"text": "Un menor (no recién nacido)", "next_question_id": "q_minor_living_arrangement_additional"}
+        ]
+    },
+    {
+      "id": "docs_additional_adult",
+      "type": "info_block",
+      "text": "Para añadir a un adulto, necesitará:",
+      "documents": [
+        {"name": "Documento de identidad de la persona adicional", "description": "DNI, NIE, Pasaporte en vigor de la persona adicional. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true}
+      ],
+      "next_question_id": "q_add_more_people"
+    },
+    {
+        "id": "q_minor_living_arrangement_additional",
+        "question": "¿El menor adicional se empadronará con ambos progenitores/tutores, con uno solo de ellos, o en un domicilio distinto al de sus progenitores/tutores?",
+        "type": "single_choice",
+        "options": [
+            {"text": "Con ambos progenitores/tutores", "next_question_id": "docs_minor_with_both_parents_additional"},
+            {"text": "Con uno solo de los progenitores/tutores", "next_question_id": "q_minor_one_parent_custody_additional"},
+            {"text": "En un domicilio distinto al de los progenitores/tutores", "next_question_id": "docs_minor_other_address_additional"}
+        ]
+    },
+    {
+        "id": "docs_minor_with_both_parents_additional",
+        "type": "info_block",
+        "text": "Para empadronar al menor adicional con ambos progenitores/tutores, necesitará:",
+        "documents": [
+            {"name": "Libro de Familia o certificado de nacimiento del menor adicional", "description": "Original y copia.", "multiple_files": false},
+            {"name": "Documento de identidad del progenitor 1 (para el menor adicional)", "description": "DNI/NIE/Pasaporte en vigor del progenitor 1. (Ambas caras del DNI/NIE si aplica)", "multiple_files": false, "id_extractable": true},
+            {"name": "Documento de identidad del progenitor 2 (para el menor adicional)", "description": "DNI/NIE/Pasaporte en vigor del progenitor 2. (Ambas caras del DNI/NIE si aplica)", "multiple_files": false, "id_extractable": true}
+        ],
+        "next_question_id": "q_add_more_people"
+    },
+    {
+        "id": "q_minor_one_parent_custody_additional",
+        "question": "¿Tiene una resolución judicial que atribuya la guarda y custodia en exclusiva al progenitor que solicita el empadronamiento del menor adicional, o no existe resolución judicial sobre la guarda y custodia?",
+        "type": "single_choice",
+        "options": [
+            {"text": "Sí, tengo resolución judicial de guarda y custodia exclusiva", "next_question_id": "docs_minor_one_parent_exclusive_custody_additional"},
+            {"text": "No, no existe resolución judicial sobre la guarda y custodia (separación de hecho, etc.)", "next_question_id": "docs_minor_one_parent_no_resolution_additional"}
+        ]
+    },
+    {
+        "id": "docs_minor_one_parent_exclusive_custody_additional",
+        "type": "info_block",
+        "text": "Para empadronar al menor adicional con un solo progenitor con guarda y custodia exclusiva, necesitará:",
+        "documents": [
+            {"name": "Libro de Familia o certificado de nacimiento del menor adicional", "description": "Original y copia.", "multiple_files": false},
+            {"name": "Documento de identidad del progenitor solicitante (para el menor adicional)", "description": "DNI/NIE/Pasaporte en vigor del progenitor che solicita el empadronamiento. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
+            {"name": "Resolución judicial de guarda y custodia exclusiva", "description": "Documento judicial che atribuye la guarda y custodia en exclusiva.", "multiple_files": false},
+            {"name": "Declaración responsable (Anexo II)", "description": "Según el modelo che figura en Anexo II.", "multiple_files": false}
+        ],
+        "next_question_id": "q_add_more_people"
+    },
+    {
+        "id": "docs_minor_one_parent_no_resolution_additional",
+        "type": "info_block",
+        "text": "Para empadronar al menor adicional con un solo progenitor cuando no hay resolución judicial de guarda y custodia, necesitará:",
+        "documents": [
+            {"name": "Libro de Familia o certificado de nacimiento del menor adicional", "description": "Original y copia.", "multiple_files": false},
+            {"name": "Documento de identidad del progenitor solicitante (para el menor adicional)", "description": "DNI/NIE/Pasaporte en vigor del progenitor che solicita el empadronamiento. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
+            {"name": "Declaración responsable (Anexo I)", "description": "Según el modelo che figura en Anexo I.", "multiple_files": false},
+            {"name": "Documentación acreditativa de procedimiento judicial (si aplica)", "description": "Si se ha interpuesto procedimiento judicial para obtener autorización.", "multiple_files": false}
+        ],
+        "next_question_id": "q_add_more_people"
+    },
+    {
+        "id": "q_minor_other_address_additional",
+        "question": "¿Tiene autorización escrita de ambos progenitores o resolución judicial para que el menor adicional resida en otro domicilio?",
+        "type": "single_choice",
+        "options": [
+            {"text": "Sí, tengo autorización de ambos o resolución judicial", "next_question_id": "docs_minor_other_address_consent_additional"},
+            {"text": "No, sólo autorización de uno y/o declaración responsable (o no tengo ninguno)", "next_question_id": "docs_minor_other_address_one_parent_or_none_additional"}
+        ]
+    },
+    {
+        "id": "docs_minor_other_address_consent_additional",
+        "type": "info_block",
+        "text": "Para empadronar al menor adicional en un domicilio distinto con autorización de ambos progenitores o resolución judicial, necesitará:",
+        "documents": [
+            {"name": "Libro de Familia o certificado de nacimiento del menor adicional", "description": "Original y copia.", "multiple_files": false},
+            {"name": "Documento de identidad del progenitor 1 (para el menor adicional)", "description": "DNI/NIE/Pasaporte en vigor del progenitor 1. (Ambas caras del DNI/NIE si aplica)", "multiple_files": false, "id_extractable": true},
+            {"name": "Documento de identidad del progenitor 2 (para el menor adicional)", "description": "DNI/NIE/Pasaporte en vigor del progenitor 2. (Ambas caras del DNI/NIE si aplica)", "multiple_files": false, "id_extractable": true},
+            {"name": "Autorización por escrito de ambos progenitores o resolución judicial", "description": "Autorización expresa para que el menor resida en ese domicilio. En casos de guarda y custodia compartida sin pronunciamiento de empadronamiento, se exige mutuo acuerdo o nueva resolución judicial.", "multiple_files": false}
+        ],
+        "next_question_id": "q_add_more_people"
+    },
+    {
+        "id": "docs_minor_other_address_one_parent_or_none_additional",
+        "type": "info_block",
+        "text": "Para empadronar al menor adicional en un domicilio distinto con autorización de un solo progenitor y/o declaración responsable, necesitará:",
+        "documents": [
+            {"name": "Libro de Familia o certificado de nacimiento del menor adicional", "description": "Original y copia.", "multiple_files": false},
+            {"name": "Documento de identidad del progenitor autorizante (para el menor adicional)", "description": "DNI/NIE/Pasaporte en vigor del progenitor que autoriza. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
+            {"name": "Declaración responsable (Anexo I o II)", "description": "Según si existe o no resolución judicial de guarda y custodia, y las circunstancias de imposibilidad de consentimiento del otro progenitor.", "multiple_files": false}
+        ],
+        "next_question_id": "q_add_more_people"
+    },
+    {
+      "id": "final_document_review",
+      "type": "info_block",
+      "text": "final_document_review_instructions_key",
+      "documents": [],
+      "end_flow": false
+    },
+    {
+      "id": "summary_screen",
+      "type": "info_block",
+      "text": ""
+    }
+  ]
+}

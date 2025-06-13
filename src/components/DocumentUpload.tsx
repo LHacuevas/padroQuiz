@@ -4,7 +4,8 @@ import { type DocumentUploadProps } from '../interfaces';
 import { Upload, XCircle, CheckCircle, Trash2 } from 'lucide-react';
 
 const DocumentUpload: React.FC<DocumentUploadProps> = ({
-  docReq, uploadedFilesForDoc, onFileChange, onValidateDocument, onRemoveFile, loadingValidation, fileInputRef, messages
+  docReq, uploadedFilesForDoc, onFileChange, onValidateDocument, onRemoveFile, loadingValidation, fileInputRef, messages,
+  handleShowAttributesModal // ADDED
 }) => {
   return (
     <div className="bg-white p-5 rounded-lg shadow-md border border-blue-100">
@@ -34,6 +35,15 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
               {fileEntry.name}
             </span>
             <div className="flex items-center space-x-2">
+              {fileEntry.validation_status === 'valid' && fileEntry.extracted_data && Object.keys(fileEntry.extracted_data).length > 0 && handleShowAttributesModal && (
+                <button
+                  onClick={() => handleShowAttributesModal(fileEntry.extracted_data!)}
+                  className="px-3 py-1 bg-sky-500 text-white rounded-md text-xs hover:bg-sky-600 transition-colors"
+                  title={messages.attributes_button_text || "View Attributes"} // ADDED: Title for accessibility, use messages
+                >
+                  {messages.attributes_button_text || "Attributes"} {/* ADDED: Button text, use messages */}
+                </button>
+              )}
               <button
                 onClick={() => onValidateDocument(docReq.name, fileIndex)}
                 className="px-3 py-1 bg-indigo-500 text-white rounded-md text-xs hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"

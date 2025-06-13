@@ -1,0 +1,176 @@
+{
+  "flow": [
+    {
+      "id": "q1_action_type",
+      "question": "ما هي المعاملة التي ترغب في إجرائها؟",
+      "type": "single_choice",
+      "options": [
+        {"text": "Darse de alta por primera vez en el padrón (Alta por nacimiento o por omisión)", "next_question_id": "q2_alta_type"},
+        {"text": "Cambiar mi domicilio y empadronarme en este municipio (Alta por cambio de residencia)", "next_question_id": "q2_alta_type"},
+        {"text": "Cambiar mi domicilio dentro del mismo municipio (Modificación de datos)", "next_question_id": "domicile_change_info"},
+        {"text": "Renovar mi inscripción padronal (extranjeros no comunitarios sin autorización de residencia de larga duración)", "next_question_id": "foreign_renewal_info"}
+      ]
+    },
+    {
+      "id": "domicile_change_info",
+      "type": "info_block",
+      "text": "Para cambiar su domicilio dentro del mismo municipio, necesitará la documentación que acredite su identidad y el nuevo domicilio.",
+      "documents": [
+          {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
+          {"name": "Documento que acredite el uso de la vivienda", "description": "Título de propiedad (escritura, nota simple), Contrato de arrendamiento en vigor y último recibo de alquiler, o autorización de persona ya empadronada con título válido y su DNI/NIE.", "multiple_files": true}
+      ],
+      "end_flow": true
+    },
+    {
+      "id": "foreign_renewal_info",
+      "type": "info_block",
+      "text": "Para la renovación de la inscripción padronal de extranjeros no comunitarios sin autorización de residencia de larga duración, debe presentar la solicitud correspondiente en el Ayuntamiento. Se comprobará que sigue residiendo en el municipio.",
+      "documents": [
+        {"name": "Solicitud de renovación (Anexo IV o V)", "description": "Modelo de solicitud oficial (Anexo IV para persona física, Anexo V para representante).", "multiple_files": false},
+        {"name": "Pasaporte o Tarjeta de Identidad de Extranjero (TIE)", "description": "Documento de identidad válido y en vigor.", "multiple_files": true, "id_extractable": true}
+      ],
+      "end_flow": true
+    },
+    {
+      "id": "q2_alta_type",
+      "question": "¿Es un alta por nacimiento (primera inscripción de un recién nacido) o por otra causa?",
+      "type": "single_choice",
+      "options": [
+        {"text": "Es un recién nacido (alta por nacimiento)", "next_question_id": "q_newborn_parental_situation"},
+        {"text": "Es por otra causa (cambio de residencia, omisión, etc.)", "next_question_id": "q3_nationality"}
+      ]
+    },
+    {
+      "id": "q_newborn_parental_situation",
+      "question": "¿El recién nacido se empadronará con ambos progenitores, con uno solo de ellos, o bajo tutela/acogimiento?",
+      "type": "single_choice",
+      "options": [
+        {"text": "Con ambos progenitores", "next_question_id": "docs_newborn_with_both_parents"},
+        {"text": "Con uno solo de los progenitores", "next_question_id": "q_newborn_one_parent_custody_newborn"},
+        {"text": "Bajo tutela o acogimiento", "next_question_id": "docs_minor_tutored_newborn"}
+      ]
+    },
+    {
+      "id": "docs_newborn_with_both_parents",
+      "type": "info_block",
+      "text": "Para empadronar al recién nacido con ambos progenitores, necesitará:",
+      "documents": [
+        {"name": "Libro de Familia o Certificado de Nacimiento del menor", "description": "Documento que acredite el nacimiento y filiación.", "multiple_files": false},
+        {"name": "Documento de identidad del progenitor 1", "description": "DNI/NIE/Pasaporte en vigor del progenitor 1. (Ambas caras del DNI/NIE si aplica)", "multiple_files": false, "id_extractable": true},
+        {"name": "Documento de identidad del progenitor 2", "description": "DNI/NIE/Pasaporte en vigor del progenitor 2. (Ambas caras del DNI/NIE si aplica)", "multiple_files": false, "id_extractable": true}
+      ],
+      "next_question_id": "final_document_review"
+    },
+    {
+        "id": "q_newborn_one_parent_custody_newborn",
+        "question": "¿Tiene una resolución judicial que atribuya la guarda y custodia en exclusiva al progenitor que solicita el empadronamiento del recién nacido, o no existe resolución judicial sobre la guarda y custodia?",
+        "type": "single_choice",
+        "options": [
+            {"text": "Sí, tengo resolución judicial de guarda y custodia exclusiva", "next_question_id": "docs_newborn_one_parent_exclusive_custody"},
+            {"text": "No, no existe resolución judicial sobre la guarda y custodia (separación de hecho, etc.)", "next_question_id": "docs_newborn_one_parent_no_resolution"}
+        ]
+    },
+    {
+        "id": "docs_newborn_one_parent_exclusive_custody",
+        "type": "info_block",
+        "text": "Para empadronar al recién nacido con un solo progenitor con guarda y custodia exclusiva, necesitará:",
+        "documents": [
+            {"name": "Libro de Familia o certificado de nacimiento del menor", "description": "Original y copia.", "multiple_files": false},
+            {"name": "Documento de identidad del progenitor solicitante", "description": "DNI/NIE/Pasaporte en vigor del progenitor que solicita el empadronamiento. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
+            {"name": "Resolución judicial de guarda y custodia exclusiva", "description": "Documento judicial que atribuye la guarda y custodia en exclusiva.", "multiple_files": false},
+            {"name": "Declaración responsable (Anexo II)", "description": "Según el modelo que figura en Anexo II.", "multiple_files": false}
+        ],
+        "next_question_id": "final_document_review"
+    },
+    {
+        "id": "docs_newborn_one_parent_no_resolution",
+        "type": "info_block",
+        "text": "Para empadronar al recién nacido con un solo progenitor cuando no hay resolución judicial de guarda y custodia, necesitará:",
+        "documents": [
+            {"name": "Libro de Familia o certificado de nacimiento del menor", "description": "Original y copia.", "multiple_files": false},
+            {"name": "Documento de identidad del progenitor solicitante", "description": "DNI/NIE/Pasaporte en vigor del progenitor que solicita el empadronamiento. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
+            {"name": "Declaración responsable (Anexo I)", "description": "Según el modelo que figura en Anexo I.", "multiple_files": false},
+            {"name": "Documentación acreditativa de procedimiento judicial (si aplica)", "description": "Si se ha interpuesto procedimiento judicial para obtener autorización.", "multiple_files": false}
+        ],
+        "next_question_id": "final_document_review"
+    },
+    {
+      "id": "docs_minor_tutored_newborn",
+      "type": "info_block",
+      "text": "Para empadronar al recién nacido bajo tutela o acogimiento, necesitará:",
+      "documents": [
+        {"name": "Libro de Familia o Certificado de Nacimiento del menor", "description": "Original y copia.", "multiple_files": false},
+        {"name": "Documento de identidad del representante legal", "description": "DNI/NIE/Pasaporte en vigor del representante legal. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
+        {"name": "Resolución judicial o administrativa de tutela/acogimiento", "description": "Documento que acredite la representación legal.", "multiple_files": false}
+      ],
+      "next_question_id": "final_document_review"
+    },
+    {
+      "id": "q3_nationality",
+      "question": "¿Cuál es su nacionalidad?",
+      "type": "single_choice",
+      "options": [
+        {"text": "Española", "next_question_id": "q4_spanish_domicile_proof"},
+        {"text": "Ciudadano de la Unión Europea, Islandia, Liechtenstein, Noruega o Suiza", "next_question_id": "q4_eu_domicile_proof"},
+        {"text": "Extranjero no comunitario con autorización de residencia de larga duración", "next_question_id": "q4_non_eu_long_domicile_proof"},
+        {"text": "Extranjero no comunitario sin autorización de residencia de larga duración", "next_question_id": "q4_non_eu_short_domicile_proof"}
+      ]
+    },
+    {
+      "id": "q4_spanish_domicile_proof",
+      "question": "¿Cómo acredita el domicilio donde se quiere empadronar?",
+      "type": "single_choice",
+      "options": [
+        {"text": "Soy el propietario de la vivienda", "next_question_id": "docs_spanish_owner"},
+        {"text": "Tengo un contrato de alquiler en vigor", "next_question_id": "docs_spanish_tenant"},
+        {"text": "Ya hay personas empadronadas y me van a autorizar", "next_question_id": "docs_with_consent"},
+        {"text": "Es un establecimiento colectivo (residencia, convento, etc.)", "next_question_id": "docs_collective_establishment"},
+        {"text": "Es una infravivienda o carezco de domicilio fijo y soy conocido por Servicios Sociales", "next_question_id": "docs_infravivienda_social_services"},
+        {"text": "Soy recluso y solicito empadronamiento en el centro penitenciario", "next_question_id": "docs_recluso"},
+        {"text": "Soy víctima de violencia de género y me empadronaré en un domicilio protegido", "next_question_id": "docs_violence_victim"}
+      ]
+    },
+    {
+      "id": "q4_eu_domicile_proof",
+      "question": "¿Cómo acredita el domicilio donde se quiere empadronar?",
+      "type": "single_choice",
+      "options": [
+        {"text": "Soy el propietario de la vivienda", "next_question_id": "docs_eu_owner"},
+        {"text": "Tengo un contrato de alquiler en vigor", "next_question_id": "docs_eu_tenant"},
+        {"text": "Ya hay personas empadronadas y me van a autorizar", "next_question_id": "docs_with_consent_eu"},
+        {"text": "Es un establecimiento colectivo (residencia, convento, etc.)", "next_question_id": "docs_collective_establishment"},
+        {"text": "Es una infravivienda o carezco de domicilio fijo y soy conocido por Servicios Sociales", "next_question_id": "docs_infravivienda_social_services"},
+        {"text": "Soy recluso y solicito empadronamiento en el centro penitenciario", "next_question_id": "docs_recluso"},
+        {"text": "Soy víctima de violencia de género y me empadronaré en un domicilio protegido", "next_question_id": "docs_violence_victim"}
+      ]
+    },
+    {
+      "id": "q4_non_eu_long_domicile_proof",
+      "question": "¿Cómo acredita el domicilio donde se quiere empadronar?",
+      "type": "single_choice",
+      "options": [
+        {"text": "Soy el propietario de la vivienda", "next_question_id": "docs_non_eu_long_owner"},
+        {"text": "Tengo un contrato de alquiler en vigor", "next_question_id": "docs_non_eu_long_tenant"},
+        {"text": "Ya hay personas empadronadas y me van a autorizar", "next_question_id": "docs_with_consent_non_eu_long"},
+        {"text": "Es un establecimiento colectivo (residencia, convento, etc.)", "next_question_id": "docs_collective_establishment"},
+        {"text": "Es una infravivienda o carezco de domicilio fijo y soy conocido por Servicios Sociales", "next_question_id": "docs_infravivienda_social_services"},
+        {"text": "Soy recluso y solicito empadronamiento en el centro penitenciario", "next_question_id": "docs_recluso"},
+        {"text": "Soy víctima de violencia de género y me empadronaré en un domicilio protegido", "next_question_id": "docs_violence_victim"}
+      ]
+    },
+    {
+      "id": "q4_non_eu_short_domicile_proof",
+      "question": "¿Cómo acredita el domicilio donde se quiere empadronar?",
+      "type": "single_choice",
+      "options": [
+        {"text": "Soy el propietario de la vivienda", "next_question_id": "docs_non_eu_short_owner"},
+        {"text": "Tengo un contrato de alquiler en vigor", "next_question_id": "docs_non_eu_short_tenant"},
+        {"text": "Ya hay personas empadronadas y me van a autorizar", "next_question_id": "docs_with_consent_non_eu_short"},
+        {"text": "Es un establecimiento colectivo (residencia, convento, etc.)", "next_question_id": "docs_collective_establishment"},
+        {"text": "Es una infravivienda o carezco de domicilio fijo y soy conocido por Servicios Sociales", "next_question_id": "docs_infravivienda_social_services"},
+        {"text": "Soy recluso y solicito empadronamiento en el centro penitenciario", "next_question_id": "docs_recluso"},
+        {"text": "Soy víctima de violencia de género y me empadronaré en un domicilio protegido", "next_question_id": "docs_violence_victim"}
+      ]
+    }
+  ]
+}
