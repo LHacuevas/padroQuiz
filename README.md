@@ -1,4 +1,8 @@
-# Padrón Municipal Interactive Guide
+# Guía Interactiva para el Empadronamiento Municipal (Padrón Digital)
+
+Esta aplicación es una herramienta web interactiva y multilingüe diseñada para simplificar el proceso de empadronamiento municipal en España. Guía a los usuarios a través de un cuestionario para identificar su escenario específico de registro, determina la documentación necesaria y utiliza IA para ayudar a validar los documentos subidos y extraer información relevante.
+
+El objetivo principal es hacer que el proceso del padrón sea más accesible y comprensible para todos, reduciendo errores y agilizando la recopilación de la información requerida antes de que los usuarios interactúen con los servicios municipales.
 
 ## Proceso de generacion
 
@@ -58,159 +62,173 @@ Me sigue sin ir, en la consola tengo que habilitar la anonimous
           Habilita el interruptor y haz clic en "Guardar".
 
 
-
 google AI studio Entro para generar y coger para coger la clave API de Gemini.
 
 
 Estoy trabajandolo en el portatil.
 
-This application is an interactive guide to help users understand the documentation and steps required for municipal registration (empadronamiento) in Spain. It uses React and Firebase.
+## Características
 
-## Getting Started
+Esta aplicación ofrece una variedad de características para asistir a los usuarios en el proceso de empadronamiento municipal:
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+*   **Cuestionario Guiado:** Un cuestionario interactivo paso a paso para determinar los requisitos específicos de empadronamiento del usuario según su situación (ej., nuevo registro, cambio de domicilio, miembros de la familia).
+*   **Lista de Documentos Dinámica:** Genera automáticamente una lista personalizada de los documentos requeridos basándose en las respuestas del cuestionario.
+*   **Interfaz Multilingüe:** Soporta múltiples idiomas (incluyendo español, catalán, árabe, francés, italiano y chino) para una mayor accesibilidad. Los usuarios pueden cambiar de idioma en cualquier momento.
+*   **Carga Segura de Documentos:** Permite a los usuarios subir los documentos necesarios directamente a través de la aplicación.
+*   **Validación de Documentos con IA:**
+    *   Utiliza IA (Google Gemini) para analizar los documentos subidos.
+    *   Verifica si el documento parece ser del tipo correcto y es legible.
+    *   Extrae información clave (ej., nombre completo, número de identificación, detalles de la dirección) de los documentos.
+*   **Revisión de Datos Extraídos:** Los usuarios pueden ver los datos que la IA ha extraído de sus documentos, asegurando la transparencia.
+*   **Resumen del Procedimiento Asistido por IA:** Proporciona un resumen generado por IA que sugiere la dirección de empadronamiento final y la lista de personas a empadronar, basándose en toda la información proporcionada.
+*   **Autocompletado de Datos:** La información extraída de documentos de identidad válidos puede rellenar automáticamente la lista de personas para el empadronamiento.
+*   **Gestión de Detalles por el Usuario:** Permite a los usuarios revisar y gestionar la lista de personas a empadronar y la dirección de registro.
+*   **Integración con Firebase:**
+    *   Utiliza Firebase Anonymous Authentication para la gestión de sesiones de usuario.
+    *   Guarda de forma segura el progreso del usuario (respuestas del cuestionario, archivos subidos, datos extraídos) en Firestore, permitiendo a los usuarios pausar y reanudar potencialmente.
+*   **Reinicio de la Aplicación:** Opción para borrar todos los datos y comenzar el proceso del cuestionario desde el principio.
+*   **Interfaz de Usuario Intuitiva:** Diseñada con principios modernos de UI, incluyendo migas de pan (breadcrumbs) para una fácil navegación y modales para interacciones enfocadas.
+*   **Diseño Adaptable (Responsive):** Se adapta a diferentes tamaños de pantalla para su uso en ordenadores de escritorio, tabletas y dispositivos móviles.
 
-### Prerequisites
+## Stack Tecnológico
 
-*   Node.js (v16 or later recommended)
-*   npm (comes with Node.js) or yarn
+Este proyecto está construido con un stack de desarrollo web moderno:
 
-### Setting up the Project
+*   **Frontend:**
+    *   [React](https://reactjs.org/) (v18+): Una biblioteca de JavaScript para construir interfaces de usuario.
+    *   [Vite](https://vitejs.dev/): Una herramienta de compilación rápida y servidor de desarrollo para proyectos web modernos.
+    *   [TypeScript](https://www.typescriptlang.org/): Un superconjunto tipado de JavaScript que compila a JavaScript plano.
+*   **Estilos:**
+    *   [Tailwind CSS](https://tailwindcss.com/): Un framework CSS "utility-first" para el desarrollo rápido de UI.
+    *   [Lucide React](https://lucide.dev/): Una biblioteca de iconos SVG simples, atractivos y consistentes.
+*   **Backend y Servicios:**
+    *   [Firebase](https://firebase.google.com/):
+        *   **Firebase Authentication:** Para la autenticación anónima de usuarios.
+        *   **Firestore:** Una base de datos de documentos NoSQL para almacenar el progreso del usuario y los datos de la aplicación.
+        *   [Google Gemini AI](https://ai.google.dev/):
+            *   Utilizado para la validación de documentos asistida por IA (análisis de imágenes/texto, extracción de entidades).
+            *   Utilizado para generar resúmenes de procedimientos impulsados por IA.
+            *   Utilizado para la traducción de texto sobre la marcha.
+*   **Gestión de Estado:**
+    *   React Context API: Para gestionar el estado global como la preferencia de idioma y la autenticación del usuario.
+*   **Internacionalización (i18n):**
+    *   Solución personalizada usando archivos JSON para almacenar traducciones (`src/locales/`) y React Context para el cambio de idioma.
 
-1.  **Create a new React project (using Vite):**
-    If you don't have an existing React project, you can create one using Vite for a fast development experience:
+## Cómo Empezar
+
+Sigue estas instrucciones para configurar y ejecutar el proyecto en tu máquina local para desarrollo y pruebas.
+
+### Prerrequisitos
+
+Antes de comenzar, asegúrate de tener instalado lo siguiente:
+
+*   [Node.js](https://nodejs.org/) (v16 o posterior recomendado)
+*   [npm](https://www.npmjs.com/get-npm) (viene con Node.js) o [yarn](https://classic.yarnpkg.com/en/docs/install)
+
+### Instalación
+
+1.  **Clona el repositorio:**
     ```bash
-    npm create vite@latest my-padron-app -- --template react-ts
-    cd my-padron-app
+    git clone <url-del-repositorio>
+    cd <directorio-del-repositorio>
     ```
-    (Replace `my-padron-app` with your desired project name).
+    (Reemplaza `<url-del-repositorio>` con la URL real del repositorio y `<directorio-del-repositorio>` con el nombre de la carpeta creada al clonar).
 
-2.  **Copy Application Files:**
-    *   Place the `padroQuiz.tsx` file into the `src/` directory of your new Vite project (e.g., `my-padron-app/src/padroQuiz.tsx`). You might want to rename it to `App.tsx` and update imports accordingly if it's the main app component. For simplicity, let's assume you replace `src/App.tsx` with `padroQuiz.tsx` (renaming `padroQuiz.tsx` to `App.tsx`).
-    *   Copy the entire `src/components/`, `src/data/`, `src/interfaces.ts`, `src/locales/`, and `src/firebaseConfig.ts` from this refactored structure into your new project's `src/` directory. The structure should look like:
-        ```
-        my-padron-app/
-        ├── .env.example  (This file should be in the root)
-        ├── .gitignore    (Ensure .env is listed here)
-        ├── src/
-        │   ├── components/
-        │   │   ├── Breadcrumbs.tsx
-        │   │   ├── ConfirmationModal.tsx
-        │   │   ├── DocumentUpload.tsx
-        │   │   ├── FinalDocumentReviewScreen.tsx
-        │   │   ├── QuestionnaireScreen.tsx
-        │   │   └── SummaryScreen.tsx
-        │   ├── data/
-        │   │   └── flowData.es.json
-        │   ├── locales/
-        │   │   └── es.json
-        │   ├── firebaseConfig.ts
-        │   ├── interfaces.ts
-        │   ├── App.tsx  (this is the renamed padroQuiz.tsx)
-        │   ├── main.tsx (Vite's entry point, ensure it renders your App)
-        │   └── ... (other Vite default files like index.css, assets)
-        ├── public/
-        ├── index.html
-        ├── package.json
-        └── ... (other project files)
-        ```
-    *   **Important**: Ensure your main entry point (typically `src/main.tsx` in Vite) renders your main application component. If you renamed `padroQuiz.tsx` to `App.tsx`, `src/main.tsx` should look like this:
-        ```typescript
-        // src/main.tsx
-        import React from 'react'
-        import ReactDOM from 'react-dom/client'
-        import App from './App.tsx' // Assuming padroQuiz.tsx was renamed to App.tsx
-        import './index.css' // Or your main CSS file
-
-        ReactDOM.createRoot(document.getElementById('root')!).render(
-          <React.StrictMode>
-            <App />
-          </React.StrictMode>,
-        )
-        ```
-
-3.  **Install Dependencies:**
-    Navigate to your project's root directory (`my-padron-app`) and install the necessary dependencies:
+2.  **Instala las dependencias:**
+    Usando npm:
     ```bash
     npm install
-    # Install specific packages used by the application
-    npm install firebase lucide-react
     ```
-    If you are using yarn:
+    O usando yarn:
     ```bash
-    yarn
-    yarn add firebase lucide-react
+    yarn install
     ```
 
-4.  **Configure Environment Variables:**
-    This project uses environment variables for Firebase configuration and the Google Gemini API Key. Vite uses `VITE_` prefixed environment variables.
-    *   **Create a `.env` file:** In the root directory of your project (e.g., `my-padron-app/`), create a file named `.env`.
-    *   **Copy from `.env.example`:** Copy the contents of `.env.example` (located in the root of this project structure) into your new `.env` file.
-    *   **Fill in your credentials:** Replace the placeholder values in your `.env` file with your actual Firebase project configuration details and your Google Gemini API key.
-        ```env
-        VITE_FIREBASE_API_KEY="YOUR_FIREBASE_API_KEY"
-        VITE_FIREBASE_AUTH_DOMAIN="YOUR_FIREBASE_AUTH_DOMAIN"
-        VITE_FIREBASE_PROJECT_ID="YOUR_FIREBASE_PROJECT_ID"
-        VITE_FIREBASE_STORAGE_BUCKET="YOUR_FIREBASE_STORAGE_BUCKET"
-        VITE_FIREBASE_MESSAGING_SENDER_ID="YOUR_FIREBASE_MESSAGING_SENDER_ID"
-        VITE_FIREBASE_APP_ID="YOUR_FIREBASE_APP_ID"
-
-        VITE_GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
-        VITE_APP_ID="default-app-id" # Or your specific app ID if not using Firebase's
+3.  **Configura las Variables de Entorno:**
+    Este proyecto requiere claves API para Firebase y Google Gemini.
+    *   En el directorio raíz del proyecto, encontrarás un archivo llamado `.env.example`.
+    *   Crea una copia de este archivo y llámala `.env`:
+        ```bash
+        cp .env.example .env
         ```
-    *   **Important:** The `.env` file contains sensitive credentials and should NOT be committed to version control. The `.gitignore` file in this project is already configured to ignore `.env`.
-    *   The `src/firebaseConfig.ts` file is set up to read these `VITE_` prefixed environment variables. It also contains fallbacks for global variables like `__firebase_config` or `__app_id` if they are injected by an external environment (e.g., Canvas LMS), but the `.env` variables will take precedence for local development.
-    *   The `validateDocumentWithAI` function in `App.tsx` (formerly `padroQuiz.tsx`) will use `VITE_GEMINI_API_KEY` from your `.env` file.
+    *   Abre el archivo `.env` y reemplaza los valores de ejemplo con los detalles de configuración de tu proyecto de Firebase y tu clave API de Google Gemini. (Consulta la sección "Variables de Entorno" más abajo para detalles sobre cada variable).
+    *   **Importante:** El archivo `.env` contiene credenciales sensibles y **no** debe ser subido al control de versiones. El archivo `.gitignore` ya está configurado para ignorar `.env`.
+    *   Para la **configuración de Firebase**:
+        *   Ve a la [Consola de Firebase](https://console.firebase.google.com/).
+        *   Crea un nuevo proyecto o selecciona uno existente.
+        *   Registra una nueva aplicación web para obtener tus detalles de configuración de Firebase.
+        *   Habilita la **Autenticación Anónima** en la pestaña "Authentication" > "Sign-in method".
+        *   Configura **Firestore Database**. Cuando se te solicite, inicia en **modo de prueba** para el desarrollo inicial (esto permite lecturas/escrituras durante 30 días). Recuerda configurar las reglas de seguridad para producción. Elige una ubicación de Firestore apropiada para tus usuarios.
+        *   Para la **Clave API de Google Gemini**:
+            *   Ve a [Google AI Studio](https://aistudio.google.com/) o a la Google Cloud Console para obtener tu clave API para los modelos Gemini.
 
-5.  **Set up Tailwind CSS (Optional but Recommended):**
-    The component JSX uses Tailwind CSS classes (e.g., `min-h-screen`, `bg-gradient-to-br`). If you created a new Vite project, you'll need to set up Tailwind CSS:
+4.  **Ejecuta el Servidor de Desarrollo:**
+    Usando npm:
     ```bash
-    npm install -D tailwindcss postcss autoprefixer
-    npx tailwindcss init -p
+    npm run dev
     ```
-    Then, configure your `tailwind.config.js`:
-    ```javascript
-    /** @type {import('tailwindcss').Config} */
-    export default {
-      content: [
-        "./index.html",
-        "./src/**/*.{js,ts,jsx,tsx}", // Configure paths to your template files
-      ],
-      theme: {
-        extend: {},
-      },
-      plugins: [],
-    }
+    O usando yarn:
+    ```bash
+    yarn dev
     ```
-    And add Tailwind directives to your main CSS file (e.g., `src/index.css`):
-    ```css
-    @tailwind base;
-    @tailwind components;
-    @tailwind utilities;
-    ```
+    Esto iniciará el servidor de desarrollo (generalmente en `http://localhost:5173` o un puerto similar). Abre esta URL en tu navegador web para ver la aplicación.
 
-### Running the Application
+## Variables de Entorno
 
-Once the setup is complete, you can run the development server:
+La aplicación requiere que ciertas variables de entorno estén configuradas para acceder a los servicios de Firebase y la API de Google Gemini AI. Estas variables deben colocarse en un archivo `.env` en la raíz del proyecto.
 
+Crea un archivo `.env` copiando `.env.example`:
 ```bash
-npm run dev
+cp .env.example .env
 ```
-Or if using yarn:
-```bash
-yarn dev
-```
-This will start the development server, and you can view the application in your browser at the URL provided (usually `http://localhost:5173` for Vite).
 
-## Code Structure
+Luego, actualiza las siguientes variables en tu archivo `.env`:
 
-*   **`padroQuiz.tsx` (or `App.tsx`):** Main application component, state management, and logic.
-*   **`src/components/`:** Contains all the reusable UI components.
-*   **`src/data/`:** Contains data files like `flowData.es.json`.
-*   **`src/locales/`:** Contains localization files (e.g., `es.json`).
-*   **`src/firebaseConfig.ts`:** Firebase initialization and configuration (reads from `.env`).
-*   **`src/interfaces.ts`:** TypeScript interfaces for props and data structures.
-*   **`.env.example`:** Example environment variables file.
-*   **`.env`:** (You create this locally) Stores your actual environment variables. Ignored by Git.
+*   **`VITE_FIREBASE_API_KEY`**: La clave API de tu proyecto de Firebase.
+*   **`VITE_FIREBASE_AUTH_DOMAIN`**: El dominio de autenticación de tu proyecto de Firebase (ej., `tu-proyecto-id.firebaseapp.com`).
+*   **`VITE_FIREBASE_PROJECT_ID`**: El ID único de tu proyecto de Firebase.
+*   **`VITE_FIREBASE_STORAGE_BUCKET`**: El bucket de Cloud Storage de tu proyecto de Firebase (ej., `tu-proyecto-id.appspot.com`).
+*   **`VITE_FIREBASE_MESSAGING_SENDER_ID`**: El ID de remitente de mensajería de tu proyecto de Firebase.
+*   **`VITE_FIREBASE_APP_ID`**: El ID de aplicación de tu proyecto de Firebase.
 
-```
+    *Obtén estas credenciales de Firebase desde la Consola de Firebase navegando a la Configuración de tu proyecto > General > Tus apps > Configuración de la app web.*
+
+*   **`VITE_GEMINI_API_KEY`**: Tu clave API para Google Gemini. Es necesaria para las funciones de validación de documentos asistida por IA, extracción de datos, resúmenes de procedimientos y traducción de texto.
+
+    *Obtén esta clave API desde [Google AI Studio](https://aistudio.google.com/) o la Google Cloud Console habilitando la API Generative Language.*
+
+*   **`VITE_APP_ID`**: Un identificador general de la aplicación usado internamente. Puedes dejarlo como `default-app-id` o establecer un valor personalizado si es necesario para tu configuración específica.
+
+**Importante:**
+*   Todas las variables de entorno que necesiten ser expuestas al código del lado del cliente en Vite **deben** tener el prefijo `VITE_`.
+*   El archivo `.env` contiene información sensible y **nunca** debe ser subido a tu sistema de control de versiones (ej., Git). El archivo `.gitignore` proporcionado ya debería incluir `.env`.
+
+## Uso de la Aplicación
+
+Una vez que la aplicación está en funcionamiento, los usuarios generalmente pueden seguir estos pasos:
+
+1.  **Selección de Idioma (Opcional):**
+    *   Si la aplicación se inicia en un idioma que el usuario no prefiere, normalmente puede encontrar un selector de idioma para elegir el deseado entre las opciones disponibles.
+
+2.  **Iniciar el Cuestionario:**
+    *   Los usuarios comienzan respondiendo las preguntas presentadas, que los guían a través de diferentes escenarios de empadronamiento municipal.
+
+3.  **Identificación y Carga de Documentos:**
+    *   La aplicación identificará los documentos específicos requeridos.
+    *   Los usuarios suben los archivos correspondientes y ven el estado de cada uno (ej., pendiente de validación, validado, error).
+
+4.  **Validación de Documentos y Extracción de Datos:**
+    *   Los usuarios pueden activar la validación por IA para los documentos subidos.
+    *   La IA intenta validar el tipo de documento y extraer información relevante, que los usuarios podrían visualizar.
+
+5.  **Revisar Información:**
+    *   Una pantalla de resumen muestra la información recopilada, incluyendo las personas a empadronar y la dirección propuesta. También podría estar disponible un resumen del procedimiento generado por IA.
+
+6.  **Gestionar Detalles:**
+    *   Los usuarios pueden revisar y editar detalles como la dirección de empadronamiento o la lista de personas a empadronar.
+
+7.  **Pasos Finales (Conceptuales):**
+    *   La aplicación ayuda a los usuarios a prepararse para el empadronamiento municipal real. El resultado final es para que el usuario lo lleve a la oficina municipal o lo use en un portal de envío en línea.
+
+8.  **Reiniciar (Si es Necesario):**
+    *   Los usuarios pueden usar la funcionalidad "Reiniciar" para borrar su progreso y comenzar de nuevo.
