@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { processAndValidateFile, getAIProcedureSummary, AIProcedureSummary } from './FileProcessor';
-import type { Messages, Person } from '../interfaces';
+import type { Messages, Person, ExtractedEntity } from '../interfaces'; // Added ExtractedEntity
 
 // Mock a minimal messages object for testing
 const mockMessages: Messages = {
@@ -25,13 +25,17 @@ describe('FileProcessor', () => {
   });
 
   describe('processAndValidateFile', () => {
-    it('should correctly process a file and return successful validation', async () => {
+    it('should correctly process a file and return successful validation with array extractedData', async () => {
       const mockFile = new File(['dummy content'], 'test.png', { type: 'image/png' });
       const documentType = 'DNI';
+      const mockExtractedEntities: ExtractedEntity[] = [
+        { fieldName: 'nombreCompleto', description: 'Nombre Completo', value: 'Test User' },
+        { fieldName: 'numeroIdentificacion', description: 'Número de Identificación', value: '12345678X' },
+      ];
       const mockResponseData = {
         isValid: true,
-        reason: 'Document is valid.',
-        extractedData: { name: 'Test User', id_number: '12345678X' },
+        reason: 'Documento válido',
+        extractedData: mockExtractedEntities,
       };
       (fetch as vi.Mock).mockResolvedValueOnce({
         ok: true,
@@ -46,15 +50,16 @@ describe('FileProcessor', () => {
         expect.objectContaining({ method: 'POST' })
       );
       expect(result.isValid).toBe(true);
-      expect(result.reason).toBe('Document is valid.');
-      expect(result.extractedData.name).toBe('Test User');
+      expect(result.reason).toBe('Documento válido');
+      expect(Array.isArray(result.extractedData)).toBe(true);
+      expect(result.extractedData).toEqual(mockExtractedEntities);
       expect(result.base64).toBeDefined();
     });
 
-    it('should return failed validation if AI indicates invalid', async () => {
+    it('should return failed validation if AI indicates invalid, with empty array extractedData', async () => {
       const mockFile = new File(['dummy content'], 'test.jpg', { type: 'image/jpeg' });
       const documentType = 'Passport';
-      const mockResponseData = { isValid: false, reason: 'Document is blurry.', extractedData: {} };
+      const mockResponseData = { isValid: false, reason: 'Document is blurry.', extractedData: [] }; // Empty array
       (fetch as vi.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => ({ candidates: [{ content: { parts: [{ text: JSON.stringify(mockResponseData) }] } }] }),
@@ -62,29 +67,54 @@ describe('FileProcessor', () => {
       const result = await processAndValidateFile(mockFile, documentType, mockMessages);
       expect(result.isValid).toBe(false);
       expect(result.reason).toBe('Document is blurry.');
+      expect(result.extractedData).toEqual([]);
     });
 
-    it('should handle AI API error for processAndValidateFile', async () => {
+    it('should handle AI API error for processAndValidateFile, returning empty array extractedData', async () => {
       const mockFile = new File(['dummy content'], 'error.png', { type: 'image/png' });
       const documentType = 'NIE';
       (fetch as vi.Mock).mockResolvedValueOnce({
-        ok: false, status: 500, json: async () => ({ error: 'Internal Server Error' }),
+        ok: false, status: 500, json: async () => ({ error: 'Internal Server Error' }), // This mock is for fetch failure, validateDocumentWithAI catches it
       });
       const result = await processAndValidateFile(mockFile, documentType, mockMessages);
       expect(result.isValid).toBe(false);
       expect(result.reason).toContain(mockMessages.ai_connection_error);
+      expect(result.extractedData).toEqual([]); // Ensure empty array on error
     });
 
-    it('should handle unexpected AI response structure for processAndValidateFile', async () => {
+    it('should handle unexpected AI response structure for processAndValidateFile, returning empty array extractedData', async () => {
         const mockFile = new File(['dummy content'], 'bad_response.png', { type: 'image/png' });
         const documentType = 'TIE';
-        (fetch as vi.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({ candidates: [] }) });
+        (fetch as vi.Mock).mockResolvedValueOnce({ ok: true, json: async () => ({ candidates: [] }) }); // No text part
         const result = await processAndValidateFile(mockFile, documentType, mockMessages);
         expect(result.isValid).toBe(false);
         expect(result.reason).toBe(mockMessages.ai_response_error);
+        expect(result.extractedData).toEqual([]); // Ensure empty array
     });
 
-    it('should handle file reading error for processAndValidateFile', async () => {
+    it('should ensure extractedData is an array even if AI mistakenly returns an object', async () => {
+        const mockFile = new File(['dummy content'], 'object_instead_of_array.png', { type: 'image/png' });
+        const documentType = 'DNI';
+        const mockResponseData = { // AI mistakenly returns object instead of array
+          isValid: true,
+          reason: 'Documento válido',
+          extractedData: { name: 'Test User', id_number: '12345678X' },
+        };
+        (fetch as vi.Mock).mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            candidates: [{ content: { parts: [{ text: JSON.stringify(mockResponseData) }] } }],
+          }),
+        });
+        const result = await processAndValidateFile(mockFile, documentType, mockMessages);
+        expect(result.isValid).toBe(true);
+        expect(Array.isArray(result.extractedData)).toBe(true);
+        // The FileProcessor's validateDocumentWithAI ensures it becomes an empty array if not an array.
+        expect(result.extractedData).toEqual([]);
+      });
+
+
+    it('should handle file reading error for processAndValidateFile, returning empty array extractedData', async () => {
       const mockFile = new File(['dummy content'], 'read_error.pdf', { type: 'application/pdf' });
       const documentType = 'Other';
       const originalFileReader = global.FileReader;
@@ -101,13 +131,21 @@ describe('FileProcessor', () => {
       expect(result.isValid).toBe(false);
       expect(result.reason).toBe(mockMessages.file_read_error);
       expect(result.base64).toBeUndefined();
+      expect(result.extractedData).toEqual([]); // Ensure empty array
       global.FileReader = originalFileReader;
     });
   });
 
   describe('getAIProcedureSummary', () => {
     const procedureType = 'Alta en padrón';
-    const extractedDataJson = JSON.stringify({ doc1: { name: 'John Doe' } });
+    // ExtractedDataAllDocsJson should now reflect an array of ExtractedEntity for each doc entry
+    const sampleExtractedDataForSummary: Record<string, ExtractedEntity[]> = {
+        "doc1_0": [
+            {fieldName: "nombreCompleto", description: "Nombre Completo", value: "John Doe"},
+            {fieldName: "numeroIdentificacion", description: "Número de Identificación", value: "123X"}
+        ]
+    };
+    const extractedDataJson = JSON.stringify(sampleExtractedDataForSummary);
 
     it('should return parsed summary on successful API call', async () => {
       const mockPerson: Person = { name: 'John Doe', id_number: '123X', relationToApplicant: 'self' };
@@ -139,7 +177,7 @@ describe('FileProcessor', () => {
       (fetch as vi.Mock).mockResolvedValueOnce({
         ok: false,
         status: 500,
-        text: async () => "Internal Server Error" // Changed to text() as per FileProcessor
+        text: async () => "Internal Server Error"
       });
 
       const result = await getAIProcedureSummary(procedureType, extractedDataJson, mockMessages);
@@ -159,12 +197,12 @@ describe('FileProcessor', () => {
       const result = await getAIProcedureSummary(procedureType, extractedDataJson, mockMessages);
       expect(result.peopleToRegister).toEqual([]);
       expect(result.confidenceScore).toBe(0);
-      expect(result.reasoning).toContain(mockMessages.ai_connection_error); // JSON parsing error falls into general catch
+      expect(result.reasoning).toContain(mockMessages.ai_connection_error);
       expect(result.reasoning).toContain("This is not JSON");
     });
 
     it('should handle AI response missing required fields', async () => {
-        const incompleteResponse = { registrationAddress: "123 Main St" }; // Missing peopleToRegister, confidence, reasoning
+        const incompleteResponse = { registrationAddress: "123 Main St" };
         (fetch as vi.Mock).mockResolvedValueOnce({
           ok: true,
           json: async () => ({
@@ -178,7 +216,7 @@ describe('FileProcessor', () => {
       });
 
     it('should handle missing API key', async () => {
-      vi.stubGlobal('import.meta.env', { VITE_GEMINI_API_KEY: '' }); // Simulate missing API key
+      vi.stubGlobal('import.meta.env', { VITE_GEMINI_API_KEY: '' });
       const result = await getAIProcedureSummary(procedureType, extractedDataJson, mockMessages);
       expect(fetch).not.toHaveBeenCalled();
       expect(result.reasoning).toBe(mockMessages.ai_api_key_not_configured);

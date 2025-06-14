@@ -60,5 +60,6 @@
   "ai_reasoning": "AI推理：",
   "ai_api_key_not_configured": "AI摘要的API密钥未配置。",
   "use_ai_suggestions_button": "应用AI建议",
-  "ai_suggestions_applied_message": "AI建议已应用！"
+  "ai_suggestions_applied_message": "AI建议已应用！",
+  "no_attributes_extracted": "未提取任何属性。"
 }

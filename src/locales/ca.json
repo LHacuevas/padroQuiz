@@ -60,5 +60,6 @@
   "ai_reasoning": "Raonament de la IA:",
   "ai_api_key_not_configured": "Clau API per a resum IA no configurada.",
   "use_ai_suggestions_button": "Aplicar Suggeriments de IA",
-  "ai_suggestions_applied_message": "Suggeriments de IA aplicats!"
+  "ai_suggestions_applied_message": "Suggeriments de IA aplicats!",
+  "no_attributes_extracted": "No hi ha atributs extrets."
 }

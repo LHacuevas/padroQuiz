@@ -10,8 +10,8 @@ import FinalDocumentReviewScreen from './components/FinalDocumentReviewScreen';
 import SummaryScreen from './components/SummaryScreen';
 import LanguageSelectionScreen from './components/LanguageSelectionScreen';
 import AttributesModal from './components/AttributesModal';
-import { processAndValidateFile, getAIProcedureSummary, type AIProcedureSummary } from './components/FileProcessor'; // Import AIProcedureSummary
-import type { FlowStep, UploadedFiles, Person, FlowPathEntry, FlowData, DocumentRequirement, UploadedFileEntry, Messages } from './interfaces';
+import { processAndValidateFile, getAIProcedureSummary, type AIProcedureSummary } from './components/FileProcessor';
+import type { FlowStep, UploadedFiles, Person, FlowPathEntry, FlowData, DocumentRequirement, UploadedFileEntry, Messages, ExtractedEntity } from './interfaces'; // Added ExtractedEntity
 
 function App() {
   const {
@@ -40,19 +40,18 @@ function App() {
   const [apiResponseMessage, setApiResponseMessage] = useState<string>("");
   const [flowPath, setFlowPath] = useState<FlowPathEntry[]>([{ id: "start", text: "Inicio" }]);
   const [showAttributesModal, setShowAttributesModal] = useState<boolean>(false);
-  const [currentAttributesData, setCurrentAttributesData] = useState<Record<string, any> | null>(null);
+  const [currentAttributesData, setCurrentAttributesData] = useState<ExtractedEntity[] | null>(null); // Changed to ExtractedEntity[]
   const [selectedProcedureType, setSelectedProcedureType] = useState<string>("");
-
-  // State for AI Procedure Summary
   const [aiSummaryData, setAiSummaryData] = useState<AIProcedureSummary | null>(null);
   const [isAISummaryLoading, setIsAISummaryLoading] = useState<boolean>(false);
   const [aiSummaryError, setAiSummaryError] = useState<string | null>(null);
 
   const compileAllExtractedDataToJson = (): string => {
-    const allExtractedData: Record<string, any> = {};
+    const allExtractedData: Record<string, ExtractedEntity[]> = {}; // Type value as ExtractedEntity[]
     Object.entries(uploadedFiles).forEach(([docName, fileEntries]) => {
       fileEntries.forEach((entry, index) => {
-        if (entry.extracted_data && Object.keys(entry.extracted_data).length > 0) {
+        // Ensure extracted_data is an array and not empty before adding
+        if (entry.extracted_data && Array.isArray(entry.extracted_data) && entry.extracted_data.length > 0) {
           allExtractedData[`${docName}_${index}`] = entry.extracted_data;
         }
       });
@@ -78,7 +77,7 @@ function App() {
     }
   };
 
-  const handleShowAttributesModal = (data: Record<string, any>) => {
+  const handleShowAttributesModal = (data: ExtractedEntity[]) => { // Changed type to ExtractedEntity[]
     setCurrentAttributesData(data);
     setShowAttributesModal(true);
   };
@@ -91,15 +90,10 @@ function App() {
       setRegistrationAddress(suggestedAddress);
     }
     if (suggestedPeople && suggestedPeople.length > 0) {
-      // Replace peopleToRegister or merge? For now, let's replace.
-      // Consider if IDs are stable or if this should be a merge based on some logic.
-      // For this implementation, a direct replacement is simpler.
       setPeopleToRegister(suggestedPeople);
     }
-    // Clear the AI summary data after applying to remove the suggestion from UI or change its state
     setAiSummaryData(null);
     setAiSummaryError(null);
-    // Optionally, set a message like "AI suggestions have been applied"
   };
 
   useEffect(() => {
@@ -156,6 +150,7 @@ function App() {
         }
         setIsAuthReady(true);
       } else {
+        // ... (rest of auth logic remains the same)
         if (initialAuthToken) {
           try {
             await signInWithCustomToken(auth, initialAuthToken);
@@ -252,6 +247,7 @@ function App() {
   };
 
   const goBack = (): void => {
+    // ... (goBack logic remains the same)
     if (questionsAnswered.length > 0) {
       const prevId = questionsAnswered[questionsAnswered.length - 1];
       setQuestionsAnswered(prev => prev.slice(0, -1));
@@ -267,11 +263,11 @@ function App() {
       const docRequirement: DocumentRequirement | undefined = currentStepDocs.find(d => d.name === docName) || orderedAllRequiredDocuments.find(d => d.name === docName);
       if (!newFiles[docName] || !docRequirement?.multiple_files) {
          newFiles[docName] = files.map((file: File) => ({
-            file, name: file.name, base64: null, validation_status: 'pending', validation_message: '', extracted_data: {}
+            file, name: file.name, base64: null, validation_status: 'pending', validation_message: '', extracted_data: [] // Initialize extracted_data as empty array
           } as UploadedFileEntry));
       } else {
           newFiles[docName] = [...newFiles[docName], ...files.map((file: File) => ({
-            file, name: file.name, base64: null, validation_status: 'pending', validation_message: '', extracted_data: {}
+            file, name: file.name, base64: null, validation_status: 'pending', validation_message: '', extracted_data: [] // Initialize extracted_data as empty array
           } as UploadedFileEntry))];
       }
       return newFiles;
@@ -292,23 +288,36 @@ function App() {
           if (newFiles[docName] && newFiles[docName][fileIndex]) {
             newFiles[docName][fileIndex].validation_status = validationResult.isValid ? 'valid' : 'invalid';
             newFiles[docName][fileIndex].validation_message = validationResult.reason;
-            newFiles[docName][fileIndex].extracted_data = validationResult.extractedData || {};
+            // Ensure extracted_data is always an array, even if AI returns a flat object by mistake or it's null/undefined
+            newFiles[docName][fileIndex].extracted_data = Array.isArray(validationResult.extractedData) ? validationResult.extractedData : [];
+
             if (validationResult.base64) {
               newFiles[docName][fileIndex].base64 = validationResult.base64;
             }
+
             const docRequirementFromFlow: DocumentRequirement | undefined = loadedFlowData?.flow.flatMap(f => f.documents || []).find(d => d.name === docName);
             const currentQDocs = currentQuestion?.documents?.find(d => d.name === docName);
             const finalDocRequirement = currentQDocs || docRequirementFromFlow;
-            if (validationResult.isValid && finalDocRequirement && finalDocRequirement.id_extractable) {
-              const { name, id_number } = validationResult.extractedData;
+
+            if (validationResult.isValid && finalDocRequirement && finalDocRequirement.id_extractable && Array.isArray(validationResult.extractedData)) {
+              // Extract name and ID from the array of entities
+              const nameEntry = validationResult.extractedData.find(e => e.fieldName === 'nombreCompleto' || e.fieldName === 'name');
+              const idEntry = validationResult.extractedData.find(e => e.fieldName === 'numeroIdentificacion' || e.fieldName === 'id_number');
+
+              const name = nameEntry?.value;
+              const id_number = idEntry?.value;
+
               if (name && id_number) {
                 const existingPersonIndex = peopleToRegister.findIndex(p => p.id_number === id_number);
+                const newPersonData: Person = { name, id_number };
+                // Potentially add other fields from extractedData to Person if your Person interface supports it
+
                 if (existingPersonIndex > -1) {
                   const updatedPeople = [...peopleToRegister];
-                  updatedPeople[existingPersonIndex] = { ...updatedPeople[existingPersonIndex], ...(validationResult.extractedData as Person) };
+                  updatedPeople[existingPersonIndex] = { ...updatedPeople[existingPersonIndex], ...newPersonData };
                   setPeopleToRegister(updatedPeople);
                 } else {
-                  setPeopleToRegister(prevPeople => [...prevPeople, validationResult.extractedData as Person]);
+                  setPeopleToRegister(prevPeople => [...prevPeople, newPersonData]);
                 }
               }
             }
@@ -323,6 +332,7 @@ function App() {
           if (newFiles[docName] && newFiles[docName][fileIndex]) {
             newFiles[docName][fileIndex].validation_status = 'invalid';
             newFiles[docName][fileIndex].validation_message = error.reason || (loadedMessages ? loadedMessages.file_read_error : "File read error") || "Unknown error during validation";
+            newFiles[docName][fileIndex].extracted_data = []; // Ensure it's an empty array on error
           }
           return newFiles;
         });
@@ -336,23 +346,36 @@ function App() {
     setUploadedFiles((prev: UploadedFiles) => {
       const newFiles: UploadedFiles = { ...prev };
       if (newFiles[docName]) {
-        const removedFile: UploadedFileEntry = newFiles[docName][fileIndex];
+        const removedFileEntry = newFiles[docName][fileIndex];
         newFiles[docName] = newFiles[docName].filter((_, i) => i !== fileIndex);
-        if (removedFile.extracted_data && removedFile.extracted_data.id_number) {
-          const isIdSourceUnique = Object.values(newFiles).every((filesArray: UploadedFileEntry[]) =>
-            filesArray.every((f: UploadedFileEntry) => f && f.extracted_data && f.extracted_data.id_number !== removedFile.extracted_data.id_number)
-          );
-          if (isIdSourceUnique) {
-            setPeopleToRegister((prevPeople: Person[]) =>
-              prevPeople.filter(p => p.id_number !== removedFile.extracted_data.id_number)
-            );
-          }
+
+        // Updated logic to remove person if their ID document was removed
+        if (removedFileEntry.extracted_data && Array.isArray(removedFileEntry.extracted_data)) {
+            const idEntry = removedFileEntry.extracted_data.find(e => e.fieldName === 'numeroIdentificacion' || e.fieldName === 'id_number');
+            if (idEntry && idEntry.value) {
+                const idToRemove = idEntry.value;
+                // Check if this ID is present in any other remaining validated document
+                let isIdStillPresent = false;
+                Object.values(newFiles).forEach(fileList => {
+                    fileList.forEach(file => {
+                        if (file.validation_status === 'valid' && Array.isArray(file.extracted_data)) {
+                            if (file.extracted_data.some(e => (e.fieldName === 'numeroIdentificacion' || e.fieldName === 'id_number') && e.value === idToRemove)) {
+                                isIdStillPresent = true;
+                            }
+                        }
+                    });
+                });
+                if (!isIdStillPresent) {
+                    setPeopleToRegister(prevPeople => prevPeople.filter(p => p.id_number !== idToRemove));
+                }
+            }
         }
       }
       return newFiles;
     });
   };
 
+  // ... (rest of the component remains the same as the last provided version) ...
   const isCurrentStepRequiredDocumentsValidated = (): boolean => {
     if (!currentQuestion || !currentQuestion.documents) return true;
     for (const docRequirement of currentQuestion.documents) {
@@ -401,7 +424,7 @@ function App() {
     if (!loadedFlowData || !loadedMessages) return;
     setCurrentQuestionId("summary_screen");
     const summaryScreen = loadedFlowData.flow.find((q: FlowStep) => q.id === "summary_screen");
-    if (summaryScreen) { // text for summary is empty, use messages.summary_title
+    if (summaryScreen) {
         setFlowPath(prev => [...prev, { id: summaryScreen.id, text: loadedMessages.summary_title }]);
     }
   };
@@ -466,11 +489,11 @@ function App() {
   const orderedAllRequiredDocuments = useMemo((): DocumentRequirement[] => {
     if (!loadedFlowData) return [];
     const allDocs: { [key: string]: DocumentRequirement } = {};
-    [...questionsAnswered, currentQuestionId].forEach((qId: string) => { // Include currentQuestionId for current step's docs
+    [...questionsAnswered, currentQuestionId].forEach((qId: string) => {
         const q: FlowStep | undefined = loadedFlowData.flow.find((f: FlowStep) => f.id === qId);
         if (q && q.type === "info_block" && q.documents) {
             q.documents.forEach((docReq: DocumentRequirement) => {
-                if (!allDocs[docReq.name]) { // Avoid duplicates, keep first encounter (order might matter based on flow)
+                if (!allDocs[docReq.name]) {
                     allDocs[docReq.name] = docReq;
                 }
             });
@@ -536,12 +559,11 @@ function App() {
             goBack={goBack}
             messages={loadedMessages}
             userId={userId}
-            // AI Summary Props
             aiSummaryData={aiSummaryData}
             isAISummaryLoading={isAISummaryLoading}
             handleGenerateAISummary={handleGenerateAISummary}
             aiSummaryError={aiSummaryError}
-            handleApplyAISuggestions={handleApplyAISuggestions} // ADDED
+            handleApplyAISuggestions={handleApplyAISuggestions}
           />
         ) : currentQuestionId === "final_document_review" ? (
           <FinalDocumentReviewScreen
@@ -608,6 +630,7 @@ function App() {
         onClose={() => setShowAttributesModal(false)}
         data={currentAttributesData}
         title={loadedMessages.attributes_modal_title || "Extracted Attributes"}
+        noAttributesMessage={loadedMessages.no_attributes_extracted || "No attributes extracted."} {/* ADDED */}
       />
 
       <p className="text-xs text-gray-500 mt-4">{loadedMessages.user_id_label} {userId || (loadedMessages ? loadedMessages.loading_app : "...")}</p>

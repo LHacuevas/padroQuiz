@@ -83,10 +83,13 @@ export interface UploadedFileEntry {
   base64: string | null;
   validation_status: 'pending' | 'valid' | 'invalid' | 'uploading';
   validation_message: string;
-  extracted_data: {
-    name?: string;
-    id_number?: string;
-  };
+  extracted_data: ExtractedEntity[];
+}
+
+export interface ExtractedEntity {
+  fieldName: string;
+  description: string;
+  value: string;
 }
 
 export interface UploadedFiles {

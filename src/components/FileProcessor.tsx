@@ -3,7 +3,7 @@ import type { Messages, Person } from '../interfaces';
 
 // --- AI Document Validation Function ---
 async function validateDocumentWithAI(base64Image: string, documentType: string, messages: Messages) {
-  const prompt = `Usted es una IA de verificación de documentos para una oficina de padrón municipal española. Analice esta imagen. ¿Es un documento '${documentType}' válido y legible? Si es un documento de identidad (DNI, NIE, Pasaporte, TIE, Pasaporte extranjero), extraiga el nombre completo y el número de identificación. Si es otro tipo saca toda la informacion relevante para el padron (direcciones, padres/hijos...). Si no, indique la razón claramente. Responda SOLO con un JSON formateado asi: { "isValid": boolean, "reason": "string", "extractedData": { "name": "string", "id_number": "string" , ...} }. No incluyas nada despues ni antes del JSON.`;
+  const prompt = `Usted es una IA de verificación de documentos para una oficina de padrón municipal española. Analice esta imagen. ¿Es un documento '${documentType}' válido y legible? Si es así, extraiga todas las entidades significativas relevantes para el empadronamiento municipal. Responda ÚNICAMENTE con un objeto JSON. El objeto JSON debe tener una clave 'isValid' (booleana), una clave 'reason' (cadena, explicando por qué no es válido si isValid es falso, o 'Documento válido' si es válido), y una clave 'extractedData'. El valor de 'extractedData' debe ser un array de objetos, donde cada objeto representa una entidad extraída y tiene la siguiente estructura: {'fieldName': 'string', 'description': 'string', 'value': 'string'}. 'fieldName' debe ser un identificador camelCase para el tipo de dato (ej: 'nombreCompleto', 'numeroIdentificacion', 'fechaNacimiento'), 'description' debe ser una etiqueta legible por humanos en español para el campo (ej: 'Nombre Completo', 'Número de Identificación'), y 'value' es el valor extraído. Si no se pueden extraer datos o el documento no es válido, 'extractedData' debe ser un array vacío. No incluya nada antes ni después del objeto JSON.`;
 
   const chatHistory = [{
     role: "user",
@@ -23,13 +23,19 @@ async function validateDocumentWithAI(base64Image: string, documentType: string,
           isValid: { type: "BOOLEAN" },
           reason: { type: "STRING" },
           extractedData: {
-            type: "OBJECT",
-            properties: {
-              name: { type: "STRING" },
-              id_number: { type: "STRING" }
-            },
+            type: "ARRAY",
+            items: {
+              type: "OBJECT",
+              properties: {
+                fieldName: { type: "STRING" },
+                description: { type: "STRING" },
+                value: { type: "STRING" }
+              },
+              required: ["fieldName", "value"]
+            }
           }
-        }
+        },
+        required: ["isValid", "reason", "extractedData"]
       }
     }
   };
@@ -37,8 +43,7 @@ async function validateDocumentWithAI(base64Image: string, documentType: string,
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
   if (!apiKey) {
       console.warn("Gemini API Key is not configured. Please check your .env file (VITE_GEMINI_API_KEY). Document validation will likely fail.");
-      // Fallback to a structured error, but isValid should be false.
-      return { isValid: false, reason: messages.ai_api_key_not_configured || "API Key not configured.", extractedData: {} };
+      return { isValid: false, reason: messages.ai_api_key_not_configured || "API Key not configured.", extractedData: [] };
   }
   const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
   let jsonText = "";
@@ -55,15 +60,18 @@ async function validateDocumentWithAI(base64Image: string, documentType: string,
         result.candidates[0].content.parts[0].text) {
        jsonText = result.candidates[0].content.parts[0].text;
       const parsedJson = JSON.parse(jsonText);
+      if (!parsedJson.extractedData || !Array.isArray(parsedJson.extractedData)) {
+        parsedJson.extractedData = [];
+      }
       return parsedJson;
     } else {
       console.error("Unexpected AI response structure for document validation:", result);
-      return { isValid: false, reason: messages.ai_response_error, extractedData: {} };
+      return { isValid: false, reason: messages.ai_response_error, extractedData: [] };
     }
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("Error al llamar a la API de Gemini para validación:", errorMessage);
-    return { isValid: false, reason: `${messages.ai_connection_error} ${errorMessage}`, extractedData: { errorDetails: jsonText || "No JSON text available" } };
+    return { isValid: false, reason: `${messages.ai_connection_error} ${errorMessage}`, extractedData: [] };
   }
 }
 
@@ -71,8 +79,8 @@ export const processAndValidateFile = (
   file: File,
   documentType: string,
   messages: Messages
-): Promise<{ isValid: boolean; reason: string; extractedData: Record<string, any>; base64?: string }> => {
-  return new Promise((resolve) => { // Removed reject as parent expects resolution
+): Promise<{ isValid: boolean; reason: string; extractedData: Array<Record<string, any>>; base64?: string }> => {
+  return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = async (event: ProgressEvent<FileReader>) => {
       if (event.target && typeof event.target.result === 'string') {
@@ -80,12 +88,12 @@ export const processAndValidateFile = (
         try {
           const validationResult = await validateDocumentWithAI(base64Data, documentType, messages);
           resolve({ ...validationResult, base64: base64Data });
-        } catch (error) { // Should ideally not be hit if validateDocumentWithAI always resolves
+        } catch (error) {
           console.error("Error during validation call (should not happen if validateDocumentWithAI resolves):", error);
           resolve({
             isValid: false,
             reason: messages.ai_connection_error || "Validation processing error",
-            extractedData: {},
+            extractedData: [],
             base64: base64Data
           });
         }
@@ -94,7 +102,7 @@ export const processAndValidateFile = (
         resolve({
           isValid: false,
           reason: messages.file_read_error || "File read error",
-          extractedData: {}
+          extractedData: []
         });
       }
     };
@@ -103,7 +111,7 @@ export const processAndValidateFile = (
       resolve({
         isValid: false,
         reason: messages.file_read_error || "File read error",
-        extractedData: {}
+        extractedData: []
       });
     };
     reader.readAsDataURL(file);
@@ -130,6 +138,7 @@ Tipo de Trámite (procedureType): "${procedureType}"
 
 Información Extraída de Documentos (extractedDataAllDocsJson):
 ${extractedDataAllDocsJson}
+El JSON 'Información Extraída de Documentos (extractedDataAllDocsJson)' es un objeto donde cada clave representa un documento (ej: 'nombreDocumento_indice') y su valor es un array de objetos, cada uno con 'fieldName', 'description', y 'value' correspondientes a los datos extraídos de ese documento.
 
 Basándote en esta información:
 1.  Determina la dirección de empadronamiento más probable. Si hay múltiples direcciones o información conflictiva, elige la que parezca más relevante para el trámite o indica si no se puede determinar con certeza.
@@ -250,10 +259,10 @@ export async function translateText(
   sourceLang: string = "es"
 ): Promise<string> {
   if (!text || text.trim() === "") {
-    return ""; // Return empty if input is empty
+    return "";
   }
   if (targetLang === sourceLang) {
-    return text; // No need to translate if target is same as source
+    return text;
   }
 
   const prompt = `Translate the following text from ${sourceLang} to ${targetLang}.
@@ -262,14 +271,12 @@ Original text: "${text}"`;
 
   const payload = {
     contents: [{ role: "user", parts: [{ text: prompt }] }],
-    // No specific responseSchema needed for plain text translation, but Gemini might still wrap it.
-    // We will extract the text part directly.
   };
 
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
   if (!apiKey) {
     console.warn("Gemini API Key is not configured for translation.");
-    return text; // Return original text if API key is missing
+    return text;
   }
 
   const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
@@ -284,7 +291,7 @@ Original text: "${text}"`;
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`Translation API error! Status: ${response.status}`, errorText);
-      return text; // Return original text on API error
+      return text;
     }
 
     const result = await response.json();
@@ -296,11 +303,11 @@ Original text: "${text}"`;
       return result.candidates[0].content.parts[0].text.trim();
     } else {
       console.error("Unexpected translation API response structure:", result);
-      return text; // Return original text on unexpected structure
+      return text;
     }
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("Error calling/parsing translation API:", errorMessage);
-    return text; // Return original text on error
+    return text;
   }
 }

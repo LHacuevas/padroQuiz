@@ -60,5 +60,6 @@
   "ai_reasoning": "Ragionamento IA:",
   "ai_api_key_not_configured": "Chiave API per il riepilogo IA non configurata.",
   "use_ai_suggestions_button": "Applica Suggerimenti IA",
-  "ai_suggestions_applied_message": "Suggerimenti IA applicati!"
+  "ai_suggestions_applied_message": "Suggerimenti IA applicati!",
+  "no_attributes_extracted": "Nessun attributo estratto."
 }

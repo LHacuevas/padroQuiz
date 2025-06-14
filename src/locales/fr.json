@@ -60,5 +60,6 @@
   "ai_reasoning": "Raisonnement de l'IA:",
   "ai_api_key_not_configured": "Clé API pour le résumé IA non configurée.",
   "use_ai_suggestions_button": "Appliquer les Suggestions de l'IA",
-  "ai_suggestions_applied_message": "Suggestions de l'IA appliquées !"
+  "ai_suggestions_applied_message": "Suggestions de l'IA appliquées !",
+  "no_attributes_extracted": "Aucun attribut extrait."
 }

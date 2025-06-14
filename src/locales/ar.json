@@ -60,5 +60,6 @@
   "ai_reasoning": "منطق الذكاء الاصطناعي:",
   "ai_api_key_not_configured": "مفتاح API لملخص الذكاء الاصطناعي غير مهيأ.",
   "use_ai_suggestions_button": "تطبيق اقتراحات الذكاء الاصطناعي",
-  "ai_suggestions_applied_message": "تم تطبيق اقتراحات الذكاء الاصطناعي!"
+  "ai_suggestions_applied_message": "تم تطبيق اقتراحات الذكاء الاصطناعي!",
+  "no_attributes_extracted": "لم يتم استخراج أي سمات."
 }
