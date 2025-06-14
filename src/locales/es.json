@@ -60,5 +60,11 @@
   "ai_reasoning": "Razonamiento de la IA:",
   "ai_api_key_not_configured": "Clave API para resumen IA no configurada.",
   "use_ai_suggestions_button": "Aplicar Sugerencias de IA",
-  "ai_suggestions_applied_message": "¡Sugerencias de IA aplicadas!"
+  "ai_suggestions_applied_message": "¡Sugerencias de IA aplicadas!",
+  "no_attributes_extracted": "No hay atributos extraídos.",
+  "reset_button_text": "Reiniciar Trámite",
+  "reset_confirm_title": "Confirmar Reinicio",
+  "reset_confirm_message": "¿Estás seguro de que quieres reiniciar todo el trámite? Se perderá todo el progreso.",
+  "reset_confirm_yes": "Sí, Reiniciar",
+  "reset_confirm_no": "No, Cancelar"
 }
