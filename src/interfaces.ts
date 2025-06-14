@@ -132,6 +132,7 @@ export interface DocumentUploadProps {
     loadingValidation: boolean;
     fileInputRef?: (el: HTMLInputElement | null) => void; // For specific input ref if needed
     messages: Messages; // For button texts etc. Changed MessageTexts to Messages
+    handleShowAttributesModal?: (data: any) => void;
 }
 
 // Props for QuestionnaireScreen.tsx

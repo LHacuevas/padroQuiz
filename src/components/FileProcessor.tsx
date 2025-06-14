@@ -2,18 +2,27 @@
 import type { Messages, Person } from '../interfaces';
 
 // --- AI Document Validation Function ---
-async function validateDocumentWithAI(base64Image: string, documentType: string, messages: Messages) {
-  const prompt = `Usted es una IA de verificación de documentos para una oficina de padrón municipal española. Analice esta imagen. ¿Es un documento '${documentType}' válido y legible? Si es así, extraiga todas las entidades significativas relevantes para el empadronamiento municipal. Responda ÚNICAMENTE con un objeto JSON. El objeto JSON debe tener una clave 'isValid' (booleana), una clave 'reason' (cadena, explicando por qué no es válido si isValid es falso, o 'Documento válido' si es válido), y una clave 'extractedData'. El valor de 'extractedData' debe ser un array de objetos, donde cada objeto representa una entidad extraída y tiene la siguiente estructura: {'fieldName': 'string', 'description': 'string', 'value': 'string'}. 'fieldName' debe ser un identificador camelCase para el tipo de dato (ej: 'nombreCompleto', 'numeroIdentificacion', 'fechaNacimiento'), 'description' debe ser una etiqueta legible por humanos en español para el campo (ej: 'Nombre Completo', 'Número de Identificación'), y 'value' es el valor extraído. Si no se pueden extraer datos o el documento no es válido, 'extractedData' debe ser un array vacío. No incluya nada antes ni después del objeto JSON.`;
+
+// Define a type for the parts in the chat history
+type AIChatPart =
+  | { text: string }
+  | { inlineData: { mimeType: string; data: string } };
+
+
+async function validateDocumentWithAI(
+  input: { base64Image?: string; extractedText?: string },
+  documentType: string,
+  messages: Messages
+) {
+  // Adjust the prompt to be suitable for both text and image input, referring to "provided content"
+  const prompt = `You are an AI document verification system for a Spanish municipal registration office. Analyze the provided content (which can be an image or text extracted from a document). Is this a valid and legible '${documentType}' document? If so, extract all significant entities relevant for municipal registration. Respond ONLY with a JSON object. The JSON object must have an 'isValid' key (boolean), a 'reason' key (string, explaining why it's not valid if isValid is false, or 'Valid document' if valid), and an 'extractedData' key. The value of 'extractedData' must be an array of objects, where each object represents an extracted entity and has the following structure: {'fieldName': 'string', 'description': 'string', 'value': 'string'}. 'fieldName' should be a camelCase identifier for the data type (e.g., 'fullName', 'identificationNumber', 'dateOfBirth'), 'description' should be a human-readable label in Spanish for the field (e.g., 'Nombre Completo', 'Número de Identificación'), and 'value' is the extracted value. If no data can be extracted or the document is invalid, 'extractedData' should be an empty array. Do not include anything before or after the JSON object.`;
 
   const chatHistory = [{
     role: "user",
-    parts: [
-      { text: prompt },
-      { inlineData: { mimeType: "image/png", data: base64Image } }
-    ]
+    parts: [{ text: prompt }] as AIChatPart[], // Start with the prompt, cast to AIChatPart[]
   }];
 
-  const payload = {
+  const payload: any = { // Use any for now to allow dynamic parts
     contents: chatHistory,
     generationConfig: {
       responseMimeType: "application/json",
@@ -39,6 +48,13 @@ async function validateDocumentWithAI(base64Image: string, documentType: string,
       }
     }
   };
+
+  // Add the content part based on input type using type assertion
+  if (input.extractedText) {
+ chatHistory[0].parts.push({ text: input.extractedText } as AIChatPart);
+  } else if (input.base64Image) {
+ chatHistory[0].parts.push({ inlineData: { mimeType: "image/png", data: input.base64Image } } as AIChatPart);
+  }
 
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
   if (!apiKey) {
@@ -78,15 +94,28 @@ async function validateDocumentWithAI(base64Image: string, documentType: string,
 export const processAndValidateFile = (
   file: File,
   documentType: string,
-  messages: Messages
+  messages: Messages,
+  extractedText?: string // Add optional extractedText parameter
 ): Promise<{ isValid: boolean; reason: string; extractedData: Array<Record<string, any>>; base64?: string }> => {
   return new Promise((resolve) => {
+    if (extractedText) {
+      // If extracted text is provided, use it directly for validation
+      validateDocumentWithAI({ extractedText }, documentType, messages).then((validationResult) => resolve({...validationResult, base64: undefined})).catch((error: unknown) => { // Added type annotation for error
+        console.error("Error during validation call with extracted text:", error);
+        resolve({
+          isValid: false,
+          reason: messages.ai_connection_error || "Validation processing error",
+          extractedData: [],
+        });      });
+      return; // Exit the promise as we are handling validation
+    }
+
     const reader = new FileReader();
     reader.onload = async (event: ProgressEvent<FileReader>) => {
       if (event.target && typeof event.target.result === 'string') {
         const base64Data = event.target.result.split(',')[1];
         try {
-          const validationResult = await validateDocumentWithAI(base64Data, documentType, messages);
+          const validationResult = await validateDocumentWithAI({ base64Image: base64Data }, documentType, messages);
           resolve({ ...validationResult, base64: base64Data });
         } catch (error) {
           console.error("Error during validation call (should not happen if validateDocumentWithAI resolves):", error);
