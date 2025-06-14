@@ -43,5 +43,22 @@
   "sending_data": "جاري إرسال البيانات...",
   "breadcrumb_home": "الرئيسية",
   "file_not_found_for_validation": "لم يتم العثور على الملف للتحقق منه.",
-  "language_selection_title": "اختر لغتك"
+  "language_selection_title": "اختر لغتك",
+  "change_language_button": "تغيير اللغة",
+  "attributes_button_text": "السمات",
+  "attributes_modal_title": "السمات المستخرجة",
+  "get_ai_verification_button": "استشارة الذكاء الاصطناعي للتحقق",
+  "ai_suggestion_title": "اقتراح الذكاء الاصطناعي",
+  "loading_ai_summary": "جاري تحميل ملخص الذكاء الاصطناعي...",
+  "ai_summary_error_message": "خطأ في جلب ملخص الذكاء الاصطناعي:",
+  "ai_suggested_address": "العنوان المقترح:",
+  "ai_address_not_determined": "لم يحدد بواسطة الذكاء الاصطناعي",
+  "ai_suggested_people": "الأشخاص المقترح تسجيلهم:",
+  "ai_relation_unknown": "صلة قرابة غير معروفة",
+  "ai_no_people_suggested": "الذكاء الاصطناعي لم يقترح أشخاصًا محددين.",
+  "ai_confidence_score": "درجة الثقة:",
+  "ai_reasoning": "منطق الذكاء الاصطناعي:",
+  "ai_api_key_not_configured": "مفتاح API لملخص الذكاء الاصطناعي غير مهيأ.",
+  "use_ai_suggestions_button": "تطبيق اقتراحات الذكاء الاصطناعي",
+  "ai_suggestions_applied_message": "تم تطبيق اقتراحات الذكاء الاصطناعي!"
 }

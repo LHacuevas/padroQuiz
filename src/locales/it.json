@@ -43,5 +43,22 @@
   "sending_data": "Invio dati...",
   "breadcrumb_home": "Inizio",
   "file_not_found_for_validation": "File non trovato per la validazione.",
-  "language_selection_title": "Seleziona la tua Lingua"
+  "language_selection_title": "Seleziona la tua Lingua",
+  "change_language_button": "Cambia Lingua",
+  "attributes_button_text": "Attributi",
+  "attributes_modal_title": "Attributi Estratti",
+  "get_ai_verification_button": "Consulta IA per Verifica",
+  "ai_suggestion_title": "Suggerimento IA",
+  "loading_ai_summary": "Consultazione IA in corso...",
+  "ai_summary_error_message": "Errore nel recupero del riepilogo IA:",
+  "ai_suggested_address": "Indirizzo Suggerito:",
+  "ai_address_not_determined": "Non determinato dall'IA",
+  "ai_suggested_people": "Persone Suggerite per la Registrazione:",
+  "ai_relation_unknown": "Relazione sconosciuta",
+  "ai_no_people_suggested": "L'IA non ha suggerito persone specifiche.",
+  "ai_confidence_score": "Punteggio di Affidabilità:",
+  "ai_reasoning": "Ragionamento IA:",
+  "ai_api_key_not_configured": "Chiave API per il riepilogo IA non configurata.",
+  "use_ai_suggestions_button": "Applica Suggerimenti IA",
+  "ai_suggestions_applied_message": "Suggerimenti IA applicati!"
 }

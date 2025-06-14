@@ -50,10 +50,28 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       setIsLoading(true);
       try {
         const messagesModule = await import(`../locales/${lang}.json`);
-        const flowDataModule = await import(`../data/flowData.${lang}.json`);
-
         let messagesData: Messages = messagesModule.default;
-        let flowData: FlowData = flowDataModule.default;
+        let flowData: FlowData | null = null;
+
+        if (lang === 'es' || lang === 'ar' || lang === 'ca' || lang === 'fr' || lang === 'it' || lang === 'zh') {
+          const flowDataPart1Module = await import(`../data/flowData.${lang}.part1.json`);
+          const flowDataPart2Module = await import(`../data/flowData.${lang}.part2.json`);
+          const flowDataPart3Module = await import(`../data/flowData.${lang}.part3.json`);
+
+          const part1Flow = flowDataPart1Module.default.flow;
+          const part2Flow = flowDataPart2Module.default.flow;
+          const part3Flow = flowDataPart3Module.default.flow;
+
+          flowData = {
+            flow: [...part1Flow, ...part2Flow, ...part3Flow]
+          };
+        } else {
+          // Fallback for any other languages that might not be split (though all current ones are)
+          // Or handle as an error / default to 'es' more directly if unspecified langs are not expected.
+          console.warn(`Flow data for language '${lang}' is not configured for splitting. Attempting direct load.`);
+          const flowDataModule = await import(`../data/flowData.${lang}.json`); // This line would likely fail if file doesn't exist
+          flowData = flowDataModule.default;
+        }
 
         // Perform final_document_review_instructions_key replacement
         if (flowData && messagesData && messagesData.final_document_review_instructions) {

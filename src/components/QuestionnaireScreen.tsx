@@ -7,7 +7,8 @@ import { FileText } from 'lucide-react';
 const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
   currentContent, handleAnswer, uploadedFiles, handleFileChange, handleValidateDocument,
   handleRemoveFile, loadingValidation, isCurrentStepRequiredDocumentsValidated,
-  handleContinueWithValidation, handleContinueWithoutValidationClick, fileInputRefs, messages,  
+  handleContinueWithValidation, handleContinueWithoutValidationClick, fileInputRefs, messages,
+  handleShowAttributesModal, // ADDED
   //orderedAllRequiredDocuments // This prop is actually used by handleFileChange in App.tsx, not directly here for rendering loop
 }) => {
 
@@ -51,6 +52,7 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
               loadingValidation={loadingValidation}
               fileInputRef={el => fileInputRefs.current[`${docReq.name}-${docIndex}`] = el}
               messages={messages}
+              handleShowAttributesModal={handleShowAttributesModal} // ADDED
             />
           ))}
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mt-6">

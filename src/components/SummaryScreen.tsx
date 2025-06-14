@@ -1,18 +1,27 @@
 // src/components/SummaryScreen.tsx
 import React from 'react';
-import { type SummaryScreenProps } from '../interfaces';
-import { CheckSquare, Home, User, Settings, Send, Trash2 } from 'lucide-react';
+import { type SummaryScreenProps, type Person as PersonInterface } from '../interfaces'; // Ensure Person is imported if AIProcedureSummary uses it
+import { CheckSquare, Home, User, Settings, Send, Trash2, Zap, AlertTriangle, CheckCircle } from 'lucide-react';
 
 const SummaryScreen: React.FC<SummaryScreenProps> = ({
   registrationAddress, peopleToRegister, showAddressEdit, tempAddress, setTempAddress,
   handleAddressSave, handleAddressEditToggle, handleRemovePerson, apiResponseMessage,  
-  handleSendAll, sendingData, goBack, messages //, userId // userId is passed but not used in current JSX, can be added if needed
+  handleSendAll, sendingData, goBack, messages,
+  // AI Summary Props
+  aiSummaryData, isAISummaryLoading, handleGenerateAISummary, aiSummaryError,
+  handleApplyAISuggestions // New prop
 }) => {
+
+  const canApplyAISuggestions = aiSummaryData &&
+                               (aiSummaryData.registrationAddress || (aiSummaryData.peopleToRegister && aiSummaryData.peopleToRegister.length > 0));
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-indigo-700 mb-4 flex items-center">
         <CheckSquare className="mr-2 text-green-600" /> {messages.summary_title}
       </h2>
+
+      {/* User Confirmed Data Section */}
       <div className="bg-blue-50 p-4 rounded-lg shadow-inner">
         <div className="flex justify-between items-center mb-2">
           <label className="block text-gray-700 font-semibold mb-1 flex items-center"><Home className="mr-2" size={18}/>{messages.summary_address_label}</label>
@@ -77,7 +86,77 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({
         )}
       </div>
 
-      <p className="text-sm text-gray-700 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+      {/* AI Summary Section */}
+      <div className="mt-6 border-t pt-6">
+        <h3 className="text-xl font-bold text-purple-700 mb-3 flex items-center">
+          <Zap className="mr-2" /> {messages.ai_suggestion_title || "AI Verification"}
+        </h3>
+        {!aiSummaryData && !isAISummaryLoading && !aiSummaryError && ( // Show button only if no data, not loading, and no error
+            <button
+            onClick={handleGenerateAISummary}
+            disabled={isAISummaryLoading}
+            className="w-full mb-4 px-6 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition-colors font-semibold flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {messages.get_ai_verification_button || "Get AI Verification"}
+          </button>
+        )}
+
+        {isAISummaryLoading && (
+          <div className="flex items-center justify-center my-4">
+            <span className="animate-spin mr-2">⚙️</span>
+            <p>{messages.loading_ai_summary || "Loading AI Summary..."}</p>
+          </div>
+        )}
+
+        {aiSummaryError && !isAISummaryLoading && (
+          <div className="my-2 p-3 bg-red-100 text-red-700 rounded-md flex items-center">
+            <AlertTriangle className="mr-2" size={20} />
+            <p>{messages.ai_summary_error_message || "Error fetching AI summary:"} {aiSummaryError}</p>
+          </div>
+        )}
+
+        {aiSummaryData && !isAISummaryLoading && (
+          <div className="bg-purple-50 p-4 rounded-lg shadow-inner space-y-3">
+            <div>
+              <strong className="block text-sm font-medium text-gray-700">{messages.ai_suggested_address || "Suggested Address:"}</strong>
+              <p className="text-gray-800">{aiSummaryData.registrationAddress || (messages.ai_address_not_determined || "Not determined")}</p>
+            </div>
+            <div>
+              <strong className="block text-sm font-medium text-gray-700">{messages.ai_suggested_people || "Suggested People to Register:"}</strong>
+              {aiSummaryData.peopleToRegister && aiSummaryData.peopleToRegister.length > 0 ? (
+                <ul className="list-disc list-inside pl-1 space-y-1">
+                  {aiSummaryData.peopleToRegister.map((person: PersonInterface, index: number) => ( // Ensure PersonInterface is used
+                    <li key={index} className="text-gray-800">
+                      {person.name} ({person.id_number}) - {person.relationToApplicant || (messages.ai_relation_unknown || "Relation unknown")}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-600 italic">{messages.ai_no_people_suggested || "No specific people suggested by AI."}</p>
+              )}
+            </div>
+            <div>
+              <strong className="block text-sm font-medium text-gray-700">{messages.ai_confidence_score || "Confidence Score:"}</strong>
+              <p className="text-gray-800">{(aiSummaryData.confidenceScore * 100).toFixed(0)}%</p>
+            </div>
+            <div>
+              <strong className="block text-sm font-medium text-gray-700">{messages.ai_reasoning || "Reasoning:"}</strong>
+              <p className="text-gray-800 text-xs whitespace-pre-wrap">{aiSummaryData.reasoning}</p>
+            </div>
+            {canApplyAISuggestions && handleApplyAISuggestions && (
+              <button
+                onClick={() => handleApplyAISuggestions(aiSummaryData.registrationAddress, aiSummaryData.peopleToRegister)}
+                className="w-full mt-4 px-6 py-2 bg-teal-600 text-white rounded-lg shadow-md hover:bg-teal-700 transition-colors font-semibold flex items-center justify-center"
+              >
+                <CheckCircle className="mr-2" size={20} />
+                {messages.use_ai_suggestions_button || "Use AI Suggestions"}
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      <p className="text-sm text-gray-700 bg-yellow-50 p-3 rounded-lg border border-yellow-200 mt-6">
         {messages.summary_disclaimer}
       </p>
 
@@ -88,10 +167,8 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({
       )}
 
       <div className="flex justify-between mt-8">
-        {/* Back button on summary screen, handled by goBack prop */}
-        {/* The check for questionsAnswered.length > 0 should ideally be done in App.tsx before deciding to render this button or pass goBack */}
         <button
-            onClick={goBack} // Assuming goBack is always provided when this component is rendered
+            onClick={goBack}
             className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 transition-colors font-semibold"
         >
             {messages.back_button}

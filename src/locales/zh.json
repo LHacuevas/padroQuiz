@@ -43,5 +43,22 @@
   "sending_data": "正在发送数据...",
   "breadcrumb_home": "主页",
   "file_not_found_for_validation": "找不到要验证的文件。",
-  "language_selection_title": "选择您的语言"
+  "language_selection_title": "选择您的语言",
+  "change_language_button": "更改语言",
+  "attributes_button_text": "属性",
+  "attributes_modal_title": "提取的属性",
+  "get_ai_verification_button": "请求AI验证",
+  "ai_suggestion_title": "AI建议",
+  "loading_ai_summary": "正在加载AI摘要...",
+  "ai_summary_error_message": "获取AI摘要时出错：",
+  "ai_suggested_address": "建议地址：",
+  "ai_address_not_determined": "AI未确定",
+  "ai_suggested_people": "建议注册人员：",
+  "ai_relation_unknown": "关系未知",
+  "ai_no_people_suggested": "AI未建议特定人员。",
+  "ai_confidence_score": "置信度评分：",
+  "ai_reasoning": "AI推理：",
+  "ai_api_key_not_configured": "AI摘要的API密钥未配置。",
+  "use_ai_suggestions_button": "应用AI建议",
+  "ai_suggestions_applied_message": "AI建议已应用！"
 }
