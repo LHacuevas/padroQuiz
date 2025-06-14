@@ -66,5 +66,6 @@
   "reset_confirm_title": "Confirmar Reinicio",
   "reset_confirm_message": "¿Estás seguro de que quieres reiniciar todo el trámite? Se perderá todo el progreso.",
   "reset_confirm_yes": "Sí, Reiniciar",
-  "reset_confirm_no": "No, Cancelar"
+  "reset_confirm_no": "No, Cancelar",
+  "text_extraction_failed_process_halted": "Falló la extracción de texto del documento. No se pudo continuar con la validación."
 }
