@@ -1,5 +1,8 @@
 // src/interfaces.ts
 import React from 'react';
+// Import AIProcedureSummary shape if defined elsewhere, or define here
+// For now, assuming a shape definition here or direct use of the imported type in components
+// import type { AIProcedureSummary as AIProcedureSummaryShape } from './components/FileProcessor'; // This would be ideal if no circular deps
 
 export interface Messages {
   app_title: string;
@@ -46,8 +49,31 @@ export interface Messages {
   sending_data: string;
   breadcrumb_home: string;
   file_not_found_for_validation: string;
-  language_selection_title: string; // Added this line
-  [key: string]: string; // Allow other keys, useful for dynamic content
+  language_selection_title: string;
+  change_language_button: string;
+  attributes_button_text: string;
+  attributes_modal_title: string;
+  get_ai_verification_button: string;
+  ai_suggestion_title: string;
+  loading_ai_summary: string;
+  ai_summary_error_message: string;
+  ai_suggested_address: string;
+  ai_address_not_determined: string;
+  ai_suggested_people: string;
+  ai_relation_unknown: string;
+  ai_no_people_suggested: string;
+  ai_confidence_score: string;
+  ai_reasoning: string;
+  ai_api_key_not_configured: string;
+  use_ai_suggestions_button: string;
+  ai_suggestions_applied_message: string;
+  no_attributes_extracted: string;
+  reset_button_text: string;
+  reset_confirm_title: string;
+  reset_confirm_message: string;
+  reset_confirm_yes: string;
+  reset_confirm_no: string;
+  [key: string]: string;
 }
 
 export interface FlowOption {
@@ -70,26 +96,26 @@ export interface FlowStep {
   text?: string;
   documents?: DocumentRequirement[];
   end_flow?: boolean;
-  next_question_id?: string; // For info_blocks that proceed
+  next_question_id?: string;
 }
 
 export interface FlowData {
     flow: FlowStep[];
 }
 
+export interface ExtractedEntity {
+  fieldName: string;
+  description: string;
+  value: string;
+}
+
 export interface UploadedFileEntry {
-  file?: File; // Present when first uploaded, might be removed for saving
+  file?: File;
   name: string;
   base64: string | null;
   validation_status: 'pending' | 'valid' | 'invalid' | 'uploading';
   validation_message: string;
   extracted_data: ExtractedEntity[];
-}
-
-export interface ExtractedEntity {
-  fieldName: string;
-  description: string;
-  value: string;
 }
 
 export interface UploadedFiles {
@@ -99,6 +125,7 @@ export interface UploadedFiles {
 export interface Person {
   name: string;
   id_number: string;
+  relationToApplicant?: string; // Made optional as AI might not always provide it
 }
 
 export interface FlowPathEntry {
@@ -106,12 +133,10 @@ export interface FlowPathEntry {
     text: string;
 }
 
-// Props for Breadcrumbs.tsx
 export interface BreadcrumbsProps {
     flowPath: FlowPathEntry[];
 }
 
-// Props for ConfirmationModal.tsx
 export interface ConfirmationModalProps {
     showModal: boolean;
     title: string;
@@ -122,7 +147,6 @@ export interface ConfirmationModalProps {
     noButtonText: string;
 }
 
-// Props for DocumentUpload.tsx
 export interface DocumentUploadProps {
     docReq: DocumentRequirement;
     uploadedFilesForDoc: UploadedFileEntry[];
@@ -130,12 +154,11 @@ export interface DocumentUploadProps {
     onValidateDocument: (docName: string, fileIndex: number) => Promise<void>;
     onRemoveFile: (docName: string, fileIndex: number) => void;
     loadingValidation: boolean;
-    fileInputRef?: (el: HTMLInputElement | null) => void; // For specific input ref if needed
-    messages: Messages; // For button texts etc. Changed MessageTexts to Messages
-    handleShowAttributesModal?: (data: any) => void;
+    fileInputRef?: (el: HTMLInputElement | null) => void;
+    messages: Messages;
+    handleShowAttributesModal?: (data: ExtractedEntity[]) => void; // Optional here, but required by screens using it
 }
 
-// Props for QuestionnaireScreen.tsx
 export interface QuestionnaireScreenProps {
     currentContent: FlowStep;
     handleAnswer: (nextId: string) => void;
@@ -148,11 +171,11 @@ export interface QuestionnaireScreenProps {
     handleContinueWithValidation: () => void;
     handleContinueWithoutValidationClick: () => void;
     fileInputRefs: React.MutableRefObject<{ [key: string]: HTMLInputElement | null }>;
-    messages: Messages; // Changed MessageTexts to Messages
-    orderedAllRequiredDocuments: DocumentRequirement[]; // Needed for handleFileChange logic
+    messages: Messages;
+    orderedAllRequiredDocuments: DocumentRequirement[];
+    handleShowAttributesModal: (data: ExtractedEntity[]) => void; // Added
 }
 
-// Props for FinalDocumentReviewScreen.tsx
 export interface FinalDocumentReviewScreenProps {
     orderedAllRequiredDocuments: DocumentRequirement[];
     uploadedFiles: UploadedFiles;
@@ -161,10 +184,18 @@ export interface FinalDocumentReviewScreenProps {
     loadingValidation: boolean;
     proceedToSummary: () => void;
     fileInputRefs: React.MutableRefObject<{ [key: string]: HTMLInputElement | null }>;
-    messages: Messages; // Changed MessageTexts to Messages
+    messages: Messages;
+    handleShowAttributesModal: (data: ExtractedEntity[]) => void; // Added
 }
 
-// Props for SummaryScreen.tsx
+// Shape for AI Summary Data (can also be imported from FileProcessor.tsx if preferred)
+export interface AISummaryDataShape {
+  registrationAddress?: string;
+  peopleToRegister: Person[];
+  confidenceScore: number;
+  reasoning: string;
+}
+
 export interface SummaryScreenProps {
     registrationAddress: string;
     peopleToRegister: Person[];
@@ -177,7 +208,13 @@ export interface SummaryScreenProps {
     apiResponseMessage: string;
     handleSendAll: () => Promise<void>;
     sendingData: boolean;
-    goBack: () => void; // Added goBack prop
-    messages: Messages; // Changed MessageTexts to Messages
-    userId: string | null; // Added userId for display
+    goBack: () => void;
+    messages: Messages;
+    userId: string | null;
+    // AI Summary Props
+    aiSummaryData: AISummaryDataShape | null;
+    isAISummaryLoading: boolean;
+    aiSummaryError: string | null;
+    handleGenerateAISummary: () => Promise<void>;
+    handleApplyAISuggestions: (suggestedAddress?: string, suggestedPeople?: Person[]) => void;
 }

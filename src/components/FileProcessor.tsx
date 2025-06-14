@@ -1,7 +1,8 @@
 // src/components/FileProcessor.tsx
-import type { Messages, Person } from '../interfaces';
+import type { Messages, Person, ExtractedEntity } from '../interfaces'; // Added ExtractedEntity
 
 // --- AI Document Validation Function ---
+
 
 // Define a type for the parts in the chat history
 type AIChatPart =
