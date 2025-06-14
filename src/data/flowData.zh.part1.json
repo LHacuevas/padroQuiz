@@ -2,38 +2,38 @@
   "flow": [
     {
       "id": "q1_action_type",
-      "question": "¿Qué trámite desea realizar?",
+      "question": "您想办理什么手续？",
       "type": "single_choice",
       "options": [
-        {"text": "Darse de alta por primera vez en el padrón (Alta por nacimiento o por omisión)", "next_question_id": "q2_alta_type"},
-        {"text": "Cambiar mi domicilio y empadronarme en este municipio (Alta por cambio de residencia)", "next_question_id": "q2_alta_type"},
-        {"text": "Cambiar mi domicilio dentro del mismo municipio (Modificación de datos)", "next_question_id": "domicile_change_info"},
-        {"text": "Renovar mi inscripción padronal (extranjeros no comunitarios sin autorización de residencia de larga duración)", "next_question_id": "foreign_renewal_info"}
+        {"text": "首次在市政登记处注册（新生儿注册或遗漏注册）", "next_question_id": "q2_alta_type"},
+        {"text": "更改我的住所并在此市镇进行登记（因变更居住地而注册）", "next_question_id": "q2_alta_type"},
+        {"text": "在同一市镇内更改我的住所（数据修改）", "next_question_id": "domicile_change_info"},
+        {"text": "续期我的市政登记（无长期居留许可的非欧盟外国人）", "next_question_id": "foreign_renewal_info"}
       ]
     },
     {
       "id": "domicile_change_info",
       "type": "info_block",
-      "text": "Para cambiar su domicilio dentro del mismo municipio, necesitará la documentación que acredite su identidad y el nuevo domicilio.",
+      "text": "要在同一市镇内更改您的住所，您需要提供证明您身份和新住所的文件。",
       "documents": [
-          {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
-          {"name": "Documento que acredite el uso de la vivienda", "description": "Título de propiedad (escritura, nota simple), Contrato de arrendamiento en vigor y último recibo de alquiler, o autorización de persona ya empadronada con título válido y su DNI/NIE.", "multiple_files": true}
+          {"name": "申请人的身份证明文件", "description": "有效的 DNI、NIE、护照。（如适用，DNI/NIE 的正反面）", "multiple_files": true, "id_extractable": true},
+          {"name": "证明住房使用权的文件", "description": "房产证（地契、简单登记记录）、有效的租赁合同和最新租金收据，或已登记人员的授权书及其有效的产权证明和 DNI/NIE。", "multiple_files": true}
       ],
       "end_flow": true
     },
     {
       "id": "foreign_renewal_info",
       "type": "info_block",
-      "text": "Para la renovación de la inscripción padronal de extranjeros no comunitarios sin autorización de residencia de larga duración, debe presentar la solicitud correspondiente en el Ayuntamiento. Se comprobará que sigue residiendo en el municipio.",
+      "text": "对于无长期居留许可的非欧盟外国人续期市政登记，您必须向市政府提交相应的申请。将核实您是否仍居住在该市镇。",
       "documents": [
-        {"name": "Solicitud de renovación (Anexo IV o V)", "description": "Modelo de solicitud oficial (Anexo IV para persona física, Anexo V para representante).", "multiple_files": false},
-        {"name": "Pasaporte o Tarjeta de Identidad de Extranjero (TIE)", "description": "Documento de identidad válido y en vigor.", "multiple_files": true, "id_extractable": true}
+        {"name": "续期申请表（附录 IV 或 V）", "description": "官方申请表模板（附录 IV 适用于个人，附录 V 适用于代表）。", "multiple_files": false},
+        {"name": "护照或外国人身份证（TIE）", "description": "有效且在期的身份证明文件。", "multiple_files": true, "id_extractable": true}
       ],
       "end_flow": true
     },
     {
       "id": "q2_alta_type",
-      "question": "¿Es un alta por nacimiento (primera inscripción de un recién nacido) o por otra causa?",
+      "question": "是因为新生儿（新生儿首次登记）还是其他原因而注册？",
       "type": "single_choice",
       "options": [
         {"text": "Es un recién nacido (alta por nacimiento)", "next_question_id": "q_newborn_parental_situation"},
@@ -42,7 +42,7 @@
     },
     {
       "id": "q_newborn_parental_situation",
-      "question": "¿El recién nacido se empadronará con ambos progenitores, con uno solo de ellos, o bajo tutela/acogimiento?",
+      "question": "新生儿将与父母双方、其中一方，还是在监护/寄养下进行登记？",
       "type": "single_choice",
       "options": [
         {"text": "Con ambos progenitores", "next_question_id": "docs_newborn_with_both_parents"},
@@ -52,18 +52,18 @@
     },
     {
       "id": "docs_newborn_with_both_parents",
-      "type": "info_block",
-      "text": "Para empadronar al recién nacido con ambos progenitores, necesitará:",
+      "type": "info_block", 
+      "text": "要为新生儿与父母双方进行登记，您需要：",
       "documents": [
-        {"name": "Libro de Familia o Certificado de Nacimiento del menor", "description": "Documento que acredite el nacimiento y filiación.", "multiple_files": false},
-        {"name": "Documento de identidad del progenitor 1", "description": "DNI/NIE/Pasaporte en vigor del progenitor 1. (Ambas caras del DNI/NIE si aplica)", "multiple_files": false, "id_extractable": true},
+        {"name": "家庭簿或新生儿出生证明", "description": "证明出生和亲子关系的文件。", "multiple_files": false},
+        {"name": "父/母 1 的身份证明文件", "description": "父/母 1 的有效 DNI/NIE/护照。（如适用，DNI/NIE 的正反面）", "multiple_files": false, "id_extractable": true},
         {"name": "Documento de identidad del progenitor 2", "description": "DNI/NIE/Pasaporte en vigor del progenitor 2. (Ambas caras del DNI/NIE si aplica)", "multiple_files": false, "id_extractable": true}
       ],
       "next_question_id": "final_document_review"
     },
     {
         "id": "q_newborn_one_parent_custody_newborn",
-        "question": "¿Tiene una resolución judicial que atribuya la guarda y custodia en exclusiva al progenitor que solicita el empadronamiento del recién nacido, o no existe resolución judicial sobre la guarda y custodia?",
+        "question": "您是否有将新生儿监护权独家授予申请登记的父/母的法院判决，或者没有关于监护权的法院判决？",
         "type": "single_choice",
         "options": [
             {"text": "Sí, tengo resolución judicial de guarda y custodia exclusiva", "next_question_id": "docs_newborn_one_parent_exclusive_custody"},
@@ -72,25 +72,25 @@
     },
     {
         "id": "docs_newborn_one_parent_exclusive_custody",
-        "type": "info_block",
-        "text": "Para empadronar al recién nacido con un solo progenitor con guarda y custodia exclusiva, necesitará:",
+        "type": "info_block", 
+        "text": "要为新生儿与拥有独家监护权的单亲进行登记，您需要：",
         "documents": [
-            {"name": "Libro de Familia o certificado de nacimiento del menor", "description": "Original y copia.", "multiple_files": false},
-            {"name": "Documento de identidad del progenitor solicitante", "description": "DNI/NIE/Pasaporte en vigor del progenitor que solicita el empadronamiento. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
-            {"name": "Resolución judicial de guarda y custodia exclusiva", "description": "Documento judicial que atribuye la guarda y custodia en exclusiva.", "multiple_files": false},
+            {"name": "家庭簿或新生儿出生证明", "description": "原件和复印件。", "multiple_files": false},
+            {"name": "申请登记的父/母的身份证明文件", "description": "申请登记的父/母的有效 DNI/NIE/护照。（如适用，DNI/NIE 的正反面）", "multiple_files": true, "id_extractable": true},
+            {"name": "独家监护权的法院判决", "description": "确认独家监护权的法院文件。", "multiple_files": false},
             {"name": "Declaración responsable (Anexo II)", "description": "Según el modelo que figura en Anexo II.", "multiple_files": false}
         ],
         "next_question_id": "final_document_review"
     },
     {
         "id": "docs_newborn_one_parent_no_resolution",
-        "type": "info_block",
-        "text": "Para empadronar al recién nacido con un solo progenitor cuando no hay resolución judicial de guarda y custodia, necesitará:",
+        "type": "info_block", 
+        "text": "要在没有监护权法院判决的情况下为新生儿与单亲进行登记，您需要：",
         "documents": [
-            {"name": "Libro de Familia o certificado de nacimiento del menor", "description": "Original y copia.", "multiple_files": false},
-            {"name": "Documento de identidad del progenitor solicitante", "description": "DNI/NIE/Pasaporte en vigor del progenitor que solicita el empadronamiento. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
+            {"name": "家庭簿或新生儿出生证明", "description": "原件和复印件。", "multiple_files": false},
+            {"name": "申请登记的父/母的身份证明文件", "description": "申请登记的父/母的有效 DNI/NIE/护照。（如适用，DNI/NIE 的正反面）", "multiple_files": true, "id_extractable": true},
             {"name": "Declaración responsable (Anexo I)", "description": "Según el modelo que figura en Anexo I.", "multiple_files": false},
-            {"name": "Documentación acreditativa de procedimiento judicial (si aplica)", "description": "Si se ha interpuesto procedimiento judicial para obtener autorización.", "multiple_files": false}
+            {\"name\": \"司法程序证明文件（如适用）\", \"description\": \"如果已提起司法程序以获得授权。\", \"multiple_files\": false}
         ],
         "next_question_id": "final_document_review"
     },

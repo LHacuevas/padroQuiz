@@ -3,7 +3,7 @@
     {
       "id": "docs_with_consent_non_eu_short",
       "type": "info_block",
-      "text": "Para empadronarse con autorización del titular de la vivienda (extranjero no comunitario sin residencia de larga duración), necesitará:",
+      "text": "Pour vous inscrire avec l'autorisation du titulaire du logement (étranger non communautaire sans autorisation de résidence de longue durée), vous aurez besoin :",
       "documents": [
         {"name": "Pasaporte o documento de identidad del solicitante en vigor", "description": "Pasaporte o documento de identidad del país de origen en vigor. Si aplica, también Resguardo de presentación de solicitud de protección internacional o Documentos acreditativos de la condición de solicitante de protección internacional.", "multiple_files": true, "id_extractable": true},
         {"name": "Autorización expresa de un mayor de edad ya empadronado", "description": "Documento firmado por el autorizante que reside en el domicilio, autorizando su empadronamiento.", "multiple_files": false},
@@ -14,26 +14,26 @@
     },
     {
         "id": "q_add_more_people",
-        "question": "¿Desea añadir a más personas (cónyuge, hijos, etc.) que se empadronarán en el mismo domicilio?",
+        "question": "Souhaitez-vous ajouter d'autres personnes (conjoint, enfants, etc.) qui s'inscriront au même domicile ?",
         "type": "single_choice",
         "options": [
-            {"text": "Sí, quiero añadir más personas", "next_question_id": "q_type_of_additional_person"},
+            {"text": "Oui, je souhaite ajouter d'autres personnes", "next_question_id": "q_type_of_additional_person"},
             {"text": "Non, continuer uniquement avec les personnes déjà affichées", "next_question_id": "final_document_review"}
         ]
     },
     {
         "id": "q_type_of_additional_person",
-        "question": "¿Qué tipo de persona adicional desea empadronar?",
+        "question": "Quel type de personne supplémentaire souhaitez-vous inscrire ?",
         "type": "single_choice",
         "options": [
-            {"text": "Un adulto", "next_question_id": "docs_additional_adult"},
-            {"text": "Un menor (no recién nacido)", "next_question_id": "q_minor_living_arrangement_additional"}
+            {"text": "Un adulte", "next_question_id": "docs_additional_adult"},
+            {"text": "Un mineur (pas un nouveau-né)", "next_question_id": "q_minor_living_arrangement_additional"}
         ]
     },
     {
       "id": "docs_additional_adult",
       "type": "info_block",
-      "text": "Para añadir a un adulto, necesitará:",
+      "text": "Pour ajouter un adulte, vous aurez besoin :",
       "documents": [
         {"name": "Documento de identidad de la persona adicional", "description": "DNI, NIE, Pasaporte en vigor de la persona adicional. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true}
       ],
@@ -41,11 +41,11 @@
     },
     {
         "id": "q_minor_living_arrangement_additional",
-        "question": "¿El menor adicional se empadronará con ambos progenitores/tutores, con uno solo de ellos, o en un domicilio distinto al de sus progenitores/tutores?",
+        "question": "Le mineur supplémentaire sera-t-il inscrit avec les deux parents/tuteurs, avec un seul d'entre eux, ou à un domicile différent de celui de ses parents/tuteurs ?",
         "type": "single_choice",
         "options": [
-            {"text": "Con ambos progenitores/tutores", "next_question_id": "docs_minor_with_both_parents_additional"},
-            {"text": "Con uno solo de los progenitores/tutores", "next_question_id": "q_minor_one_parent_custody_additional"},
+            {"text": "Avec les deux parents/tuteurs", "next_question_id": "docs_minor_with_both_parents_additional"},
+            {"text": "Avec un seul des parents/tuteurs", "next_question_id": "q_minor_one_parent_custody_additional"},
             {"text": "En un domicilio distinto al de los progenitores/tutores", "next_question_id": "docs_minor_other_address_additional"}
         ]
     },
@@ -62,11 +62,11 @@
     },
     {
         "id": "q_minor_one_parent_custody_additional",
-        "question": "¿Tiene una resolución judicial que atribuya la guarda y custodia en exclusiva al progenitor que solicita el empadronamiento del menor adicional, o no existe resolución judicial sobre la guarda y custodia?",
+        "question": "Avez-vous une décision de justice attribuant la garde exclusive au parent demandant l'inscription du mineur supplémentaire, ou n'y a-t-il pas de décision de justice concernant la garde ?",
         "type": "single_choice",
         "options": [
-            {"text": "Sí, tengo resolución judicial de guarda y custodia exclusiva", "next_question_id": "docs_minor_one_parent_exclusive_custody_additional"},
-            {"text": "No, no existe resolución judicial sobre la guarda y custodia (separación de hecho, etc.)", "next_question_id": "docs_minor_one_parent_no_resolution_additional"}
+            {"text": "Oui, j'ai une décision de justice de garde exclusive", "next_question_id": "docs_minor_one_parent_exclusive_custody_additional"},
+            {"text": "Non, il n'y a pas de décision de justice concernant la garde (séparation de fait, etc.)", "next_question_id": "docs_minor_one_parent_no_resolution_additional"}
         ]
     },
     {
@@ -74,7 +74,7 @@
         "type": "info_block",
         "text": "Para empadronar al menor adicional con un solo progenitor con guarda y custodia exclusiva, necesitará:",
         "documents": [
-            {"name": "Libro de Familia o certificado de nacimiento del menor adicional", "description": "Original y copia.", "multiple_files": false},
+            {"name": "Livret de famille ou certificat de naissance du mineur supplémentaire", "description": "Original et copie.", "multiple_files": false},
             {"name": "Documento de identidad del progenitor solicitante (para el menor adicional)", "description": "DNI/NIE/Pasaporte en vigor del progenitor que solicita el empadronamiento. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
             {"name": "Resolución judicial de guarda y custodia exclusiva", "description": "Documento judicial que atribuye la guarda y custodia en exclusiva.", "multiple_files": false},
             {"name": "Declaración responsable (Anexo II)", "description": "Según el modelo che figura en Anexo II.", "multiple_files": false}
@@ -95,11 +95,11 @@
     },
     {
         "id": "q_minor_other_address_additional",
-        "question": "¿Tiene autorización escrita de ambos progenitores o resolución judicial para que el menor adicional resida en otro domicilio?",
+        "question": "Avez-vous une autorisation écrite des deux parents ou une décision de justice pour que le mineur supplémentaire réside à un autre domicile ?",
         "type": "single_choice",
         "options": [
-            {"text": "Sí, tengo autorización de ambos o resolución judicial", "next_question_id": "docs_minor_other_address_consent_additional"},
-            {"text": "No, sólo autorización de uno y/o declaración responsable (o no tengo ninguno)", "next_question_id": "docs_minor_other_address_one_parent_or_none_additional"}
+            {"text": "Oui, j'ai l'autorisation des deux ou une décision de justice", "next_question_id": "docs_minor_other_address_consent_additional"},
+            {"text": "Non, seule l'autorisation d'un seul et/ou déclaration sous serment (ou je n'en ai aucune)", "next_question_id": "docs_minor_other_address_one_parent_or_none_additional"}
         ]
     },
     {
@@ -107,7 +107,7 @@
         "type": "info_block",
         "text": "Para empadronar al menor adicional en un domicilio distinto con autorización de ambos progenitores o resolución judicial, necesitará:",
         "documents": [
-            {"name": "Libro de Familia o certificado de nacimiento del menor adicional", "description": "Original y copia.", "multiple_files": false},
+            {"name": "Livret de famille ou certificat de naissance du mineur supplémentaire", "description": "Original et copie.", "multiple_files": false},
             {"name": "Documento de identidad del progenitor 1 (para el menor adicional)", "description": "DNI/NIE/Pasaporte en vigor del progenitor 1. (Ambas caras del DNI/NIE si aplica)", "multiple_files": false, "id_extractable": true},
             {"name": "Documento de identidad del progenitor 2 (para el menor adicional)", "description": "DNI/NIE/Pasaporte en vigor del progenitor 2. (Ambas caras del DNI/NIE si aplica)", "multiple_files": false, "id_extractable": true},
             {"name": "Autorización por escrito de ambos progenitores o resolución judicial", "description": "Autorización expresa para que el menor resida en ese domicilio. En casos de guarda y custodia compartida sin pronunciamiento de empadronamiento, se exige mutuo acuerdo o nueva resolución judicial.", "multiple_files": false}

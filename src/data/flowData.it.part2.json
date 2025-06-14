@@ -3,7 +3,7 @@
     {
       "id": "docs_spanish_owner",
       "type": "info_block",
-      "text": "Para empadronarse como español propietario, necesitará:",
+ "text": "Per registrarsi come proprietario spagnolo, avrà bisogno di:",
       "documents": [
         {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE)", "multiple_files": true, "id_extractable": true},
         {"name": "Título de propiedad de la vivienda", "description": "Escritura de compraventa, nota simple del registro de la propiedad, etc.", "multiple_files": false}
@@ -13,7 +13,7 @@
     {
       "id": "docs_spanish_tenant",
       "type": "info_block",
-      "text": "Para empadronarse como español inquilino, necesitará:",
+ "text": "Per registrarsi come inquilino spagnolo, avrà bisogno di:",
       "documents": [
         {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE)", "multiple_files": true, "id_extractable": true},
         {"name": "Contrato de alquiler en vigor", "description": "Contrato de arrendamiento de la vivienda.", "multiple_files": false},
@@ -24,7 +24,7 @@
     {
       "id": "docs_with_consent",
       "type": "info_block",
-      "text": "Para empadronarse con autorización del titular de la vivienda, necesitará:",
+ "text": "Per registrarsi con l'autorizzazione del titolare dell'abitazione, avrà bisogno di:",
       "documents": [
         {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE)", "multiple_files": true, "id_extractable": true},
         {"name": "Autorización expresa de un mayor de edad ya empadronado", "description": "Documento firmado por el autorizante que reside en el domicilio, autorizando su empadronamiento.", "multiple_files": false},
@@ -36,7 +36,7 @@
     {
       "id": "docs_collective_establishment",
       "type": "info_block",
-      "text": "Para empadronarse en un establecimiento colectivo, necesitará:",
+ "text": "Per registrarsi in una struttura collettiva, avrà bisogno di:",
       "documents": [
         {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
         {"name": "Autorización del director del establecimiento", "description": "Documento firmado por la persona que ostente la dirección del establecimiento.", "multiple_files": false}
@@ -46,7 +46,7 @@
     {
       "id": "docs_infravivienda_social_services",
       "type": "info_block",
-      "text": "Para empadronarse en infravivienda o sin domicilio fijo, necesitará:",
+ "text": "Per registrarsi in alloggi precari o senza fissa dimora, avrà bisogno di:",
       "documents": [
         {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
         {"name": "Informe de Servicios Sociales", "description": "Informe de los Servicios Sociales que acredite la habitualidad de la residencia en el municipio y la dirección a figurar (sede del Servicio, albergue, punto geográfico, etc.).", "multiple_files": false}
@@ -56,7 +56,7 @@
     {
       "id": "docs_recluso",
       "type": "info_block",
-      "text": "Para empadronarse como recluso en el centro penitenciario, necesitará:",
+ "text": "Per registrarsi come detenuto in un centro penitenziario, avrà bisogno di:",
       "documents": [
         {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante o documento de identidad expedido por la Secretaría de Estado de Instituciones Penitenciarias.", "multiple_files": true, "id_extractable": true},
         {"name": "Informe del centro penitenciario", "description": "Documento del centro acreditando el internamiento.", "multiple_files": false}
@@ -66,7 +66,7 @@
     {
       "id": "docs_violence_victim",
       "type": "info_block",
-      "text": "Para empadronarse como víctima de violencia de género en domicilio protegido, necesitará:",
+ "text": "Per registrarsi come vittima di violenza di genere in un domicilio protetto, avrà bisogno di:",
       "documents": [
         {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
         {"name": "Informe de Servicios Sociales o institución social", "description": "Informe que acredite la situación y la dirección donde se empadrona por seguridad.", "multiple_files": false}
@@ -76,7 +76,7 @@
     {
       "id": "docs_eu_owner",
       "type": "info_block",
-      "text": "Para empadronarse como ciudadano de la UE/EEE/Suiza propietario, necesitará:",
+ "text": "Per registrarsi come cittadino UE/SEE/Svizzero proprietario, avrà bisogno di:",
       "documents": [
         {"name": "Documento de identidad", "description": "Pasaporte o documento de identidad en vigor del país de origen Y Certificado de Registro de Ciudadano de la Unión con NIE (si aplica).", "multiple_files": true, "id_extractable": true},
         {"name": "Título de propiedad de la vivienda", "description": "Escritura de compraventa, nota simple del registro de la propiedad, etc.", "multiple_files": false}
@@ -86,7 +86,7 @@
     {
       "id": "docs_eu_tenant",
       "type": "info_block",
-      "text": "Para empadronarse como ciudadano de la UE/EEE/Suiza inquilino, necesitará:",
+ "text": "Per registrarsi come cittadino UE/SEE/Svizzero inquilino, avrà bisogno di:",
       "documents": [
         {"name": "Documento de identidad", "description": "Pasaporte o documento de identidad en vigor del país de origen Y Certificado de Registro de Ciudadano de la Unión con NIE (si aplica).", "multiple_files": true, "id_extractable": true},
         {"name": "Contrato de alquiler en vigor", "description": "Contrato de arrendamiento de la vivienda.", "multiple_files": false},
@@ -97,7 +97,7 @@
     {
       "id": "docs_with_consent_eu",
       "type": "info_block",
-      "text": "Para empadronarse con autorización del titular de la vivienda (ciudadano UE/EEE/Suiza), necesitará:",
+ "text": "Per registrarsi con l'autorizzazione del titolare dell'abitazione (cittadino UE/SEE/Svizzero), avrà bisogno di:",
       "documents": [
         {"name": "Documento de identidad del solicitante", "description": "Pasaporte o documento de identidad en vigor del país de origen Y Certificado de Registro de Ciudadano de la Unión con NIE (si aplica).", "multiple_files": true, "id_extractable": true},
         {"name": "Autorización expresa de un mayor de edad ya empadronado", "description": "Documento firmado por el autorizante que reside en el domicilio, autorizando su empadronamiento.", "multiple_files": false},
@@ -109,7 +109,7 @@
     {
       "id": "docs_non_eu_long_owner",
       "type": "info_block",
-      "text": "Para empadronarse como extranjero no comunitario con residencia de larga duración y propietario, necesitará:",
+ "text": "Per registrarsi come straniero extracomunitario con residenza di lunga durata e proprietario, avrà bisogno di:",
       "documents": [
         {"name": "Tarjeta de Identidad de Extranjero (TIE) en vigor", "description": "TIE con autorización de residencia de larga duración. (Ambas caras)", "multiple_files": true, "id_extractable": true},
         {"name": "Título de propiedad de la vivienda", "description": "Escritura de compraventa, nota simple del registro de la propiedad, etc.", "multiple_files": false}
@@ -119,7 +119,7 @@
     {
       "id": "docs_non_eu_long_tenant",
       "type": "info_block",
-      "text": "Para empadronarse como extranjero no comunitario con residencia de larga duración y inquilino, necesitará:",
+ "text": "Per registrarsi come straniero extracomunitario con residenza di lunga durata e inquilino, avrà bisogno di:",
       "documents": [
         {"name": "Tarjeta de Identidad de Extranjero (TIE) en vigor", "description": "TIE con autorización de residencia de larga duración. (Ambas caras)", "multiple_files": true, "id_extractable": true},
         {"name": "Contrato de alquiler en vigor", "description": "Contrato de arrendamiento de la vivienda.", "multiple_files": false},
@@ -130,7 +130,7 @@
     {
       "id": "docs_with_consent_non_eu_long",
       "type": "info_block",
-      "text": "Para empadronarse con autorización del titular de la vivienda (extranjero no comunitario con residencia de larga duración), necesitará:",
+ "text": "Per registrarsi con l'autorizzazione del titolare dell'abitazione (straniero extracomunitario con residenza di lunga durata), avrà bisogno di:",
       "documents": [
         {"name": "Pasaporte o documento de identidad del solicitante en vigor", "description": "Pasaporte o documento de identidad del país de origen en vigor. Si aplica, también Resguardo de presentación de solicitud de protección internacional o Documentos acreditativos de la condición de solicitante de protección internacional.", "multiple_files": true, "id_extractable": true},
         {"name": "Autorización expresa de un mayor de edad ya empadronado", "description": "Documento firmado por el autorizante que reside en el domicilio, autorizando su empadronamiento.", "multiple_files": false},
@@ -142,7 +142,7 @@
     {
       "id": "docs_non_eu_short_owner",
       "type": "info_block",
-      "text": "Para empadronarse como extranjero no comunitario sin residencia de larga duración y propietario, necesitará:",
+ "text": "Per registrarsi come straniero extracomunitario senza residenza di lunga durata e proprietario, avrà bisogno di:",
       "documents": [
         {"name": "Pasaporte o documento de identidad de su país en vigor", "description": "Pasaporte o documento de identidad del país de origen en vigor. Si aplica, también Resguardo de presentación de solicitud de protección internacional o Documentos acreditativos de la condición de solicitante de protección internacional.", "multiple_files": true, "id_extractable": true},
         {"name": "Título de propiedad de la vivienda", "description": "Escritura de compraventa, nota simple del registro de la propiedad, etc.", "multiple_files": false}
@@ -152,7 +152,7 @@
     {
       "id": "docs_non_eu_short_tenant",
       "type": "info_block",
-      "text": "Para empadronarse como extranjero no comunitario sin residencia de larga duración y inquilino, necesitará:",
+ "text": "Per registrarsi come straniero extracomunitario senza residenza di lunga durata e inquilino, avrà bisogno di:",
       "documents": [
         {"name": "Pasaporte o documento de identidad de su país en vigor", "description": "Pasaporte o documento de identidad del país de origen en vigor. Si aplica, también Resguardo de presentación de solicitud de protección internacional o Documentos acreditativos de la condición de solicitante de protección internacional.", "multiple_files": true, "id_extractable": true},
         {"name": "Contrato de alquiler en vigor", "description": "Contrato de arrendamiento de la vivienda.", "multiple_files": false},

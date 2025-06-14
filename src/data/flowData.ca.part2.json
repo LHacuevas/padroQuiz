@@ -3,160 +3,160 @@
     {
       "id": "docs_spanish_owner",
       "type": "info_block",
-      "text": "Para empadronarse como español propietario, necesitará:",
+ "text": "Per empadronar-se com a espanyol propietari, necessitarà:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE)", "multiple_files": true, "id_extractable": true},
-        {"name": "Título de propiedad de la vivienda", "description": "Escritura de compraventa, nota simple del registro de la propiedad, etc.", "multiple_files": false}
+        {"name": "Document d'identitat del sol·licitant", "description": "DNI, NIE, Passaport en vigor del sol·licitant. (Ambdues cares del DNI/NIE)", "multiple_files": true, "id_extractable": true},
+        {"name": "Títol de propietat de l'habitatge", "description": "Escriptura de compravenda, nota simple del registre de la propietat, etc.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_spanish_tenant",
       "type": "info_block",
-      "text": "Para empadronarse como español inquilino, necesitará:",
+ "text": "Per empadronar-se com a espanyol llogater, necessitarà:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE)", "multiple_files": true, "id_extractable": true},
-        {"name": "Contrato de alquiler en vigor", "description": "Contrato de arrendamiento de la vivienda.", "multiple_files": false},
-        {"name": "Última factura de suministro (para acreditación adicional del domicilio)", "description": "Última factura de agua, luz o gas a nombre del titular del contrato.", "multiple_files": false}
+        {"name": "Document d'identitat del sol·licitant", "description": "DNI, NIE, Passaport en vigor del sol·licitant. (Ambdues cares del DNI/NIE)", "multiple_files": true, "id_extractable": true},
+        {"name": "Contracte de lloguer en vigor", "description": "Contracte d'arrendament de l'habitatge.", "multiple_files": false},
+        {"name": "Última factura de subministrament (per a acreditació addicional del domicili)", "description": "Última factura d'aigua, llum o gas a nom del titular del contracte.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_with_consent",
       "type": "info_block",
-      "text": "Para empadronarse con autorización del titular de la vivienda, necesitará:",
+ "text": "Per empadronar-se amb autorització del titular de l'habitatge, necessitarà:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE)", "multiple_files": true, "id_extractable": true},
-        {"name": "Autorización expresa de un mayor de edad ya empadronado", "description": "Documento firmado por el autorizante que reside en el domicilio, autorizando su empadronamiento.", "multiple_files": false},
-        {"name": "Documento de identidad del autorizante", "description": "DNI, NIE, Pasaporte en vigor del autorizante.", "multiple_files": true, "id_extractable": true},
-        {"name": "Documento que acredite el uso de la vivienda por el autorizante", "description": "Título de propiedad (escritura, nota simple), Contrato de arrendamiento en vigor del autorizante y último recibo de alquiler, etc.", "multiple_files": false}
+        {"name": "Document d'identitat del sol·licitant", "description": "DNI, NIE, Passaport en vigor del sol·licitant. (Ambdues cares del DNI/NIE)", "multiple_files": true, "id_extractable": true},
+        {"name": "Autorització expressa d'un major d'edat ja empadronat", "description": "Document signat per l'autoritzant que resideix al domicili, autoritzant el seu empadronament.", "multiple_files": false},
+        {"name": "Document d'identitat de l'autoritzant", "description": "DNI, NIE, Passaport en vigor de l'autoritzant.", "multiple_files": true, "id_extractable": true},
+        {"name": "Document que acrediti l'ús de l'habitatge per l'autoritzant", "description": "Títol de propietat (escriptura, nota simple), Contracte d'arrendament en vigor de l'autoritzant i últim rebut de lloguer, etc.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_collective_establishment",
       "type": "info_block",
-      "text": "Para empadronarse en un establecimiento colectivo, necesitará:",
+ "text": "Per empadronar-se en un establiment col·lectiu, necessitarà:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
-        {"name": "Autorización del director del establecimiento", "description": "Documento firmado por la persona que ostente la dirección del establecimiento.", "multiple_files": false}
+        {"name": "Document d'identitat del sol·licitant", "description": "DNI, NIE, Passaport en vigor del sol·licitant. (Ambdues cares del DNI/NIE si escau)", "multiple_files": true, "id_extractable": true},
+        {"name": "Autorització del director de l'establiment", "description": "Document signat per la persona que ostenti la direcció de l'establiment.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_infravivienda_social_services",
       "type": "info_block",
-      "text": "Para empadronarse en infravivienda o sin domicilio fijo, necesitará:",
+ "text": "Per empadronar-se en infrahhabitatge o sense domicili fix, necessitarà:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
-        {"name": "Informe de Servicios Sociales", "description": "Informe de los Servicios Sociales que acredite la habitualidad de la residencia en el municipio y la dirección a figurar (sede del Servicio, albergue, punto geográfico, etc.).", "multiple_files": false}
+        {"name": "Document d'identitat del sol·licitant", "description": "DNI, NIE, Passaport en vigor del sol·licitant. (Ambdues cares del DNI/NIE si escau)", "multiple_files": true, "id_extractable": true},
+        {"name": "Informe de Serveis Socials", "description": "Informe dels Serveis Socials que acrediti l'habitualitat de la residència al municipi i la direcció a figurar (seu del Servei, alberg, punt geogràfic, etc.).", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_recluso",
       "type": "info_block",
-      "text": "Para empadronarse como recluso en el centro penitenciario, necesitará:",
+ "text": "Per empadronar-se com a reclús al centre penitenciari, necessitarà:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante o documento de identidad expedido por la Secretaría de Estado de Instituciones Penitenciarias.", "multiple_files": true, "id_extractable": true},
-        {"name": "Informe del centro penitenciario", "description": "Documento del centro acreditando el internamiento.", "multiple_files": false}
+        {"name": "Document d'identitat del sol·licitant", "description": "DNI, NIE, Passaport en vigor del sol·licitant o document d'identitat expedit per la Secretaria d'Estat d'Institucions Penitenciàries.", "multiple_files": true, "id_extractable": true},
+        {"name": "Informe del centre penitenciari", "description": "Document del centre acreditant l'internament.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_violence_victim",
       "type": "info_block",
-      "text": "Para empadronarse como víctima de violencia de género en domicilio protegido, necesitará:",
+ "text": "Per empadronar-se com a víctima de violència de gènere en domicili protegit, necessitarà:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
-        {"name": "Informe de Servicios Sociales o institución social", "description": "Informe que acredite la situación y la dirección donde se empadrona por seguridad.", "multiple_files": false}
+        {"name": "Document d'identitat del sol·licitant", "description": "DNI, NIE, Passaport en vigor del sol·licitant. (Ambdues cares del DNI/NIE si escau)", "multiple_files": true, "id_extractable": true},
+        {"name": "Informe de Serveis Socials o institució social", "description": "Informe que acrediti la situació i la direcció on s'empadrona per seguretat.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_eu_owner",
       "type": "info_block",
-      "text": "Para empadronarse como ciudadano de la UE/EEE/Suiza propietario, necesitará:",
+ "text": "Per empadronar-se com a ciutadà de la UE/EEE/Suïssa propietari, necessitarà:",
       "documents": [
-        {"name": "Documento de identidad", "description": "Pasaporte o documento de identidad en vigor del país de origen Y Certificado de Registro de Ciudadano de la Unión con NIE (si aplica).", "multiple_files": true, "id_extractable": true},
-        {"name": "Título de propiedad de la vivienda", "description": "Escritura de compraventa, nota simple del registro de la propiedad, etc.", "multiple_files": false}
+        {"name": "Document d'identitat", "description": "Passaport o document d'identitat en vigor del país d'origen I Certificat de Registre de Ciutadà de la Unió amb NIE (si escau).", "multiple_files": true, "id_extractable": true},
+        {"name": "Títol de propietat de l'habitatge", "description": "Escriptura de compravenda, nota simple del registre de la propietat, etc.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_eu_tenant",
       "type": "info_block",
-      "text": "Para empadronarse como ciudadano de la UE/EEE/Suiza inquilino, necesitará:",
+ "text": "Per empadronar-se com a ciutadà de la UE/EEE/Suïssa llogater, necessitarà:",
       "documents": [
-        {"name": "Documento de identidad", "description": "Pasaporte o documento de identidad en vigor del país de origen Y Certificado de Registro de Ciudadano de la Unión con NIE (si aplica).", "multiple_files": true, "id_extractable": true},
-        {"name": "Contrato de alquiler en vigor", "description": "Contrato de arrendamiento de la vivienda.", "multiple_files": false},
-        {"name": "Última factura de suministro (para acreditación adicional del domicilio)", "description": "Última factura de agua, luz o gas a nombre del titular del contrato.", "multiple_files": false}
+        {"name": "Document d'identitat", "description": "Passaport o document d'identitat en vigor del país d'origen I Certificat de Registre de Ciutadà de la Unió amb NIE (si escau).", "multiple_files": true, "id_extractable": true},
+        {"name": "Contracte de lloguer en vigor", "description": "Contracte d'arrendament de l'habitatge.", "multiple_files": false},
+        {"name": "Última factura de subministrament (per a acreditació addicional del domicili)", "description": "Última factura d'aigua, llum o gas a nom del titular del contracte.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_with_consent_eu",
       "type": "info_block",
-      "text": "Para empadronarse con autorización del titular de la vivienda (ciudadano UE/EEE/Suiza), necesitará:",
+ "text": "Per empadronar-se amb autorització del titular de l'habitatge (ciutadà UE/EEE/Suïssa), necessitarà:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "Pasaporte o documento de identidad en vigor del país de origen Y Certificado de Registro de Ciudadano de la Unión con NIE (si aplica).", "multiple_files": true, "id_extractable": true},
-        {"name": "Autorización expresa de un mayor de edad ya empadronado", "description": "Documento firmado por el autorizante que reside en el domicilio, autorizando su empadronamiento.", "multiple_files": false},
-        {"name": "Documento de identidad del autorizante", "description": "DNI, NIE, Pasaporte en vigor del autorizante.", "multiple_files": true, "id_extractable": true},
-        {"name": "Documento que acredite el uso de la vivienda por el autorizante", "description": "Título de propiedad (escritura, nota simple), Contrato de arrendamiento en vigor del autorizante y último recibo de alquiler, etc.", "multiple_files": false}
+        {"name": "Document d'identitat del sol·licitant", "description": "Passaport o document d'identitat en vigor del país d'origen I Certificat de Registre de Ciutadà de la Unió amb NIE (si escau).", "multiple_files": true, "id_extractable": true},
+        {"name": "Autorització expressa d'un major d'edat ja empadronat", "description": "Document signat per l'autoritzant que resideix al domicili, autoritzant el seu empadronament.", "multiple_files": false},
+        {"name": "Document d'identitat de l'autoritzant", "description": "DNI, NIE, Passaport en vigor de l'autoritzant.", "multiple_files": true, "id_extractable": true},
+        {"name": "Document que acrediti l'ús de l'habitatge per l'autoritzant", "description": "Títol de propietat (escriptura, nota simple), Contracte d'arrendament en vigor de l'autoritzant i últim rebut de lloguer, etc.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_non_eu_long_owner",
       "type": "info_block",
-      "text": "Para empadronarse como extranjero no comunitario con residencia de larga duración y propietario, necesitará:",
+ "text": "Per empadronar-se com a estranger no comunitari amb residència de llarga durada i propietari, necessitarà:",
       "documents": [
-        {"name": "Tarjeta de Identidad de Extranjero (TIE) en vigor", "description": "TIE con autorización de residencia de larga duración. (Ambas caras)", "multiple_files": true, "id_extractable": true},
-        {"name": "Título de propiedad de la vivienda", "description": "Escritura de compraventa, nota simple del registro de la propiedad, etc.", "multiple_files": false}
+        {"name": "Targeta d'Identitat d'Estranger (TIE) en vigor", "description": "TIE amb autorització de residència de llarga durada. (Ambdues cares)", "multiple_files": true, "id_extractable": true},
+        {"name": "Títol de propietat de l'habitatge", "description": "Escriptura de compravenda, nota simple del registre de la propietat, etc.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_non_eu_long_tenant",
       "type": "info_block",
-      "text": "Para empadronarse como extranjero no comunitario con residencia de larga duración y inquilino, necesitará:",
+ "text": "Per empadronar-se com a estranger no comunitari amb residència de llarga durada i llogater, necessitarà:",
       "documents": [
-        {"name": "Tarjeta de Identidad de Extranjero (TIE) en vigor", "description": "TIE con autorización de residencia de larga duración. (Ambas caras)", "multiple_files": true, "id_extractable": true},
-        {"name": "Contrato de alquiler en vigor", "description": "Contrato de arrendamiento de la vivienda.", "multiple_files": false},
-        {"name": "Última factura de suministro (para acreditación adicional del domicilio)", "description": "Última factura de agua, luz o gas a nombre del titular del contrato.", "multiple_files": false}
+        {"name": "Targeta d'Identitat d'Estranger (TIE) en vigor", "description": "TIE amb autorització de residència de llarga durada. (Ambdues cares)", "multiple_files": true, "id_extractable": true},
+        {"name": "Contracte de lloguer en vigor", "description": "Contracte d'arrendament de l'habitatge.", "multiple_files": false},
+        {"name": "Última factura de subministrament (per a acreditació addicional del domicili)", "description": "Última factura d'aigua, llum o gas a nom del titular del contracte.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_with_consent_non_eu_long",
       "type": "info_block",
-      "text": "Para empadronarse con autorización del titular de la vivienda (extranjero no comunitario con residencia de larga duración), necesitará:",
+ "text": "Per empadronar-se amb autorització del titular de l'habitatge (estranger no comunitari amb residència de llarga durada), necessitarà:",
       "documents": [
-        {"name": "Pasaporte o documento de identidad del solicitante en vigor", "description": "Pasaporte o documento de identidad del país de origen en vigor. Si aplica, también Resguardo de presentación de solicitud de protección internacional o Documentos acreditativos de la condición de solicitante de protección internacional.", "multiple_files": true, "id_extractable": true},
-        {"name": "Autorización expresa de un mayor de edad ya empadronado", "description": "Documento firmado por el autorizante que reside en el domicilio, autorizando su empadronamiento.", "multiple_files": false},
-        {"name": "Documento de identidad del autorizante", "description": "DNI, NIE, Pasaporte en vigor del autorizante.", "multiple_files": true, "id_extractable": true},
-        {"name": "Documento que acredite el uso de la vivienda por el autorizante", "description": "Título de propiedad (escritura, nota simple), Contrato de arrendamiento en vigor del autorizante y último recibo de alquiler, etc.", "multiple_files": false}
+        {"name": "Passaport o document d'identitat del sol·licitant en vigor", "description": "Passaport o document d'identitat del país d'origen en vigor. Si escau, també Resguard de presentació de sol·licitud de protecció internacional o Documents acreditatius de la condició de sol·licitant de protecció internacional.", "multiple_files": true, "id_extractable": true},
+        {"name": "Autorització expressa d'un major d'edat ja empadronat", "description": "Document signat per l'autoritzant que resideix al domicili, autoritzant el seu empadronament.", "multiple_files": false},
+        {"name": "Document d'identitat de l'autoritzant", "description": "DNI, NIE, Passaport en vigor de l'autoritzant.", "multiple_files": true, "id_extractable": true},
+        {"name": "Document que acrediti l'ús de l'habitatge per l'autoritzant", "description": "Títol de propietat (escriptura, nota simple), Contracte d'arrendament en vigor de l'autoritzant i últim rebut de lloguer, etc.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_non_eu_short_owner",
       "type": "info_block",
-      "text": "Para empadronarse como extranjero no comunitario sin residencia de larga duración y propietario, necesitará:",
+ "text": "Per empadronar-se com a estranger no comunitari sense residència de llarga durada i propietari, necessitarà:",
       "documents": [
-        {"name": "Pasaporte o documento de identidad de su país en vigor", "description": "Pasaporte o documento de identidad del país de origen en vigor. Si aplica, también Resguardo de presentación de solicitud de protección internacional o Documentos acreditativos de la condición de solicitante de protección internacional.", "multiple_files": true, "id_extractable": true},
-        {"name": "Título de propiedad de la vivienda", "description": "Escritura de compraventa, nota simple del registro de la propiedad, etc.", "multiple_files": false}
+        {"name": "Passaport o document d'identitat del seu país en vigor", "description": "Passaport o document d'identitat del país d'origen en vigor. Si escau, també Resguard de presentació de sol·licitud de protecció internacional o Documents acreditatius de la condició de sol·licitant de protecció internacional.", "multiple_files": true, "id_extractable": true},
+        {"name": "Títol de propietat de l'habitatge", "description": "Escriptura de compravenda, nota simple del registre de la propietat, etc.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_non_eu_short_tenant",
       "type": "info_block",
-      "text": "Para empadronarse como extranjero no comunitario sin residencia de larga duración y inquilino, necesitará:",
+ "text": "Per empadronar-se com a estranger no comunitari sense residència de llarga durada i llogater, necessitarà:",
       "documents": [
-        {"name": "Pasaporte o documento de identidad de su país en vigor", "description": "Pasaporte o documento de identidad del país de origen en vigor. Si aplica, también Resguardo de presentación de solicitud de protección internacional o Documentos acreditativos de la condición de solicitante de protección internacional.", "multiple_files": true, "id_extractable": true},
-        {"name": "Contrato de alquiler en vigor", "description": "Contrato de arrendamiento de la vivienda.", "multiple_files": false},
-        {"name": "Última factura de suministro (para acreditación adicional del domicilio)", "description": "Última factura de agua, luz o gas a nombre del titular del contrato.", "multiple_files": false}
+        {"name": "Passaport o document d'identitat del seu país en vigor", "description": "Passaport o document d'identitat del país d'origen en vigor. Si escau, també Resguard de presentació de sol·licitud de protecció internacional o Documents acreditatius de la condició de sol·licitant de protecció internacional.", "multiple_files": true, "id_extractable": true},
+        {"name": "Contracte de lloguer en vigor", "description": "Contracte d'arrendament de l'habitatge.", "multiple_files": false},
+        {"name": "Última factura de subministrament (per a acreditació addicional del domicili)", "description": "Última factura d'aigua, llum o gas a nom del titular del contracte.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     }

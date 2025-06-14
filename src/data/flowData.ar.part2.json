@@ -2,161 +2,161 @@
   "flow": [
     {
       "id": "docs_spanish_owner",
-      "type": "info_block",
-      "text": "Para empadronarse como español propietario, necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل كمالك إسباني، ستحتاج إلى:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE)", "multiple_files": true, "id_extractable": true},
-        {"name": "Título de propiedad de la vivienda", "description": "Escritura de compraventa, nota simple del registro de la propiedad, etc.", "multiple_files": false}
+ {"name": "وثيقة هوية مقدم الطلب", "description": "بطاقة الهوية الوطنية (DNI) أو رقم هوية الأجانب (NIE) أو جواز سفر ساري المفعول لمقدم الطلب. (كلا وجهي DNI/NIE)", "multiple_files": true, "id_extractable": true},
+ {"name": "سند ملكية السكن", "description": "عقد البيع، مذكرة بسيطة من السجل العقاري، إلخ.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_spanish_tenant",
-      "type": "info_block",
-      "text": "Para empadronarse como español inquilino, necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل كمستأجر إسباني، ستحتاج إلى:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE)", "multiple_files": true, "id_extractable": true},
-        {"name": "Contrato de alquiler en vigor", "description": "Contrato de arrendamiento de la vivienda.", "multiple_files": false},
-        {"name": "Última factura de suministro (para acreditación adicional del domicilio)", "description": "Última factura de agua, luz o gas a nombre del titular del contrato.", "multiple_files": false}
+ {"name": "وثيقة هوية مقدم الطلب", "description": "بطاقة الهوية الوطنية (DNI) أو رقم هوية الأجانب (NIE) أو جواز سفر ساري المفعول لمقدم الطلب. (كلا وجهي DNI/NIE)", "multiple_files": true, "id_extractable": true},
+ {"name": "عقد إيجار ساري المفعول", "description": "عقد إيجار السكن.", "multiple_files": false},
+ {"name": "آخر فاتورة خدمات (لإثبات إضافي للمحل السكني)", "description": "آخر فاتورة ماء أو كهرباء أو غاز باسم صاحب العقد.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_with_consent",
-      "type": "info_block",
-      "text": "Para empadronarse con autorización del titular de la vivienda, necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل بتفويض من صاحب السكن، ستحتاج إلى:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE)", "multiple_files": true, "id_extractable": true},
-        {"name": "Autorización expresa de un mayor de edad ya empadronado", "description": "Documento firmado por el autorizante que reside en el domicilio, autorizando su empadronamiento.", "multiple_files": false},
-        {"name": "Documento de identidad del autorizante", "description": "DNI, NIE, Pasaporte en vigor del autorizante.", "multiple_files": true, "id_extractable": true},
-        {"name": "Documento que acredite el uso de la vivienda por el autorizante", "description": "Título de propiedad (escritura, nota simple), Contrato de arrendamiento en vigor del autorizante y último recibo de alquiler, etc.", "multiple_files": false}
+ {"name": "وثيقة هوية مقدم الطلب", "description": "بطاقة الهوية الوطنية (DNI) أو رقم هوية الأجانب (NIE) أو جواز سفر ساري المفعول لمقدم الطلب. (كلا وجهي DNI/NIE)", "multiple_files": true, "id_extractable": true},
+ {"name": "تفويض صريح من شخص بالغ مسجل بالفعل", "description": "وثيقة موقعة من المفوض المقيم في السكن، تفوض تسجيلك.", "multiple_files": false},
+ {"name": "وثيقة هوية المفوض", "description": "بطاقة الهوية الوطنية (DNI) أو رقم هوية الأجانب (NIE) أو جواز سفر ساري المفعول للمفوض.", "multiple_files": true, "id_extractable": true},
+ {"name": "وثيقة تثبت استخدام السكن من قبل المفوض", "description": "سند ملكية (عقد، مذكرة بسيطة)، عقد إيجار ساري المفعول للمفوض وآخر إيصال إيجار، إلخ.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_collective_establishment",
-      "type": "info_block",
-      "text": "Para empadronarse en un establecimiento colectivo, necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل في مؤسسة جماعية، ستحتاج إلى:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
-        {"name": "Autorización del director del establecimiento", "description": "Documento firmado por la persona que ostente la dirección del establecimiento.", "multiple_files": false}
+ {"name": "وثيقة هوية مقدم الطلب", "description": "بطاقة الهوية الوطنية (DNI) أو رقم هوية الأجانب (NIE) أو جواز سفر ساري المفعول لمقدم الطلب. (كلا وجهي DNI/NIE إذا كان ذلك ممكنًا)", "multiple_files": true, "id_extractable": true},
+ {"name": "تفويض مدير المؤسسة", "description": "وثيقة موقعة من قبل الشخص الذي يدير المؤسسة.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_infravivienda_social_services",
-      "type": "info_block",
-      "text": "Para empadronarse en infravivienda o sin domicilio fijo, necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل في مسكن غير لائق أو بدون عنوان ثابت، ستحتاج إلى:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
-        {"name": "Informe de Servicios Sociales", "description": "Informe de los Servicios Sociales que acredite la habitualidad de la residencia en el municipio y la dirección a figurar (sede del Servicio, albergue, punto geográfico, etc.).", "multiple_files": false}
+ {"name": "وثيقة هوية مقدم الطلب", "description": "بطاقة الهوية الوطنية (DNI) أو رقم هوية الأجانب (NIE) أو جواز سفر ساري المفعول لمقدم الطلب. (كلا وجهي DNI/NIE إذا كان ذلك ممكنًا)", "multiple_files": true, "id_extractable": true},
+ {"name": "تقرير الخدمات الاجتماعية", "description": "تقرير من الخدمات الاجتماعية يثبت الإقامة المعتادة في البلدية والعنوان المراد تسجيله (مقر الخدمة، ملجأ، نقطة جغرافية، إلخ).", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_recluso",
-      "type": "info_block",
-      "text": "Para empadronarse como recluso en el centro penitenciario, necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل كسجين في مركز الإصلاحية، ستحتاج إلى:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante o documento de identidad expedido por la Secretaría de Estado de Instituciones Penitenciarias.", "multiple_files": true, "id_extractable": true},
-        {"name": "Informe del centro penitenciario", "description": "Documento del centro acreditando el internamiento.", "multiple_files": false}
+ {"name": "وثيقة هوية مقدم الطلب", "description": "بطاقة الهوية الوطنية (DNI) أو رقم هوية الأجانب (NIE) أو جواز سفر ساري المفعول لمقدم الطلب أو وثيقة هوية صادرة عن وزارة الدولة للمؤسسات الإصلاحية.", "multiple_files": true, "id_extractable": true},
+ {"name": "تقرير مركز الإصلاحية", "description": "وثيقة من المركز تثبت الإقامة.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_violence_victim",
-      "type": "info_block",
-      "text": "Para empadronarse como víctima de violencia de género en domicilio protegido, necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل كضحية عنف جنساني في مسكن محمي، ستحتاج إلى:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor del solicitante. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
-        {"name": "Informe de Servicios Sociales o institución social", "description": "Informe que acredite la situación y la dirección donde se empadrona por seguridad.", "multiple_files": false}
+ {"name": "وثيقة هوية مقدم الطلب", "description": "بطاقة الهوية الوطنية (DNI) أو رقم هوية الأجانب (NIE) أو جواز سفر ساري المفعول لمقدم الطلب. (كلا وجهي DNI/NIE إذا كان ذلك ممكنًا)", "multiple_files": true, "id_extractable": true},
+ {"name": "تقرير الخدمات الاجتماعية أو مؤسسة اجتماعية", "description": "تقرير يثبت الوضع والعنوان الذي يتم التسجيل فيه لأسباب أمنية.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_eu_owner",
-      "type": "info_block",
-      "text": "Para empadronarse como ciudadano de la UE/EEE/Suiza propietario, necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل كمالك مواطن في الاتحاد الأوروبي/المنطقة الاقتصادية الأوروبية/سويسرا، ستحتاج إلى:",
       "documents": [
-        {"name": "Documento de identidad", "description": "Pasaporte o documento de identidad en vigor del país de origen Y Certificado de Registro de Ciudadano de la Unión con NIE (si aplica).", "multiple_files": true, "id_extractable": true},
-        {"name": "Título de propiedad de la vivienda", "description": "Escritura de compraventa, nota simple del registro de la propiedad, etc.", "multiple_files": false}
+ {"name": "وثيقة الهوية", "description": "جواز السفر أو وثيقة الهوية سارية المفعول من بلد المنشأ وشهادة تسجيل مواطن الاتحاد مع رقم هوية الأجانب (NIE) (إذا كان ذلك ممكنًا).", "multiple_files": true, "id_extractable": true},
+ {"name": "سند ملكية السكن", "description": "عقد البيع، مذكرة بسيطة من السجل العقاري، إلخ.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_eu_tenant",
-      "type": "info_block",
-      "text": "Para empadronarse como ciudadano de la UE/EEE/Suiza inquilino, necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل كمستأجر مواطن في الاتحاد الأوروبي/المنطقة الاقتصادية الأوروبية/سويسرا، ستحتاج إلى:",
       "documents": [
-        {"name": "Documento de identidad", "description": "Pasaporte o documento de identidad en vigor del país de origen Y Certificado de Registro de Ciudadano de la Unión con NIE (si aplica).", "multiple_files": true, "id_extractable": true},
-        {"name": "Contrato de alquiler en vigor", "description": "Contrato de arrendamiento de la vivienda.", "multiple_files": false},
-        {"name": "Última factura de suministro (para acreditación adicional del domicilio)", "description": "Última factura de agua, luz o gas a nombre del titular del contrato.", "multiple_files": false}
+ {"name": "وثيقة الهوية", "description": "جواز السفر أو وثيقة الهوية سارية المفعول من بلد المنشأ وشهادة تسجيل مواطن الاتحاد مع رقم هوية الأجانب (NIE) (إذا كان ذلك ممكنًا).", "multiple_files": true, "id_extractable": true},
+ {"name": "عقد إيجار ساري المفعول", "description": "عقد إيجار السكن.", "multiple_files": false},
+ {"name": "آخر فاتورة خدمات (لإثبات إضافي للمحل السكني)", "description": "آخر فاتورة ماء أو كهرباء أو غاز باسم صاحب العقد.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_with_consent_eu",
-      "type": "info_block",
-      "text": "Para empadronarse con autorización del titular de la vivienda (ciudadano UE/EEE/Suiza), necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل بتفويض من صاحب السكن (مواطن في الاتحاد الأوروبي/المنطقة الاقتصادية الأوروبية/سويسرا)، ستحتاج إلى:",
       "documents": [
-        {"name": "Documento de identidad del solicitante", "description": "Pasaporte o documento de identidad en vigor del país de origen Y Certificado de Registro de Ciudadano de la Unión con NIE (si aplica).", "multiple_files": true, "id_extractable": true},
-        {"name": "Autorización expresa de un mayor de edad ya empadronado", "description": "Documento firmado por el autorizante que reside en el domicilio, autorizando su empadronamiento.", "multiple_files": false},
-        {"name": "Documento de identidad del autorizante", "description": "DNI, NIE, Pasaporte en vigor del autorizante.", "multiple_files": true, "id_extractable": true},
-        {"name": "Documento que acredite el uso de la vivienda por el autorizante", "description": "Título de propiedad (escritura, nota simple), Contrato de arrendamiento en vigor del autorizante y último recibo de alquiler, etc.", "multiple_files": false}
+ {"name": "وثيقة هوية مقدم الطلب", "description": "جواز السفر أو وثيقة الهوية سارية المفعول من بلد المنشأ وشهادة تسجيل مواطن الاتحاد مع رقم هوية الأجانب (NIE) (إذا كان ذلك ممكنًا).", "multiple_files": true, "id_extractable": true},
+ {"name": "تفويض صريح من شخص بالغ مسجل بالفعل", "description": "وثيقة موقعة من المفوض المقيم في السكن، تفوض تسجيلك.", "multiple_files": false},
+ {"name": "وثيقة هوية المفوض", "description": "بطاقة الهوية الوطنية (DNI) أو رقم هوية الأجانب (NIE) أو جواز سفر ساري المفعول للمفوض.", "multiple_files": true, "id_extractable": true},
+ {"name": "وثيقة تثبت استخدام السكن من قبل المفوض", "description": "سند ملكية (عقد، مذكرة بسيطة)، عقد إيجار ساري المفعول للمفوض وآخر إيصال إيجار، إلخ.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_non_eu_long_owner",
-      "type": "info_block",
-      "text": "Para empadronarse como extranjero no comunitario con residencia de larga duración y propietario, necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل كأجنبي غير مواطن في الاتحاد الأوروبي ولديه إقامة طويلة الأمد ومالك، ستحتاج إلى:",
       "documents": [
-        {"name": "Tarjeta de Identidad de Extranjero (TIE) en vigor", "description": "TIE con autorización de residencia de larga duración. (Ambas caras)", "multiple_files": true, "id_extractable": true},
-        {"name": "Título de propiedad de la vivienda", "description": "Escritura de compraventa, nota simple del registro de la propiedad, etc.", "multiple_files": false}
+ {"name": "بطاقة هوية الأجنبي (TIE) سارية المفعول", "description": "بطاقة TIE مع تصريح إقامة طويل الأمد. (كلا الوجهين)", "multiple_files": true, "id_extractable": true},
+ {"name": "سند ملكية السكن", "description": "عقد البيع، مذكرة بسيطة من السجل العقاري، إلخ.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_non_eu_long_tenant",
-      "type": "info_block",
-      "text": "Para empadronarse como extranjero no comunitario con residencia de larga duración y inquilino, necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل كأجنبي غير مواطن في الاتحاد الأوروبي ولديه إقامة طويلة الأمد ومستأجر، ستحتاج إلى:",
       "documents": [
-        {"name": "Tarjeta de Identidad de Extranjero (TIE) en vigor", "description": "TIE con autorización de residencia de larga duración. (Ambas caras)", "multiple_files": true, "id_extractable": true},
-        {"name": "Contrato de alquiler en vigor", "description": "Contrato de arrendamiento de la vivienda.", "multiple_files": false},
-        {"name": "Última factura de suministro (para acreditación adicional del domicilio)", "description": "Última factura de agua, luz o gas a nombre del titular del contrato.", "multiple_files": false}
+ {"name": "بطاقة هوية الأجنبي (TIE) سارية المفعول", "description": "بطاقة TIE مع تصريح إقامة طويل الأمد. (كلا الوجهين)", "multiple_files": true, "id_extractable": true},
+ {"name": "عقد إيجار ساري المفعول", "description": "عقد إيجار السكن.", "multiple_files": false},
+ {"name": "آخر فاتورة خدمات (لإثبات إضافي للمحل السكني)", "description": "آخر فاتورة ماء أو كهرباء أو غاز باسم صاحب العقد.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_with_consent_non_eu_long",
-      "type": "info_block",
-      "text": "Para empadronarse con autorización del titular de la vivienda (extranjero no comunitario con residencia de larga duración), necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل بتفويض من صاحب السكن (أجنبي غير مواطن في الاتحاد الأوروبي ولديه إقامة طويلة الأمد)، ستحتاج إلى:",
       "documents": [
-        {"name": "Pasaporte o documento de identidad del solicitante en vigor", "description": "Pasaporte o documento de identidad del país de origen en vigor. Si aplica, también Resguardo de presentación de solicitud de protección internacional o Documentos acreditativos de la condición de solicitante de protección internacional.", "multiple_files": true, "id_extractable": true},
-        {"name": "Autorización expresa de un mayor de edad ya empadronado", "description": "Documento firmado por el autorizante que reside en el domicilio, autorizando su empadronamiento.", "multiple_files": false},
-        {"name": "Documento de identidad del autorizante", "description": "DNI, NIE, Pasaporte en vigor del autorizante.", "multiple_files": true, "id_extractable": true},
-        {"name": "Documento que acredite el uso de la vivienda por el autorizante", "description": "Título de propiedad (escritura, nota simple), Contrato de arrendamiento en vigor del autorizante y último recibo de alquiler, etc.", "multiple_files": false}
+ {"name": "جواز السفر أو وثيقة هوية مقدم الطلب سارية المفعول", "description": "جواز السفر أو وثيقة الهوية من بلد المنشأ سارية المفعول. إذا كان ذلك ممكنًا، أيضًا إيصال تقديم طلب الحماية الدولية أو وثائق تثبت صفة طالب الحماية الدولية.", "multiple_files": true, "id_extractable": true},
+ {"name": "تفويض صريح من شخص بالغ مسجل بالفعل", "description": "وثيقة موقعة من المفوض المقيم في السكن، تفوض تسجيلك.", "multiple_files": false},
+ {"name": "وثيقة هوية المفوض", "description": "بطاقة الهوية الوطنية (DNI) أو رقم هوية الأجانب (NIE) أو جواز سفر ساري المفعول للمفوض.", "multiple_files": true, "id_extractable": true},
+ {"name": "وثيقة تثبت استخدام السكن من قبل المفوض", "description": "سند ملكية (عقد، مذكرة بسيطة)، عقد إيجار ساري المفعول للمفوض وآخر إيصال إيجار، إلخ.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_non_eu_short_owner",
-      "type": "info_block",
-      "text": "Para empadronarse como extranjero no comunitario sin residencia de larga duración y propietario, necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل كأجنبي غير مواطن في الاتحاد الأوروبي بدون إقامة طويلة الأمد ومالك، ستحتاج إلى:",
       "documents": [
-        {"name": "Pasaporte o documento de identidad de su país en vigor", "description": "Pasaporte o documento de identidad del país de origen en vigor. Si aplica, también Resguardo de presentación de solicitud de protección internacional o Documentos acreditativos de la condición de solicitante de protección internacional.", "multiple_files": true, "id_extractable": true},
-        {"name": "Título de propiedad de la vivienda", "description": "Escritura de compraventa, nota simple del registro de la propiedad, etc.", "multiple_files": false}
+ {"name": "جواز السفر أو وثيقة الهوية من بلدك سارية المفعول", "description": "جواز السفر أو وثيقة الهوية من بلد المنشأ سارية المفعول. إذا كان ذلك ممكنًا، أيضًا إيصال تقديم طلب الحماية الدولية أو وثائق تثبت صفة طالب الحماية الدولية.", "multiple_files": true, "id_extractable": true},
+ {"name": "سند ملكية السكن", "description": "عقد البيع، مذكرة بسيطة من السجل العقاري، إلخ.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     },
     {
       "id": "docs_non_eu_short_tenant",
-      "type": "info_block",
-      "text": "Para empadronarse como extranjero no comunitario sin residencia de larga duración y inquilino, necesitará:",
+ "type": "info_block",
+ "text": "للتسجيل كأجنبي غير مواطن في الاتحاد الأوروبي بدون إقامة طويلة الأمد ومستأجر، ستحتاج إلى:",
       "documents": [
-        {"name": "Pasaporte o documento de identidad de su país en vigor", "description": "Pasaporte o documento de identidad del país de origen en vigor. Si aplica, también Resguardo de presentación de solicitud de protección internacional o Documentos acreditativos de la condición de solicitante de protección internacional.", "multiple_files": true, "id_extractable": true},
-        {"name": "Contrato de alquiler en vigor", "description": "Contrato de arrendamiento de la vivienda.", "multiple_files": false},
-        {"name": "Última factura de suministro (para acreditación adicional del domicilio)", "description": "Última factura de agua, luz o gas a nombre del titular del contrato.", "multiple_files": false}
+ {"name": "جواز السفر أو وثيقة الهوية من بلدك سارية المفعول", "description": "جواز السفر أو وثيقة الهوية من بلد المنشأ سارية المفعول. إذا كان ذلك ممكنًا، أيضًا إيصال تقديم طلب الحماية الدولية أو وثائق تثبت صفة طالب الحماية الدولية.", "multiple_files": true, "id_extractable": true},
+ {"name": "عقد إيجار ساري المفعول", "description": "عقد إيجار السكن.", "multiple_files": false},
+ {"name": "آخر فاتورة خدمات (لإثبات إضافي للمحل السكني)", "description": "آخر فاتورة ماء أو كهرباء أو غاز باسم صاحب العقد.", "multiple_files": false}
       ],
       "next_question_id": "q_add_more_people"
     }
