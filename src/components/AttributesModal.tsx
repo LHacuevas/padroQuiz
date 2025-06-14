@@ -1,14 +1,16 @@
 import React from 'react';
+import type { ExtractedEntity } from '../interfaces'; // Import the new type
 
 interface AttributesModalProps {
   isOpen: boolean;
   onClose: () => void;
-  data: Record<string, any> | null;
-  title: string; // For translated title
+  data: ExtractedEntity[] | null; // Updated data prop type
+  title: string;
+  noAttributesMessage: string; // New prop for localization
 }
 
-const AttributesModal: React.FC<AttributesModalProps> = ({ isOpen, onClose, data, title }) => {
-  if (!isOpen || !data) {
+const AttributesModal: React.FC<AttributesModalProps> = ({ isOpen, onClose, data, title, noAttributesMessage }) => {
+  if (!isOpen) { // Only check isOpen, data can be null or empty and modal should still show
     return null;
   }
 
@@ -18,17 +20,17 @@ const AttributesModal: React.FC<AttributesModalProps> = ({ isOpen, onClose, data
         <div className="mt-3 text-center">
           <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">{title}</h3>
           <div className="mt-2 px-7 py-3 max-h-60 overflow-y-auto">
-            {Object.entries(data).length > 0 ? (
+            {data && data.length > 0 ? (
               <ul className="space-y-2 text-sm text-left">
-                {Object.entries(data).map(([key, value]) => (
-                  <li key={key} className="grid grid-cols-2 gap-2 odd:bg-gray-50 p-1 rounded">
-                    <strong className="font-semibold truncate">{key}:</strong>
-                    <span className="truncate">{String(value)}</span>
+                {data.map((entity) => (
+                  <li key={entity.fieldName} className="grid grid-cols-2 gap-2 odd:bg-gray-50 p-1 rounded">
+                    <strong className="font-semibold truncate" title={entity.description}>{entity.description}:</strong>
+                    <span className="truncate" title={String(entity.value)}>{String(entity.value)}</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-gray-500">No attributes extracted.</p>
+              <p className="text-sm text-gray-500">{noAttributesMessage}</p>
             )}
           </div>
           <div className="items-center px-4 py-3 mt-4">

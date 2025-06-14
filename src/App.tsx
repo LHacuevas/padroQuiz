@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { signInAnonymously, signInWithCustomToken, onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore'; // Import deleteDoc
 import { db, auth, initialAuthToken, aId as appId } from './firebaseConfig';
 import { useLanguage } from './contexts/LanguageContext';
 import Breadcrumbs from './components/Breadcrumbs';
@@ -10,16 +10,19 @@ import FinalDocumentReviewScreen from './components/FinalDocumentReviewScreen';
 import SummaryScreen from './components/SummaryScreen';
 import LanguageSelectionScreen from './components/LanguageSelectionScreen';
 import AttributesModal from './components/AttributesModal';
-import { processAndValidateFile, getAIProcedureSummary, type AIProcedureSummary } from './components/FileProcessor'; // Import AIProcedureSummary
-import type { FlowStep, UploadedFiles, Person, FlowPathEntry, FlowData, DocumentRequirement, UploadedFileEntry, Messages } from './interfaces';
+import { processAndValidateFile, getAIProcedureSummary, type AIProcedureSummary } from './components/FileProcessor';
+import type { FlowStep, UploadedFiles, Person, FlowPathEntry, FlowData, DocumentRequirement, UploadedFileEntry, Messages, ExtractedEntity } from './interfaces';
 
 function App() {
   const {
     currentLang,
     loadedMessages,
     loadedFlowData,
-    isLoading: isLanguageLoading
+    isLoading: isLanguageLoading,
+    changeLanguage
   } = useLanguage();
+
+  const initialFlowPath = useMemo(() => [{ id: "start", text: loadedMessages?.breadcrumb_home || "Inicio" }], [loadedMessages]);
 
   const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
   const [currentQuestionId, setCurrentQuestionId] = useState<string>("q1_action_type");
@@ -28,7 +31,7 @@ function App() {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFiles>({});
   const [loadingValidation, setLoadingValidation] = useState<boolean>(false);
   const [peopleToRegister, setPeopleToRegister] = useState<Person[]>([]);
-  const [registrationAddress, setRegistrationAddress] = useState<string>("Dirección de empadronamiento");
+  const [registrationAddress, setRegistrationAddress] = useState<string>(loadedMessages?.summary_address_label || "Dirección de empadronamiento");
   const [isAuthReady, setIsAuthReady] = useState<boolean>(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [showAddressEdit, setShowAddressEdit] = useState<boolean>(false);
@@ -38,21 +41,22 @@ function App() {
   const [nextIdAfterConfirmation, setNextIdAfterConfirmation] = useState<string | null>(null);
   const [sendingData, setSendingData] = useState<boolean>(false);
   const [apiResponseMessage, setApiResponseMessage] = useState<string>("");
-  const [flowPath, setFlowPath] = useState<FlowPathEntry[]>([{ id: "start", text: "Inicio" }]);
+  const [flowPath, setFlowPath] = useState<FlowPathEntry[]>(initialFlowPath);
   const [showAttributesModal, setShowAttributesModal] = useState<boolean>(false);
-  const [currentAttributesData, setCurrentAttributesData] = useState<Record<string, any> | null>(null);
+  const [currentAttributesData, setCurrentAttributesData] = useState<ExtractedEntity[] | null>(null);
   const [selectedProcedureType, setSelectedProcedureType] = useState<string>("");
-
-  // State for AI Procedure Summary
   const [aiSummaryData, setAiSummaryData] = useState<AIProcedureSummary | null>(null);
   const [isAISummaryLoading, setIsAISummaryLoading] = useState<boolean>(false);
   const [aiSummaryError, setAiSummaryError] = useState<string | null>(null);
 
+  // New state for Reset Confirmation Modal
+  const [showResetConfirmationModal, setShowResetConfirmationModal] = useState<boolean>(false);
+
   const compileAllExtractedDataToJson = (): string => {
-    const allExtractedData: Record<string, any> = {};
+    const allExtractedData: Record<string, ExtractedEntity[]> = {};
     Object.entries(uploadedFiles).forEach(([docName, fileEntries]) => {
       fileEntries.forEach((entry, index) => {
-        if (entry.extracted_data && Object.keys(entry.extracted_data).length > 0) {
+        if (entry.extracted_data && Array.isArray(entry.extracted_data) && entry.extracted_data.length > 0) {
           allExtractedData[`${docName}_${index}`] = entry.extracted_data;
         }
       });
@@ -78,29 +82,59 @@ function App() {
     }
   };
 
-  const handleShowAttributesModal = (data: Record<string, any>) => {
+  const handleShowAttributesModal = (data: ExtractedEntity[]) => {
     setCurrentAttributesData(data);
     setShowAttributesModal(true);
   };
 
-  const handleApplyAISuggestions = (
-    suggestedAddress?: string,
-    suggestedPeople?: Person[]
-  ) => {
+  const handleApplyAISuggestions = (suggestedAddress?: string, suggestedPeople?: Person[]) => {
     if (suggestedAddress) {
       setRegistrationAddress(suggestedAddress);
     }
     if (suggestedPeople && suggestedPeople.length > 0) {
-      // Replace peopleToRegister or merge? For now, let's replace.
-      // Consider if IDs are stable or if this should be a merge based on some logic.
-      // For this implementation, a direct replacement is simpler.
       setPeopleToRegister(suggestedPeople);
     }
-    // Clear the AI summary data after applying to remove the suggestion from UI or change its state
     setAiSummaryData(null);
     setAiSummaryError(null);
-    // Optionally, set a message like "AI suggestions have been applied"
   };
+
+  const handleResetApplication = async () => {
+    console.log("Resetting application state...");
+    if (loadedMessages) { // Ensure loadedMessages is available for defaults
+        setRegistrationAddress(loadedMessages.summary_address_label || "Dirección de empadronamiento");
+        setFlowPath([{ id: "start", text: loadedMessages.breadcrumb_home || "Inicio" }]);
+    } else { // Absolute fallback if messages somehow not loaded
+        setRegistrationAddress("Dirección de empadronamiento");
+        setFlowPath([{ id: "start", text: "Inicio" }]);
+    }
+    setCurrentQuestionId("q1_action_type");
+    setQuestionsAnswered([]);
+    setUploadedFiles({});
+    setPeopleToRegister([]);
+    setSelectedProcedureType("");
+    setAiSummaryData(null);
+    setAiSummaryError(null);
+    setCurrentAttributesData(null);
+    setApiResponseMessage("");
+    // Add any other state resets here
+
+    if (userId && db && appId) {
+      try {
+        const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/padron_data/user_progress`);
+        await deleteDoc(userDocRef);
+        console.log("User data deleted from Firestore.");
+      } catch (error) {
+        console.error("Error deleting user data from Firestore:", error);
+      }
+    }
+    // Optionally, could reset language to default if desired, e.g., changeLanguage('es');
+  };
+
+  const handleConfirmReset = () => {
+    setShowResetConfirmationModal(false);
+    handleResetApplication();
+  };
+
 
   useEffect(() => {
     if (loadedMessages && loadedFlowData) {
@@ -142,46 +176,33 @@ function App() {
           setQuestionsAnswered(savedData.questionsAnswered || []);
           setUploadedFiles(savedData.uploadedFiles || {});
           setPeopleToRegister(savedData.peopleToRegister || []);
-          setRegistrationAddress(savedData.registrationAddress || "Dirección de empadronamiento");
+          setRegistrationAddress(savedData.registrationAddress || (loadedMessages?.summary_address_label || "Dirección de empadronamiento"));
           setSelectedProcedureType(savedData.selectedProcedureType || "");
-          const savedFlowPathIds = (savedData.flowPath || []).map((entry: FlowPathEntry) => entry.id);
-          if (!(savedFlowPathIds.length > 0 && savedData.flowPath[0].id === "start") && loadedMessages) {
-            setFlowPath([{ id: "start", text: loadedMessages.breadcrumb_home }]);
-          } else if (!(savedFlowPathIds.length > 0 && savedData.flowPath[0].id === "start")) {
-            setFlowPath([{ id: "start", text: "Inicio" }]);
-          }
-        } else if (loadedMessages) {
+          // flowPath is rebuilt by another useEffect based on loadedMessages, questionsAnswered, currentQuestionId
+        } else if (loadedMessages) { // If no saved data, initialize with home breadcrumb and default address
             setFlowPath([{ id: "start", text: loadedMessages.breadcrumb_home }]);
             setSelectedProcedureType("");
+            setRegistrationAddress(loadedMessages.summary_address_label || "Dirección de empadronamiento");
         }
         setIsAuthReady(true);
       } else {
         if (initialAuthToken) {
-          try {
-            await signInWithCustomToken(auth, initialAuthToken);
-          } catch (error: unknown) {
+          try { await signInWithCustomToken(auth, initialAuthToken); }
+          catch (error:unknown) {
             console.error("Error signing in with custom token:", error instanceof Error ? error.message : String(error));
-            try {
-              const anonUser = await signInAnonymously(auth);
-              setUserId(anonUser.user.uid);
-            } catch (anonError: unknown) {
-              console.error("Error signing in anonymously after custom token failure:", anonError instanceof Error ? anonError.message : String(anonError));
-            }
+            try { const anonUser = await signInAnonymously(auth); setUserId(anonUser.user.uid); }
+            catch (anonError:unknown) { console.error("Error signing in anonymously after custom token failure:", anonError instanceof Error ? anonError.message : String(anonError));}
             setIsAuthReady(true);
           }
         } else {
-          try {
-            const anonUser = await signInAnonymously(auth);
-            setUserId(anonUser.user.uid);
-          } catch (anonError: unknown) {
-            console.error("Error signing in anonymously:", anonError instanceof Error ? anonError.message : String(anonError));
-          }
+          try { const anonUser = await signInAnonymously(auth); setUserId(anonUser.user.uid); }
+          catch (anonError:unknown) { console.error("Error signing in anonymously:", anonError instanceof Error ? anonError.message : String(anonError));}
           setIsAuthReady(true);
         }
       }
     });
     return () => unsubscribe();
-  }, [auth, db, appId, initialAuthToken, loadedMessages]);
+  }, [auth, db, appId, initialAuthToken, loadedMessages]); // added loadedMessages
 
   useEffect(() => {
     const saveData = async () => {
@@ -196,23 +217,14 @@ function App() {
           }
           const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/padron_data/user_progress`);
           await setDoc(userDocRef, {
-            currentQuestionId,
-            questionsAnswered,
-            uploadedFiles: filesToSave,
-            peopleToRegister,
-            registrationAddress,
-            flowPath,
-            selectedProcedureType
+            currentQuestionId, questionsAnswered, uploadedFiles: filesToSave,
+            peopleToRegister, registrationAddress, flowPath, selectedProcedureType
           }, { merge: true });
           console.log("Data saved to Firestore.");
-        } catch (e: unknown) {
-          console.error("Error saving document: ", e instanceof Error ? e.message : String(e));
-        }
+        } catch (e:unknown) { console.error("Error saving document: ", e instanceof Error ? e.message : String(e)); }
       }
     };
-    if (isAuthReady) {
-      saveData();
-    }
+    if (isAuthReady) { saveData(); }
   }, [currentQuestionId, questionsAnswered, uploadedFiles, peopleToRegister, registrationAddress, flowPath, selectedProcedureType, isAuthReady, userId, db, appId]);
 
   const currentQuestion: FlowStep | null | undefined = loadedFlowData ? loadedFlowData.flow.find((q: FlowStep) => q.id === currentQuestionId) : null;
@@ -223,28 +235,22 @@ function App() {
       setUploadedFiles((prev: UploadedFiles) => {
         const newUploadedFiles: UploadedFiles = { ...prev };
         (currentQuestion.documents || []).forEach((doc: DocumentRequirement) => {
-          if (!newUploadedFiles[doc.name]) {
-            newUploadedFiles[doc.name] = [];
-          }
+          if (!newUploadedFiles[doc.name]) { newUploadedFiles[doc.name] = []; }
         });
         return newUploadedFiles;
       });
-    } else {
-      setCurrentStepDocs([]);
-    }
+    } else { setCurrentStepDocs([]); }
   }, [currentQuestionId, currentQuestion, loadedFlowData]);
 
   const handleAnswer = (nextId: string): void => {
-    if (!loadedFlowData) return;
-    if (currentQuestionId === "q1_action_type" && currentQuestion && currentQuestion.options) {
+    if (!loadedFlowData || !currentQuestion) return;
+    if (currentQuestionId === "q1_action_type" && currentQuestion.options) {
       const selectedOption = currentQuestion.options.find(opt => opt.next_question_id === nextId);
-      if (selectedOption) {
-        setSelectedProcedureType(selectedOption.text);
-      }
+      if (selectedOption) { setSelectedProcedureType(selectedOption.text); }
     }
     setQuestionsAnswered(prev => [...prev, currentQuestionId]);
     const nextQuestionObj: FlowStep | undefined = loadedFlowData.flow.find((q: FlowStep) => q.id === nextId);
-    if (nextQuestionObj) {
+    if (nextQuestionObj && loadedMessages) {
         const stepText = nextQuestionObj.question || nextQuestionObj.text || nextQuestionObj.id;
         setFlowPath(prev => [...prev, { id: nextQuestionObj.id, text: stepText as string }]);
     }
@@ -267,11 +273,11 @@ function App() {
       const docRequirement: DocumentRequirement | undefined = currentStepDocs.find(d => d.name === docName) || orderedAllRequiredDocuments.find(d => d.name === docName);
       if (!newFiles[docName] || !docRequirement?.multiple_files) {
          newFiles[docName] = files.map((file: File) => ({
-            file, name: file.name, base64: null, validation_status: 'pending', validation_message: '', extracted_data: {}
+            file, name: file.name, base64: null, validation_status: 'pending', validation_message: '', extracted_data: []
           } as UploadedFileEntry));
       } else {
           newFiles[docName] = [...newFiles[docName], ...files.map((file: File) => ({
-            file, name: file.name, base64: null, validation_status: 'pending', validation_message: '', extracted_data: {}
+            file, name: file.name, base64: null, validation_status: 'pending', validation_message: '', extracted_data: []
           } as UploadedFileEntry))];
       }
       return newFiles;
@@ -281,10 +287,7 @@ function App() {
   const handleValidateDocument = async (docName: string, fileIndex: number): Promise<void> => {
     setLoadingValidation(true);
     const fileToValidate: UploadedFileEntry = uploadedFiles[docName][fileIndex];
-    if (!fileToValidate || !fileToValidate.file || !loadedMessages) {
-      setLoadingValidation(false);
-      return;
-    }
+    if (!fileToValidate || !fileToValidate.file || !loadedMessages) { setLoadingValidation(false); return; }
     processAndValidateFile(fileToValidate.file, docName, loadedMessages)
       .then(validationResult => {
         setUploadedFiles((prev: UploadedFiles) => {
@@ -292,23 +295,25 @@ function App() {
           if (newFiles[docName] && newFiles[docName][fileIndex]) {
             newFiles[docName][fileIndex].validation_status = validationResult.isValid ? 'valid' : 'invalid';
             newFiles[docName][fileIndex].validation_message = validationResult.reason;
-            newFiles[docName][fileIndex].extracted_data = validationResult.extractedData || {};
-            if (validationResult.base64) {
-              newFiles[docName][fileIndex].base64 = validationResult.base64;
-            }
+            newFiles[docName][fileIndex].extracted_data = Array.isArray(validationResult.extractedData) ? validationResult.extractedData : [];
+            if (validationResult.base64) { newFiles[docName][fileIndex].base64 = validationResult.base64; }
             const docRequirementFromFlow: DocumentRequirement | undefined = loadedFlowData?.flow.flatMap(f => f.documents || []).find(d => d.name === docName);
             const currentQDocs = currentQuestion?.documents?.find(d => d.name === docName);
             const finalDocRequirement = currentQDocs || docRequirementFromFlow;
-            if (validationResult.isValid && finalDocRequirement && finalDocRequirement.id_extractable) {
-              const { name, id_number } = validationResult.extractedData;
+            if (validationResult.isValid && finalDocRequirement && finalDocRequirement.id_extractable && Array.isArray(validationResult.extractedData)) {
+              const nameEntry = validationResult.extractedData.find(e => e.fieldName === 'nombreCompleto' || e.fieldName === 'name');
+              const idEntry = validationResult.extractedData.find(e => e.fieldName === 'numeroIdentificacion' || e.fieldName === 'id_number');
+              const name = nameEntry?.value;
+              const id_number = idEntry?.value;
               if (name && id_number) {
                 const existingPersonIndex = peopleToRegister.findIndex(p => p.id_number === id_number);
+                const newPersonData: Person = { name, id_number };
                 if (existingPersonIndex > -1) {
                   const updatedPeople = [...peopleToRegister];
-                  updatedPeople[existingPersonIndex] = { ...updatedPeople[existingPersonIndex], ...(validationResult.extractedData as Person) };
+                  updatedPeople[existingPersonIndex] = { ...updatedPeople[existingPersonIndex], ...newPersonData };
                   setPeopleToRegister(updatedPeople);
                 } else {
-                  setPeopleToRegister(prevPeople => [...prevPeople, validationResult.extractedData as Person]);
+                  setPeopleToRegister(prevPeople => [...prevPeople, newPersonData]);
                 }
               }
             }
@@ -323,30 +328,38 @@ function App() {
           if (newFiles[docName] && newFiles[docName][fileIndex]) {
             newFiles[docName][fileIndex].validation_status = 'invalid';
             newFiles[docName][fileIndex].validation_message = error.reason || (loadedMessages ? loadedMessages.file_read_error : "File read error") || "Unknown error during validation";
+            newFiles[docName][fileIndex].extracted_data = [];
           }
           return newFiles;
         });
       })
-      .finally(() => {
-        setLoadingValidation(false);
-      });
+      .finally(() => { setLoadingValidation(false); });
   };
 
   const handleRemoveFile = (docName: string, fileIndex: number): void => {
     setUploadedFiles((prev: UploadedFiles) => {
       const newFiles: UploadedFiles = { ...prev };
       if (newFiles[docName]) {
-        const removedFile: UploadedFileEntry = newFiles[docName][fileIndex];
+        const removedFileEntry = newFiles[docName][fileIndex];
         newFiles[docName] = newFiles[docName].filter((_, i) => i !== fileIndex);
-        if (removedFile.extracted_data && removedFile.extracted_data.id_number) {
-          const isIdSourceUnique = Object.values(newFiles).every((filesArray: UploadedFileEntry[]) =>
-            filesArray.every((f: UploadedFileEntry) => f && f.extracted_data && f.extracted_data.id_number !== removedFile.extracted_data.id_number)
-          );
-          if (isIdSourceUnique) {
-            setPeopleToRegister((prevPeople: Person[]) =>
-              prevPeople.filter(p => p.id_number !== removedFile.extracted_data.id_number)
-            );
-          }
+        if (removedFileEntry.extracted_data && Array.isArray(removedFileEntry.extracted_data)) {
+            const idEntry = removedFileEntry.extracted_data.find(e => e.fieldName === 'numeroIdentificacion' || e.fieldName === 'id_number');
+            if (idEntry && idEntry.value) {
+                const idToRemove = idEntry.value;
+                let isIdStillPresent = false;
+                Object.values(newFiles).forEach(fileList => {
+                    fileList.forEach(file => {
+                        if (file.validation_status === 'valid' && Array.isArray(file.extracted_data)) {
+                            if (file.extracted_data.some(e => (e.fieldName === 'numeroIdentificacion' || e.fieldName === 'id_number') && e.value === idToRemove)) {
+                                isIdStillPresent = true;
+                            }
+                        }
+                    });
+                });
+                if (!isIdStillPresent) {
+                    setPeopleToRegister(prevPeople => prevPeople.filter(p => p.id_number !== idToRemove));
+                }
+            }
         }
       }
       return newFiles;
@@ -365,15 +378,10 @@ function App() {
 
   const handleContinueWithValidation = (): void => {
     if (isCurrentStepRequiredDocumentsValidated()) {
-      if (currentContent && currentContent.next_question_id) {
-        handleAnswer(currentContent.next_question_id);
-      } else if (currentQuestion && currentQuestion.next_question_id) {
-        handleAnswer(currentQuestion.next_question_id);
-      }
+      if (currentContent && currentContent.next_question_id) { handleAnswer(currentContent.next_question_id); }
+      else if (currentQuestion && currentQuestion.next_question_id) { handleAnswer(currentQuestion.next_question_id); }
     } else {
-      if (loadedMessages) {
-        alert(loadedMessages.alert_all_required_docs_needed);
-      }
+      if (loadedMessages) { alert(loadedMessages.alert_all_required_docs_needed); }
     }
   };
 
@@ -386,24 +394,16 @@ function App() {
 
   const handleConfirmContinue = (): void => {
     setShowConfirmationModal(false);
-    if (nextIdAfterConfirmation) {
-      handleAnswer(nextIdAfterConfirmation);
-      setNextIdAfterConfirmation(null);
-    }
+    if (nextIdAfterConfirmation) { handleAnswer(nextIdAfterConfirmation); setNextIdAfterConfirmation(null); }
   };
 
-  const handleCancelContinue = (): void => {
-    setShowConfirmationModal(false);
-    setNextIdAfterConfirmation(null);
-  };
+  const handleCancelContinue = (): void => { setShowConfirmationModal(false); setNextIdAfterConfirmation(null); };
 
   const proceedToSummary = (): void => {
     if (!loadedFlowData || !loadedMessages) return;
     setCurrentQuestionId("summary_screen");
     const summaryScreen = loadedFlowData.flow.find((q: FlowStep) => q.id === "summary_screen");
-    if (summaryScreen) { // text for summary is empty, use messages.summary_title
-        setFlowPath(prev => [...prev, { id: summaryScreen.id, text: loadedMessages.summary_title }]);
-    }
+    if (summaryScreen) { setFlowPath(prev => [...prev, { id: summaryScreen.id, text: loadedMessages.summary_title }]); }
   };
 
   const handleRemovePerson = (idNumber: string): void => {
@@ -411,20 +411,16 @@ function App() {
   };
 
   const handleAddressEditToggle = (): void => {
-    if (!showAddressEdit) {
-      setTempAddress(registrationAddress);
-    }
+    if (!showAddressEdit) { setTempAddress(registrationAddress); }
     setShowAddressEdit(!showAddressEdit);
   };
 
-  const handleAddressSave = (): void => {
-    setRegistrationAddress(tempAddress);
-    setShowAddressEdit(false);
-  };
+  const handleAddressSave = (): void => { setRegistrationAddress(tempAddress); setShowAddressEdit(false); };
 
   const currentContent: FlowStep | null | undefined = currentQuestion;
 
   const handleSendAll = async (): Promise<void> => {
+    // ... (handleSendAll logic remains the same)
     setSendingData(true);
     setApiResponseMessage("");
     const dataToSend = {
@@ -466,11 +462,11 @@ function App() {
   const orderedAllRequiredDocuments = useMemo((): DocumentRequirement[] => {
     if (!loadedFlowData) return [];
     const allDocs: { [key: string]: DocumentRequirement } = {};
-    [...questionsAnswered, currentQuestionId].forEach((qId: string) => { // Include currentQuestionId for current step's docs
+    [...questionsAnswered, currentQuestionId].forEach((qId: string) => {
         const q: FlowStep | undefined = loadedFlowData.flow.find((f: FlowStep) => f.id === qId);
         if (q && q.type === "info_block" && q.documents) {
             q.documents.forEach((docReq: DocumentRequirement) => {
-                if (!allDocs[docReq.name]) { // Avoid duplicates, keep first encounter (order might matter based on flow)
+                if (!allDocs[docReq.name]) {
                     allDocs[docReq.name] = docReq;
                 }
             });
@@ -505,95 +501,117 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-6 flex flex-col items-center font-sans">
-      <div className="w-full max-w-2xl flex justify-end mb-4">
-        <button
-          onClick={() => setShowLanguageModal(true)}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition-colors font-semibold"
-        >
-          {loadedMessages.change_language_button || "Change Language"}
-        </button>
-      </div>
-
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl mt-8">
         <h1 className="text-3xl font-extrabold text-indigo-800 mb-6 text-center">{loadedMessages.app_title}</h1>
         <p className="text-center text-gray-600 mb-8">{loadedMessages.app_subtitle}</p>
 
         <Breadcrumbs flowPath={flowPath} />
 
-        {currentQuestionId === "summary_screen" ? (
-          <SummaryScreen
-            registrationAddress={registrationAddress}
-            peopleToRegister={peopleToRegister}
-            showAddressEdit={showAddressEdit}
-            tempAddress={tempAddress}
-            setTempAddress={setTempAddress}
-            handleAddressSave={handleAddressSave}
-            handleAddressEditToggle={handleAddressEditToggle}
-            handleRemovePerson={handleRemovePerson}
-            apiResponseMessage={apiResponseMessage}
-            handleSendAll={handleSendAll}
-            sendingData={sendingData}
-            goBack={goBack}
-            messages={loadedMessages}
-            userId={userId}
-            // AI Summary Props
-            aiSummaryData={aiSummaryData}
-            isAISummaryLoading={isAISummaryLoading}
-            handleGenerateAISummary={handleGenerateAISummary}
-            aiSummaryError={aiSummaryError}
-            handleApplyAISuggestions={handleApplyAISuggestions} // ADDED
-          />
-        ) : currentQuestionId === "final_document_review" ? (
-          <FinalDocumentReviewScreen
-            orderedAllRequiredDocuments={orderedAllRequiredDocuments}
-            uploadedFiles={uploadedFiles}
-            handleValidateDocument={handleValidateDocument}
-            handleRemoveFile={handleRemoveFile}
-            loadingValidation={loadingValidation}
-            proceedToSummary={proceedToSummary}
-            fileInputRefs={fileInputRefs}
-            messages={loadedMessages}
-            handleShowAttributesModal={handleShowAttributesModal}
-          />
-        ) : (
-          currentContent &&
-          <QuestionnaireScreen
-            currentContent={currentContent}
-            handleAnswer={handleAnswer}
-            handleShowAttributesModal={handleShowAttributesModal}
-            uploadedFiles={uploadedFiles}
-            handleFileChange={handleFileChange}
-            handleValidateDocument={handleValidateDocument}
-            handleRemoveFile={handleRemoveFile}
-            loadingValidation={loadingValidation}
-            isCurrentStepRequiredDocumentsValidated={isCurrentStepRequiredDocumentsValidated}
-            handleContinueWithValidation={handleContinueWithValidation}
-            handleContinueWithoutValidationClick={handleContinueWithoutValidationClick}
-            fileInputRefs={fileInputRefs}
-            messages={loadedMessages}
-            orderedAllRequiredDocuments={orderedAllRequiredDocuments}
-          />
-        )}
-        {currentQuestionId !== "summary_screen" && questionsAnswered.length > 0 && (
-            <div className="flex justify-between mt-8">
-                 <button
-                    onClick={goBack}
-                    className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 transition-colors font-semibold"
-                  >
-                    {loadedMessages.back_button}
-                  </button>
+        <div className="current-screen-content mb-8">
+            {currentQuestionId === "summary_screen" ? (
+            <SummaryScreen
+                registrationAddress={registrationAddress}
+                peopleToRegister={peopleToRegister}
+                showAddressEdit={showAddressEdit}
+                tempAddress={tempAddress}
+                setTempAddress={setTempAddress}
+                handleAddressSave={handleAddressSave}
+                handleAddressEditToggle={handleAddressEditToggle}
+                handleRemovePerson={handleRemovePerson}
+                apiResponseMessage={apiResponseMessage}
+                handleSendAll={handleSendAll}
+                sendingData={sendingData}
+                goBack={goBack}
+                messages={loadedMessages}
+                userId={userId}
+                aiSummaryData={aiSummaryData}
+                isAISummaryLoading={isAISummaryLoading}
+                handleGenerateAISummary={handleGenerateAISummary}
+                aiSummaryError={aiSummaryError}
+                handleApplyAISuggestions={handleApplyAISuggestions}
+            />
+            ) : currentQuestionId === "final_document_review" ? (
+            <FinalDocumentReviewScreen
+                orderedAllRequiredDocuments={orderedAllRequiredDocuments}
+                uploadedFiles={uploadedFiles}
+                handleValidateDocument={handleValidateDocument}
+                handleRemoveFile={handleRemoveFile}
+                loadingValidation={loadingValidation}
+                proceedToSummary={proceedToSummary}
+                fileInputRefs={fileInputRefs}
+                messages={loadedMessages}
+                handleShowAttributesModal={handleShowAttributesModal}
+            />
+            ) : (
+            currentContent &&
+            <QuestionnaireScreen
+                currentContent={currentContent}
+                handleAnswer={handleAnswer}
+                handleShowAttributesModal={handleShowAttributesModal}
+                uploadedFiles={uploadedFiles}
+                handleFileChange={handleFileChange}
+                handleValidateDocument={handleValidateDocument}
+                handleRemoveFile={handleRemoveFile}
+                loadingValidation={loadingValidation}
+                isCurrentStepRequiredDocumentsValidated={isCurrentStepRequiredDocumentsValidated}
+                handleContinueWithValidation={handleContinueWithValidation}
+                handleContinueWithoutValidationClick={handleContinueWithoutValidationClick}
+                fileInputRefs={fileInputRefs}
+                messages={loadedMessages}
+                orderedAllRequiredDocuments={orderedAllRequiredDocuments}
+            />
+            )}
+        </div>
+
+        {/* Consolidated Button Container */}
+        <div className="flex justify-between items-center mt-8 pt-4 border-t">
+            <div> {/* Left side for Back button */}
+                {questionsAnswered.length > 0 && currentQuestionId !== "summary_screen" && ( // Hide Back on Summary
+                    <button
+                        onClick={goBack}
+                        className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 transition-colors font-semibold"
+                    >
+                        {loadedMessages.back_button || "Back"}
+                    </button>
+                )}
             </div>
-        )}
+            <div className="flex space-x-3"> {/* Right side for other buttons */}
+                <button
+                    onClick={() => setShowLanguageModal(true)}
+                    className="px-4 py-2 bg-slate-500 text-white rounded-lg shadow-md hover:bg-slate-600 transition-colors font-semibold"
+                    title={loadedMessages.change_language_button || "Change Language"}
+                >
+                     {loadedMessages.change_language_button || "Language"}
+                </button>
+                <button
+                    onClick={() => setShowResetConfirmationModal(true)}
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition-colors font-semibold"
+                    title={loadedMessages.reset_button_text || "Reset Application"}
+                >
+                    {loadedMessages.reset_button_text || "Reset"}
+                </button>
+            </div>
+        </div>
       </div>
 
       <ConfirmationModal
         showModal={showConfirmationModal}
-        title={loadedMessages.confirm_no_validation_title}
-        message={loadedMessages.confirm_no_validation_message}
+        title={loadedMessages.confirm_no_validation_title || "Confirm"}
+        message={loadedMessages.confirm_no_validation_message || "Are you sure?"}
         onConfirm={handleConfirmContinue}
         onCancel={handleCancelContinue}
-        yesButtonText={loadedMessages.confirm_no_validation_yes_button}
-        noButtonText={loadedMessages.confirm_no_validation_no_button}
+        yesButtonText={loadedMessages.confirm_no_validation_yes_button || "Yes"}
+        noButtonText={loadedMessages.confirm_no_validation_no_button || "No"}
+      />
+
+      <ConfirmationModal
+        showModal={showResetConfirmationModal}
+        title={loadedMessages.reset_confirm_title || "Confirm Reset"}
+        message={loadedMessages.reset_confirm_message || "Are you sure you want to reset all your progress?"}
+        onConfirm={handleConfirmReset}
+        onCancel={() => setShowResetConfirmationModal(false)}
+        yesButtonText={loadedMessages.reset_confirm_yes || "Yes, Reset"}
+        noButtonText={loadedMessages.reset_confirm_no || "No, Cancel"}
       />
 
       {showLanguageModal && (
@@ -608,6 +626,7 @@ function App() {
         onClose={() => setShowAttributesModal(false)}
         data={currentAttributesData}
         title={loadedMessages.attributes_modal_title || "Extracted Attributes"}
+        noAttributesMessage={loadedMessages.no_attributes_extracted || "No attributes extracted."}
       />
 
       <p className="text-xs text-gray-500 mt-4">{loadedMessages.user_id_label} {userId || (loadedMessages ? loadedMessages.loading_app : "...")}</p>

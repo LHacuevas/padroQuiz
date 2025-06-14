@@ -60,5 +60,11 @@
   "ai_reasoning": "منطق الذكاء الاصطناعي:",
   "ai_api_key_not_configured": "مفتاح API لملخص الذكاء الاصطناعي غير مهيأ.",
   "use_ai_suggestions_button": "تطبيق اقتراحات الذكاء الاصطناعي",
-  "ai_suggestions_applied_message": "تم تطبيق اقتراحات الذكاء الاصطناعي!"
+  "ai_suggestions_applied_message": "تم تطبيق اقتراحات الذكاء الاصطناعي!",
+  "no_attributes_extracted": "لم يتم استخراج أي سمات.",
+  "reset_button_text": "إعادة تعيين الإجراء",
+  "reset_confirm_title": "تأكيد إعادة التعيين",
+  "reset_confirm_message": "هل أنت متأكد أنك تريد إعادة تعيين الإجراء بالكامل؟ سيتم فقدان كل التقدم المحرز.",
+  "reset_confirm_yes": "نعم، إعادة تعيين",
+  "reset_confirm_no": "لا، إلغاء"
 }
