@@ -14,7 +14,7 @@
     },
     {
         "id": "q_add_more_people",
-        "question": "¿Desea añadir a más personas (cónyuge, hijos, etc.) que se empadronarán en el mismo domicilio?",
+        "question": "Vol afegir més persones (cònjuge, fills, etc.) que s'empadronaran al mateix domicili?",
         "type": "single_choice",
         "options": [
             {"text": "Sí, quiero añadir más personas", "next_question_id": "q_type_of_additional_person"},
@@ -23,7 +23,7 @@
     },
     {
         "id": "q_type_of_additional_person",
-        "question": "¿Qué tipo de persona adicional desea empadronar?",
+        "question": "Quin tipus de persona addicional vol empadronar?",
         "type": "single_choice",
         "options": [
             {"text": "Un adulto", "next_question_id": "docs_additional_adult"},
@@ -41,7 +41,7 @@
     },
     {
         "id": "q_minor_living_arrangement_additional",
-        "question": "¿El menor adicional se empadronará con ambos progenitores/tutores, con uno solo de ellos, o en un domicilio distinto al de sus progenitores/tutores?",
+        "question": "El menor addicional s'empadronarà amb ambdós progenitors/tutors, amb un sol d'ells, o en un domicili diferent del dels seus progenitors/tutors?",
         "type": "single_choice",
         "options": [
             {"text": "Con ambos progenitores/tutores", "next_question_id": "docs_minor_with_both_parents_additional"},
@@ -62,7 +62,7 @@
     },
     {
         "id": "q_minor_one_parent_custody_additional",
-        "question": "¿Tiene una resolución judicial que atribuya la guarda y custodia en exclusiva al progenitor que solicita el empadronamiento del menor adicional, o no existe resolución judicial sobre la guarda y custodia?",
+        "question": "Té una resolució judicial que atribueixi la guarda i custòdia en exclusiva al progenitor que sol·licita l'empadronament del menor addicional, o no existeix resolució judicial sobre la guarda i custòdia?",
         "type": "single_choice",
         "options": [
             {"text": "Sí, tengo resolución judicial de guarda y custodia exclusiva", "next_question_id": "docs_minor_one_parent_exclusive_custody_additional"},
@@ -95,7 +95,7 @@
     },
     {
         "id": "q_minor_other_address_additional",
-        "question": "¿Tiene autorización escrita de ambos progenitores o resolución judicial para que el menor adicional resida en otro domicilio?",
+        "question": "Té autorització escrita d'ambdós progenitors o resolució judicial perquè el menor addicional resideixi en un altre domicili?",
         "type": "single_choice",
         "options": [
             {"text": "Sí, tengo autorización de ambos o resolución judicial", "next_question_id": "docs_minor_other_address_consent_additional"},

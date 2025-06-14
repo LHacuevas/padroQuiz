@@ -14,16 +14,16 @@
     },
     {
         "id": "q_add_more_people",
-        "question": "¿Desea añadir a más personas (cónyuge, hijos, etc.) que se empadronarán en el mismo domicilio?",
+        "question": "您想增加更多将登记在同一住址的人员（配偶、子女等）吗？",
         "type": "single_choice",
         "options": [
-            {"text": "Sí, quiero añadir más personas", "next_question_id": "q_type_of_additional_person"},
+            {"text": "是的，我想增加更多人员", "next_question_id": "q_type_of_additional_person"},
             {"text": "不，仅继续处理已显示的人员", "next_question_id": "final_document_review"}
         ]
     },
     {
         "id": "q_type_of_additional_person",
-        "question": "¿Qué tipo de persona adicional desea empadronar?",
+        "question": "您想登记何种附加人员？",
         "type": "single_choice",
         "options": [
             {"text": "Un adulto", "next_question_id": "docs_additional_adult"},
@@ -41,12 +41,12 @@
     },
     {
         "id": "q_minor_living_arrangement_additional",
-        "question": "¿El menor adicional se empadronará con ambos progenitores/tutores, con uno solo de ellos, o en un domicilio distinto al de sus progenitores/tutores?",
+        "question": "附加未成年人是与父母/监护人双方一起登记，还是仅与其中一方一起登记，或与父母/监护人不同住址？",
         "type": "single_choice",
         "options": [
-            {"text": "Con ambos progenitores/tutores", "next_question_id": "docs_minor_with_both_parents_additional"},
-            {"text": "Con uno solo de los progenitores/tutores", "next_question_id": "q_minor_one_parent_custody_additional"},
-            {"text": "En un domicilio distinto al de los progenitores/tutores", "next_question_id": "docs_minor_other_address_additional"}
+            {"text": "与父母/监护人双方一起", "next_question_id": "docs_minor_with_both_parents_additional"},
+            {"text": "仅与其中一方父母/监护人一起", "next_question_id": "q_minor_one_parent_custody_additional"},
+            {"text": "与父母/监护人不同住址", "next_question_id": "docs_minor_other_address_additional"}
         ]
     },
     {
@@ -62,11 +62,11 @@
     },
     {
         "id": "q_minor_one_parent_custody_additional",
-        "question": "¿Tiene una resolución judicial que atribuya la guarda y custodia en exclusiva al progenitor que solicita el empadronamiento del menor adicional, o no existe resolución judicial sobre la guarda y custodia?",
+        "question": "您是否有法院判决，将附加未成年人的监护权独家授予申请登记的父母，或者没有关于监护权的法院判决？",
         "type": "single_choice",
         "options": [
-            {"text": "Sí, tengo resolución judicial de guarda y custodia exclusiva", "next_question_id": "docs_minor_one_parent_exclusive_custody_additional"},
-            {"text": "No, no existe resolución judicial sobre la guarda y custodia (separación de hecho, etc.)", "next_question_id": "docs_minor_one_parent_no_resolution_additional"}
+            {"text": "是的，我有独家监护权的法院判决", "next_question_id": "docs_minor_one_parent_exclusive_custody_additional"},
+            {"text": "不，没有关于监护权的法院判决（事实分居等）", "next_question_id": "docs_minor_one_parent_no_resolution_additional"}
         ]
     },
     {
@@ -95,11 +95,11 @@
     },
     {
         "id": "q_minor_other_address_additional",
-        "question": "¿Tiene autorización escrita de ambos progenitores o resolución judicial para que el menor adicional resida en otro domicilio?",
+        "question": "您是否有父母双方的书面授权或法院判决，允许附加未成年人居住在其他住址？",
         "type": "single_choice",
         "options": [
-            {"text": "Sí, tengo autorización de ambos o resolución judicial", "next_question_id": "docs_minor_other_address_consent_additional"},
-            {"text": "No, sólo autorización de uno y/o declaración responsable (o no tengo ninguno)", "next_question_id": "docs_minor_other_address_one_parent_or_none_additional"}
+            {"text": "是的，我有双方的授权或法院判决", "next_question_id": "docs_minor_other_address_consent_additional"},
+            {"text": "不，只有其中一方的授权和/或声明（或我没有任何文件）", "next_question_id": "docs_minor_other_address_one_parent_or_none_additional"}
         ]
     },
     {

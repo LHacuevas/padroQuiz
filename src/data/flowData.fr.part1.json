@@ -2,174 +2,174 @@
   "flow": [
     {
       "id": "q1_action_type",
-      "question": "¿Qué trámite desea realizar?",
+      "question": "Quelle démarche souhaitez-vous effectuer ?",
       "type": "single_choice",
       "options": [
-        {"text": "Darse de alta por primera vez en el padrón (Alta por nacimiento o por omisión)", "next_question_id": "q2_alta_type"},
-        {"text": "Cambiar mi domicilio y empadronarme en este municipio (Alta por cambio de residencia)", "next_question_id": "q2_alta_type"},
-        {"text": "Cambiar mi domicilio dentro del mismo municipio (Modificación de datos)", "next_question_id": "domicile_change_info"},
-        {"text": "Renovar mi inscripción padronal (extranjeros no comunitarios sin autorización de residencia de larga duración)", "next_question_id": "foreign_renewal_info"}
+        {"text": "M'inscrire pour la première fois sur le registre municipal (Première inscription ou par omission)", "next_question_id": "q2_alta_type"},
+        {"text": "Changer mon domicile et m'inscrire sur le registre de cette commune (Inscription par changement de résidence)", "next_question_id": "q2_alta_type"},
+        {"text": "Changer mon domicile au sein de la même commune (Modification de données)", "next_question_id": "domicile_change_info"},
+        {"text": "Renouveler mon inscription sur le registre municipal (étrangers non communautaires sans autorisation de résidence de longue durée)", "next_question_id": "foreign_renewal_info"}
       ]
     },
     {
       "id": "domicile_change_info",
       "type": "info_block",
-      "text": "Para cambiar su domicilio dentro del mismo municipio, necesitará la documentación que acredite su identidad y el nuevo domicilio.",
+      "text": "Pour changer de domicile au sein de la même commune, vous aurez besoin des documents attestant de votre identité et de votre nouveau domicile.",
       "documents": [
-          {"name": "Documento de identidad del solicitante", "description": "DNI, NIE, Pasaporte en vigor. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
-          {"name": "Documento que acredite el uso de la vivienda", "description": "Título de propiedad (escritura, nota simple), Contrato de arrendamiento en vigor y último recibo de alquiler, o autorización de persona ya empadronada con título válido y su DNI/NIE.", "multiple_files": true}
+          {"name": "Document d'identité du demandeur", "description": "DNI, NIE, Passeport en cours de validité. (Les deux côtés du DNI/NIE si applicable)", "multiple_files": true, "id_extractable": true},
+          {"name": "Document attestant de l'usage du logement", "description": "Titre de propriété (acte notarié, note simple du registre de la propriété), Contrat de location en cours de validité et dernière quittance de loyer, ou autorisation d'une personne déjà enregistrée avec titre valide et son DNI/NIE.", "multiple_files": true}
       ],
       "end_flow": true
     },
     {
       "id": "foreign_renewal_info",
       "type": "info_block",
-      "text": "Para la renovación de la inscripción padronal de extranjeros no comunitarios sin autorización de residencia de larga duración, debe presentar la solicitud correspondiente en el Ayuntamiento. Se comprobará que sigue residiendo en el municipio.",
+      "text": "Pour le renouvellement de l'inscription sur le registre municipal des étrangers non communautaires sans autorisation de résidence de longue durée, vous devez présenter la demande correspondante à la mairie. Il sera vérifié que vous résidez toujours dans la commune.",
       "documents": [
-        {"name": "Solicitud de renovación (Anexo IV o V)", "description": "Modelo de solicitud oficial (Anexo IV para persona física, Anexo V para representante).", "multiple_files": false},
-        {"name": "Pasaporte o Tarjeta de Identidad de Extranjero (TIE)", "description": "Documento de identidad válido y en vigor.", "multiple_files": true, "id_extractable": true}
+        {"name": "Demande de renouvellement (Annexe IV ou V)", "description": "Modèle de demande officielle (Annexe IV pour personne physique, Annexe V pour représentant).", "multiple_files": false},
+        {"name": "Passeport ou carte d'identité d'étranger (TIE)", "description": "Document d'identité valide et en cours de validité.", "multiple_files": true, "id_extractable": true}
       ],
       "end_flow": true
     },
     {
       "id": "q2_alta_type",
-      "question": "¿Es un alta por nacimiento (primera inscripción de un recién nacido) o por otra causa?",
+      "question": "S'agit-il d'une première inscription par naissance (nouveau-né) ou pour une autre raison ?",
       "type": "single_choice",
       "options": [
-        {"text": "Es un recién nacido (alta por nacimiento)", "next_question_id": "q_newborn_parental_situation"},
-        {"text": "Es por otra causa (cambio de residencia, omisión, etc.)", "next_question_id": "q3_nationality"}
+        {"text": "C'est un nouveau-né (première inscription par naissance)", "next_question_id": "q_newborn_parental_situation"},
+        {"text": "C'est pour une autre raison (changement de résidence, omission, etc.)", "next_question_id": "q3_nationality"}
       ]
     },
     {
       "id": "q_newborn_parental_situation",
-      "question": "¿El recién nacido se empadronará con ambos progenitores, con uno solo de ellos, o bajo tutela/acogimiento?",
+      "question": "Le nouveau-né sera-t-il inscrit avec les deux parents, avec un seul d'entre eux, ou sous tutelle/garde ?",
       "type": "single_choice",
       "options": [
-        {"text": "Con ambos progenitores", "next_question_id": "docs_newborn_with_both_parents"},
-        {"text": "Con uno solo de los progenitores", "next_question_id": "q_newborn_one_parent_custody_newborn"},
-        {"text": "Bajo tutela o acogimiento", "next_question_id": "docs_minor_tutored_newborn"}
+        {"text": "Avec les deux parents", "next_question_id": "docs_newborn_with_both_parents"},
+        {"text": "Avec un seul des parents", "next_question_id": "q_newborn_one_parent_custody_newborn"},
+        {"text": "Sous tutelle ou garde", "next_question_id": "docs_minor_tutored_newborn"}
       ]
     },
     {
       "id": "docs_newborn_with_both_parents",
       "type": "info_block",
-      "text": "Para empadronar al recién nacido con ambos progenitores, necesitará:",
+      "text": "Pour inscrire le nouveau-né avec les deux parents, vous aurez besoin de :",
       "documents": [
-        {"name": "Libro de Familia o Certificado de Nacimiento del menor", "description": "Documento que acredite el nacimiento y filiación.", "multiple_files": false},
-        {"name": "Documento de identidad del progenitor 1", "description": "DNI/NIE/Pasaporte en vigor del progenitor 1. (Ambas caras del DNI/NIE si aplica)", "multiple_files": false, "id_extractable": true},
-        {"name": "Documento de identidad del progenitor 2", "description": "DNI/NIE/Pasaporte en vigor del progenitor 2. (Ambas caras del DNI/NIE si aplica)", "multiple_files": false, "id_extractable": true}
+        {"name": "Livret de famille ou certificat de naissance du mineur", "description": "Document prouvant la naissance et la filiation.", "multiple_files": false},
+        {"name": "Document d'identité du parent 1", "description": "DNI/NIE/Passeport en cours de validité du parent 1. (Les deux côtés du DNI/NIE si applicable)", "multiple_files": false, "id_extractable": true},
+        {"name": "Document d'identité du parent 2", "description": "DNI/NIE/Passeport en cours de validité du parent 2. (Les deux côtés du DNI/NIE si applicable)", "multiple_files": false, "id_extractable": true}
       ],
       "next_question_id": "final_document_review"
     },
     {
         "id": "q_newborn_one_parent_custody_newborn",
-        "question": "¿Tiene una resolución judicial que atribuya la guarda y custodia en exclusiva al progenitor que solicita el empadronamiento del recién nacido, o no existe resolución judicial sobre la guarda y custodia?",
+        "question": "Avez-vous une décision de justice attribuant la garde exclusive au parent demandant l'inscription du nouveau-né, ou n'y a-t-il pas de décision de justice concernant la garde ?",
         "type": "single_choice",
         "options": [
-            {"text": "Sí, tengo resolución judicial de guarda y custodia exclusiva", "next_question_id": "docs_newborn_one_parent_exclusive_custody"},
-            {"text": "No, no existe resolución judicial sobre la guarda y custodia (separación de hecho, etc.)", "next_question_id": "docs_newborn_one_parent_no_resolution"}
+            {"text": "Oui, j'ai une décision de justice de garde exclusive", "next_question_id": "docs_newborn_one_parent_exclusive_custody"},
+            {"text": "Non, il n'y a pas de décision de justice concernant la garde (séparation de fait, etc.)", "next_question_id": "docs_newborn_one_parent_no_resolution"}
         ]
     },
     {
         "id": "docs_newborn_one_parent_exclusive_custody",
         "type": "info_block",
-        "text": "Para empadronar al recién nacido con un solo progenitor con guarda y custodia exclusiva, necesitará:",
+        "text": "Pour inscrire le nouveau-né avec un seul parent ayant la garde exclusive, vous aurez besoin de :",
         "documents": [
-            {"name": "Libro de Familia o certificado de nacimiento del menor", "description": "Original y copia.", "multiple_files": false},
-            {"name": "Documento de identidad del progenitor solicitante", "description": "DNI/NIE/Pasaporte en vigor del progenitor que solicita el empadronamiento. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
-            {"name": "Resolución judicial de guarda y custodia exclusiva", "description": "Documento judicial que atribuye la guarda y custodia en exclusiva.", "multiple_files": false},
-            {"name": "Declaración responsable (Anexo II)", "description": "Según el modelo que figura en Anexo II.", "multiple_files": false}
+            {"name": "Livret de famille ou certificat de naissance du mineur", "description": "Original et copie.", "multiple_files": false},
+            {"name": "Document d'identité du parent demandeur", "description": "DNI/NIE/Passeport en cours de validité du parent demandant l'inscription. (Les deux côtés du DNI/NIE si applicable)", "multiple_files": true, "id_extractable": true},
+            {"name": "Décision de justice de garde exclusive", "description": "Document judiciaire attribuant la garde exclusive.", "multiple_files": false},
+            {"name": "Déclaration sous serment (Annexe II)", "description": "Selon le modèle figurant à l'Annexe II.", "multiple_files": false}
         ],
         "next_question_id": "final_document_review"
     },
     {
         "id": "docs_newborn_one_parent_no_resolution",
         "type": "info_block",
-        "text": "Para empadronar al recién nacido con un solo progenitor cuando no hay resolución judicial de guarda y custodia, necesitará:",
+        "text": "Pour inscrire le nouveau-né avec un seul parent lorsqu'il n'y a pas de décision de justice concernant la garde, vous aurez besoin de :",
         "documents": [
-            {"name": "Libro de Familia o certificado de nacimiento del menor", "description": "Original y copia.", "multiple_files": false},
-            {"name": "Documento de identidad del progenitor solicitante", "description": "DNI/NIE/Pasaporte en vigor del progenitor que solicita el empadronamiento. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
-            {"name": "Declaración responsable (Anexo I)", "description": "Según el modelo que figura en Anexo I.", "multiple_files": false},
-            {"name": "Documentación acreditativa de procedimiento judicial (si aplica)", "description": "Si se ha interpuesto procedimiento judicial para obtener autorización.", "multiple_files": false}
+            {"name": "Livret de famille ou certificat de naissance du mineur", "description": "Original et copie.", "multiple_files": false},
+            {"name": "Document d'identité du parent demandeur", "description": "DNI/NIE/Passeport en cours de validité du parent demandant l'inscription. (Les deux côtés du DNI/NIE si applicable)", "multiple_files": true, "id_extractable": true},
+            {"name": "Déclaration sous serment (Annexe I)", "description": "Selon le modèle figurant à l'Annexe I.", "multiple_files": false},
+            {"name": "Documents prouvant une procédure judiciaire (si applicable)", "description": "Si une procédure judiciaire a été engagée pour obtenir l'autorisation.", "multiple_files": false}
         ],
         "next_question_id": "final_document_review"
     },
     {
       "id": "docs_minor_tutored_newborn",
       "type": "info_block",
-      "text": "Para empadronar al recién nacido bajo tutela o acogimiento, necesitará:",
+      "text": "Pour inscrire le nouveau-né sous tutelle ou garde, vous aurez besoin de :",
       "documents": [
-        {"name": "Libro de Familia o Certificado de Nacimiento del menor", "description": "Original y copia.", "multiple_files": false},
-        {"name": "Documento de identidad del representante legal", "description": "DNI/NIE/Pasaporte en vigor del representante legal. (Ambas caras del DNI/NIE si aplica)", "multiple_files": true, "id_extractable": true},
-        {"name": "Resolución judicial o administrativa de tutela/acogimiento", "description": "Documento que acredite la representación legal.", "multiple_files": false}
+        {"name": "Livret de famille ou certificat de naissance du mineur", "description": "Original et copie.", "multiple_files": false},
+        {"name": "Document d'identité du représentant légal", "description": "DNI/NIE/Passeport en cours de validité du représentant légal. (Les deux côtés du DNI/NIE si applicable)", "multiple_files": true, "id_extractable": true},
+        {"name": "Décision judiciaire ou administrative de tutelle/garde", "description": "Document prouvant la représentation légale.", "multiple_files": false}
       ],
       "next_question_id": "final_document_review"
     },
     {
       "id": "q3_nationality",
-      "question": "¿Cuál es su nacionalidad?",
+      "question": "Quelle est votre nationalité ?",
       "type": "single_choice",
       "options": [
-        {"text": "Española", "next_question_id": "q4_spanish_domicile_proof"},
-        {"text": "Ciudadano de la Unión Europea, Islandia, Liechtenstein, Noruega o Suiza", "next_question_id": "q4_eu_domicile_proof"},
-        {"text": "Extranjero no comunitario con autorización de residencia de larga duración", "next_question_id": "q4_non_eu_long_domicile_proof"},
-        {"text": "Extranjero no comunitario sin autorización de residencia de larga duración", "next_question_id": "q4_non_eu_short_domicile_proof"}
+        {"text": "Espagnole", "next_question_id": "q4_spanish_domicile_proof"},
+        {"text": "Citoyen de l'Union Européenne, Islande, Liechtenstein, Norvège ou Suisse", "next_question_id": "q4_eu_domicile_proof"},
+        {"text": "Étranger non communautaire avec autorisation de résidence de longue durée", "next_question_id": "q4_non_eu_long_domicile_proof"},
+        {"text": "Étranger non communautaire sans autorisation de résidence de longue durée", "next_question_id": "q4_non_eu_short_domicile_proof"}
       ]
     },
     {
       "id": "q4_spanish_domicile_proof",
-      "question": "¿Cómo acredita el domicilio donde se quiere empadronar?",
+      "question": "Comment prouvez-vous le domicile où vous souhaitez vous inscrire ?",
       "type": "single_choice",
       "options": [
-        {"text": "Soy el propietario de la vivienda", "next_question_id": "docs_spanish_owner"},
-        {"text": "Tengo un contrato de alquiler en vigor", "next_question_id": "docs_spanish_tenant"},
-        {"text": "Ya hay personas empadronadas y me van a autorizar", "next_question_id": "docs_with_consent"},
-        {"text": "Es un establecimiento colectivo (residencia, convento, etc.)", "next_question_id": "docs_collective_establishment"},
-        {"text": "Es una infravivienda o carezco de domicilio fijo y soy conocido por Servicios Sociales", "next_question_id": "docs_infravivienda_social_services"},
-        {"text": "Soy recluso y solicito empadronamiento en el centro penitenciario", "next_question_id": "docs_recluso"},
-        {"text": "Soy víctima de violencia de género y me empadronaré en un domicilio protegido", "next_question_id": "docs_violence_victim"}
+        {"text": "Je suis propriétaire du logement", "next_question_id": "docs_spanish_owner"},
+        {"text": "J'ai un contrat de location en cours de validité", "next_question_id": "docs_spanish_tenant"},
+        {"text": "Des personnes sont déjà inscrites et vont m'autoriser", "next_question_id": "docs_with_consent"},
+        {"text": "C'est un établissement collectif (résidence, couvent, etc.)", "next_question_id": "docs_collective_establishment"},
+        {"text": "C'est un logement insalubre ou je n'ai pas de domicile fixe et je suis connu des services sociaux", "next_question_id": "docs_infravivienda_social_services"},
+        {"text": "Je suis détenu et demande mon inscription au centre pénitentiaire", "next_question_id": "docs_recluso"},
+        {"text": "Je suis victime de violence de genre et je serai inscrite à un domicile protégé", "next_question_id": "docs_violence_victim"}
       ]
     },
     {
       "id": "q4_eu_domicile_proof",
-      "question": "¿Cómo acredita el domicilio donde se quiere empadronar?",
+      "question": "Comment prouvez-vous le domicile où vous souhaitez vous inscrire ?",
       "type": "single_choice",
       "options": [
-        {"text": "Soy el propietario de la vivienda", "next_question_id": "docs_eu_owner"},
-        {"text": "Tengo un contrato de alquiler en vigor", "next_question_id": "docs_eu_tenant"},
-        {"text": "Ya hay personas empadronadas y me van a autorizar", "next_question_id": "docs_with_consent_eu"},
-        {"text": "Es un establecimiento colectivo (residencia, convento, etc.)", "next_question_id": "docs_collective_establishment"},
-        {"text": "Es una infravivienda o carezco de domicilio fijo y soy conocido por Servicios Sociales", "next_question_id": "docs_infravivienda_social_services"},
-        {"text": "Soy recluso y solicito empadronamiento en el centro penitenciario", "next_question_id": "docs_recluso"},
-        {"text": "Soy víctima de violencia de género y me empadronaré en un domicilio protegido", "next_question_id": "docs_violence_victim"}
+        {"text": "Je suis propriétaire du logement", "next_question_id": "docs_eu_owner"},
+        {"text": "J'ai un contrat de location en cours de validité", "next_question_id": "docs_eu_tenant"},
+        {"text": "Des personnes sont déjà inscrites et vont m'autoriser", "next_question_id": "docs_with_consent_eu"},
+        {"text": "C'est un établissement collectif (résidence, couvent, etc.)", "next_question_id": "docs_collective_establishment"},
+        {"text": "C'est un logement insalubre ou je n'ai pas de domicile fixe et je suis connu des services sociaux", "next_question_id": "docs_infravivienda_social_services"},
+        {"text": "Je suis détenu et demande mon inscription au centre pénitentiaire", "next_question_id": "docs_recluso"},
+        {"text": "Je suis victime de violence de genre et je serai inscrite à un domicile protégé", "next_question_id": "docs_violence_victim"}
       ]
     },
     {
       "id": "q4_non_eu_long_domicile_proof",
-      "question": "¿Cómo acredita el domicilio donde se quiere empadronar?",
+      "question": "Comment prouvez-vous le domicile où vous souhaitez vous inscrire ?",
       "type": "single_choice",
       "options": [
-        {"text": "Soy el propietario de la vivienda", "next_question_id": "docs_non_eu_long_owner"},
-        {"text": "Tengo un contrato de alquiler en vigor", "next_question_id": "docs_non_eu_long_tenant"},
-        {"text": "Ya hay personas empadronadas y me van a autorizar", "next_question_id": "docs_with_consent_non_eu_long"},
-        {"text": "Es un establecimiento colectivo (residencia, convento, etc.)", "next_question_id": "docs_collective_establishment"},
-        {"text": "Es una infravivienda o carezco de domicilio fijo y soy conocido por Servicios Sociales", "next_question_id": "docs_infravivienda_social_services"},
-        {"text": "Soy recluso y solicito empadronamiento en el centro penitenciario", "next_question_id": "docs_recluso"},
-        {"text": "Soy víctima de violencia de género y me empadronaré en un domicilio protegido", "next_question_id": "docs_violence_victim"}
+        {"text": "Je suis propriétaire du logement", "next_question_id": "docs_non_eu_long_owner"},
+        {"text": "J'ai un contrat de location en cours de validité", "next_question_id": "docs_non_eu_long_tenant"},
+        {"text": "Des personnes sont déjà inscrites et vont m'autoriser", "next_question_id": "docs_with_consent_non_eu_long"},
+        {"text": "C'est un établissement collectif (résidence, couvent, etc.)", "next_question_id": "docs_collective_establishment"},
+        {"text": "C'est un logement insalubre ou je n'ai pas de domicile fixe et je suis connu des services sociaux", "next_question_id": "docs_infravivienda_social_services"},
+        {"text": "Je suis détenu et demande mon inscription au centre pénitentiaire", "next_question_id": "docs_recluso"},
+        {"text": "Je suis victime de violence de genre et je serai inscrite à un domicile protégé", "next_question_id": "docs_violence_victim"}
       ]
     },
     {
       "id": "q4_non_eu_short_domicile_proof",
-      "question": "¿Cómo acredita el domicilio donde se quiere empadronar?",
+      "question": "Comment prouvez-vous le domicile où vous souhaitez vous inscrire ?",
       "type": "single_choice",
       "options": [
-        {"text": "Soy el propietario de la vivienda", "next_question_id": "docs_non_eu_short_owner"},
-        {"text": "Tengo un contrato de alquiler en vigor", "next_question_id": "docs_non_eu_short_tenant"},
-        {"text": "Ya hay personas empadronadas y me van a autorizar", "next_question_id": "docs_with_consent_non_eu_short"},
-        {"text": "Es un establecimiento colectivo (residencia, convento, etc.)", "next_question_id": "docs_collective_establishment"},
-        {"text": "Es una infravivienda o carezco de domicilio fijo y soy conocido por Servicios Sociales", "next_question_id": "docs_infravivienda_social_services"},
-        {"text": "Soy recluso y solicito empadronamiento en el centro penitenciario", "next_question_id": "docs_recluso"},
-        {"text": "Soy víctima de violencia de género y me empadronaré en un domicilio protegido", "next_question_id": "docs_violence_victim"}
+        {"text": "Je suis propriétaire du logement", "next_question_id": "docs_non_eu_short_owner"},
+        {"text": "J'ai un contrat de location en cours de validité", "next_question_id": "docs_non_eu_short_tenant"},
+        {"text": "Des personnes sont déjà inscrites et vont m'autoriser", "next_question_id": "docs_with_consent_non_eu_short"},
+        {"text": "C'est un établissement collectif (résidence, couvent, etc.)", "next_question_id": "docs_collective_establishment"},
+        {"text": "C'est un logement insalubre ou je n'ai pas de domicile fixe et je suis connu des services sociaux", "next_question_id": "docs_infravivienda_social_services"},
+        {"text": "Je suis détenu et demande mon inscription au centre pénitentiaire", "next_question_id": "docs_recluso"},
+        {"text": "Je suis victime de violence de genre et je serai inscrite à un domicile protégé", "next_question_id": "docs_violence_victim"}
       ]
     }
   ]
