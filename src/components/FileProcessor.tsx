@@ -1,8 +1,8 @@
 // src/components/FileProcessor.tsx
-import type { Messages, Person } from '../interfaces';
+import type { Messages, Person, ExtractedEntity } from '../interfaces'; // Added ExtractedEntity
 
 // --- AI Document Validation Function ---
-async function validateDocumentWithAI(base64Image: string, documentType: string, messages: Messages) {
+async function validateDocumentWithAI(base64Image: string, documentType: string, messages: Messages): Promise<{ isValid: boolean; reason: string; extractedData: ExtractedEntity[] }> { // Explicit return type
   const prompt = `Usted es una IA de verificación de documentos para una oficina de padrón municipal española. Analice esta imagen. ¿Es un documento '${documentType}' válido y legible? Si es así, extraiga todas las entidades significativas relevantes para el empadronamiento municipal. Responda ÚNICAMENTE con un objeto JSON. El objeto JSON debe tener una clave 'isValid' (booleana), una clave 'reason' (cadena, explicando por qué no es válido si isValid es falso, o 'Documento válido' si es válido), y una clave 'extractedData'. El valor de 'extractedData' debe ser un array de objetos, donde cada objeto representa una entidad extraída y tiene la siguiente estructura: {'fieldName': 'string', 'description': 'string', 'value': 'string'}. 'fieldName' debe ser un identificador camelCase para el tipo de dato (ej: 'nombreCompleto', 'numeroIdentificacion', 'fechaNacimiento'), 'description' debe ser una etiqueta legible por humanos en español para el campo (ej: 'Nombre Completo', 'Número de Identificación'), y 'value' es el valor extraído. Si no se pueden extraer datos o el documento no es válido, 'extractedData' debe ser un array vacío. No incluya nada antes ni después del objeto JSON.`;
 
   const chatHistory = [{
@@ -79,7 +79,7 @@ export const processAndValidateFile = (
   file: File,
   documentType: string,
   messages: Messages
-): Promise<{ isValid: boolean; reason: string; extractedData: Array<Record<string, any>>; base64?: string }> => {
+): Promise<{ isValid: boolean; reason: string; extractedData: ExtractedEntity[]; base64?: string }> => {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = async (event: ProgressEvent<FileReader>) => {

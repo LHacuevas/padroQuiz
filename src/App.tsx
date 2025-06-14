@@ -11,7 +11,8 @@ import SummaryScreen from './components/SummaryScreen';
 import LanguageSelectionScreen from './components/LanguageSelectionScreen';
 import AttributesModal from './components/AttributesModal';
 import { processAndValidateFile, getAIProcedureSummary, type AIProcedureSummary } from './components/FileProcessor';
-import type { FlowStep, UploadedFiles, Person, FlowPathEntry, FlowData, DocumentRequirement, UploadedFileEntry, Messages, ExtractedEntity } from './interfaces';
+// Remove FlowData and Messages from this import as they are not directly used for typing in App.tsx
+import type { FlowStep, UploadedFiles, Person, FlowPathEntry, DocumentRequirement, UploadedFileEntry, ExtractedEntity } from './interfaces';
 
 function App() {
   const {
@@ -19,7 +20,8 @@ function App() {
     loadedMessages,
     loadedFlowData,
     isLoading: isLanguageLoading,
-    changeLanguage
+    // changeLanguage, // Removed as it's not used directly in App.tsx
+    availableLanguages // Keep if used, otherwise remove (used by LanguageSelectionScreen via context)
   } = useLanguage();
 
   const initialFlowPath = useMemo(() => [{ id: "start", text: loadedMessages?.breadcrumb_home || "Inicio" }], [loadedMessages]);
@@ -48,8 +50,6 @@ function App() {
   const [aiSummaryData, setAiSummaryData] = useState<AIProcedureSummary | null>(null);
   const [isAISummaryLoading, setIsAISummaryLoading] = useState<boolean>(false);
   const [aiSummaryError, setAiSummaryError] = useState<string | null>(null);
-
-  // New state for Reset Confirmation Modal
   const [showResetConfirmationModal, setShowResetConfirmationModal] = useState<boolean>(false);
 
   const compileAllExtractedDataToJson = (): string => {
@@ -100,10 +100,10 @@ function App() {
 
   const handleResetApplication = async () => {
     console.log("Resetting application state...");
-    if (loadedMessages) { // Ensure loadedMessages is available for defaults
+    if (loadedMessages) {
         setRegistrationAddress(loadedMessages.summary_address_label || "Dirección de empadronamiento");
         setFlowPath([{ id: "start", text: loadedMessages.breadcrumb_home || "Inicio" }]);
-    } else { // Absolute fallback if messages somehow not loaded
+    } else {
         setRegistrationAddress("Dirección de empadronamiento");
         setFlowPath([{ id: "start", text: "Inicio" }]);
     }
@@ -116,7 +116,6 @@ function App() {
     setAiSummaryError(null);
     setCurrentAttributesData(null);
     setApiResponseMessage("");
-    // Add any other state resets here
 
     if (userId && db && appId) {
       try {
@@ -127,7 +126,6 @@ function App() {
         console.error("Error deleting user data from Firestore:", error);
       }
     }
-    // Optionally, could reset language to default if desired, e.g., changeLanguage('es');
   };
 
   const handleConfirmReset = () => {
@@ -135,29 +133,44 @@ function App() {
     handleResetApplication();
   };
 
-
   useEffect(() => {
     if (loadedMessages && loadedFlowData) {
-      const newFlowPath: FlowPathEntry[] = [{ id: "start", text: loadedMessages.breadcrumb_home }];
-      questionsAnswered.forEach(questionId => {
-        const step = loadedFlowData.flow.find(q => q.id === questionId);
-        if (step) {
-          const stepText = step.question || step.text || step.id;
-          newFlowPath.push({ id: step.id, text: stepText as string });
-        }
-      });
-      if (currentQuestionId !== "start" && !questionsAnswered.includes(currentQuestionId)) {
-         const currentStepDetails = loadedFlowData.flow.find(q => q.id === currentQuestionId);
-         if (currentStepDetails) {
-            const currentStepText = currentStepDetails.question || currentStepDetails.text || currentStepDetails.id;
-            if (newFlowPath.length === 0 || newFlowPath[newFlowPath.length -1].id !== currentQuestionId) {
-                 newFlowPath.push({id: currentQuestionId, text: currentStepText as string});
-            }
+      let newFlowPath: FlowPathEntry[] = [{ id: "start", text: loadedMessages.breadcrumb_home || "Inicio" }];
+      // Check if questionsAnswered is empty, meaning we are at the very start or after a reset
+      if (questionsAnswered.length === 0 && currentQuestionId === "q1_action_type") {
+        // Only add the first step if it's the initial state and flowPath isn't already just that
+         if(!(newFlowPath.length === 1 && newFlowPath[0].id === "start")) {
+            // This might be redundant if initialFlowPath is set correctly via useMemo
          }
+      } else {
+        questionsAnswered.forEach(questionId => {
+            const step = loadedFlowData.flow.find(q => q.id === questionId);
+            if (step) {
+            const stepText = step.question || step.text || step.id;
+            newFlowPath.push({ id: step.id, text: stepText as string });
+            }
+        });
+        if (currentQuestionId !== "start" && !questionsAnswered.includes(currentQuestionId)) {
+            const currentStepDetails = loadedFlowData.flow.find(q => q.id === currentQuestionId);
+            if (currentStepDetails) {
+                const currentStepText = currentStepDetails.question || currentStepDetails.text || currentStepDetails.id;
+                if (newFlowPath.length === 0 || newFlowPath[newFlowPath.length -1].id !== currentQuestionId) {
+                    newFlowPath.push({id: currentQuestionId, text: currentStepText as string});
+                }
+            }
+        }
       }
       setFlowPath(newFlowPath);
     }
   }, [currentLang, loadedMessages, loadedFlowData, questionsAnswered, currentQuestionId]);
+
+  useEffect(() => {
+    if (loadedMessages) {
+        setRegistrationAddress(prev => prev === "Dirección de empadronamiento" ? (loadedMessages.summary_address_label || "Dirección de empadronamiento") : prev);
+        setFlowPath(prev => (prev.length === 1 && prev[0].id === "start" && prev[0].text === "Inicio") ? [{id: "start", text: loadedMessages.breadcrumb_home || "Inicio"}] : prev);
+    }
+  }, [loadedMessages]);
+
 
   useEffect(() => {
     if (!auth || !db) {
@@ -178,8 +191,7 @@ function App() {
           setPeopleToRegister(savedData.peopleToRegister || []);
           setRegistrationAddress(savedData.registrationAddress || (loadedMessages?.summary_address_label || "Dirección de empadronamiento"));
           setSelectedProcedureType(savedData.selectedProcedureType || "");
-          // flowPath is rebuilt by another useEffect based on loadedMessages, questionsAnswered, currentQuestionId
-        } else if (loadedMessages) { // If no saved data, initialize with home breadcrumb and default address
+        } else if (loadedMessages) {
             setFlowPath([{ id: "start", text: loadedMessages.breadcrumb_home }]);
             setSelectedProcedureType("");
             setRegistrationAddress(loadedMessages.summary_address_label || "Dirección de empadronamiento");
@@ -202,17 +214,30 @@ function App() {
       }
     });
     return () => unsubscribe();
-  }, [auth, db, appId, initialAuthToken, loadedMessages]); // added loadedMessages
+  }, [appId, initialAuthToken, loadedMessages]); // Removed auth, db as they are stable
 
   useEffect(() => {
     const saveData = async () => {
-      if (isAuthReady && userId && db && appId) {
+      if (isAuthReady && userId ) { // Removed db, appId from condition as they are stable
         try {
           const filesToSave: { [key: string]: Partial<Omit<UploadedFileEntry, 'file'>>[] } = {};
           for (const docName in uploadedFiles) {
             filesToSave[docName] = uploadedFiles[docName].map((fileEntry: UploadedFileEntry) => {
-              const { file: _unusedFile, ...rest } = fileEntry;
-              return rest;
+              // Explicitly pick properties to save, excluding 'file'
+              const {
+                  name,
+                  base64,
+                  validation_status,
+                  validation_message,
+                  extracted_data
+              } = fileEntry;
+              return {
+                  name,
+                  base64,
+                  validation_status,
+                  validation_message,
+                  extracted_data
+              };
             });
           }
           const userDocRef = doc(db, `artifacts/${appId}/users/${userId}/padron_data/user_progress`);
@@ -225,7 +250,7 @@ function App() {
       }
     };
     if (isAuthReady) { saveData(); }
-  }, [currentQuestionId, questionsAnswered, uploadedFiles, peopleToRegister, registrationAddress, flowPath, selectedProcedureType, isAuthReady, userId, db, appId]);
+  }, [currentQuestionId, questionsAnswered, uploadedFiles, peopleToRegister, registrationAddress, flowPath, selectedProcedureType, isAuthReady, userId]); // Removed db, appId
 
   const currentQuestion: FlowStep | null | undefined = loadedFlowData ? loadedFlowData.flow.find((q: FlowStep) => q.id === currentQuestionId) : null;
 
@@ -420,7 +445,6 @@ function App() {
   const currentContent: FlowStep | null | undefined = currentQuestion;
 
   const handleSendAll = async (): Promise<void> => {
-    // ... (handleSendAll logic remains the same)
     setSendingData(true);
     setApiResponseMessage("");
     const dataToSend = {
