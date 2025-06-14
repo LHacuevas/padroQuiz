@@ -1,5 +1,6 @@
 // src/components/FileProcessor.tsx
 import type { Messages, Person, ExtractedEntity } from '../interfaces'; // Added ExtractedEntity
+import { extractTextFromDocument } from '../utils/api';
 
 // --- AI Document Validation Function ---
 
@@ -95,56 +96,73 @@ async function validateDocumentWithAI(
 export const processAndValidateFile = (
   file: File,
   documentType: string,
-  messages: Messages,
-  extractedText?: string // Add optional extractedText parameter
-): Promise<{ isValid: boolean; reason: string; extractedData: Array<Record<string, any>>; base64?: string }> => {
-  return new Promise((resolve) => {
-    if (extractedText) {
-      // If extracted text is provided, use it directly for validation
-      validateDocumentWithAI({ extractedText }, documentType, messages).then((validationResult) => resolve({...validationResult, base64: undefined})).catch((error: unknown) => { // Added type annotation for error
-        console.error("Error during validation call with extracted text:", error);
-        resolve({
-          isValid: false,
-          reason: messages.ai_connection_error || "Validation processing error",
-          extractedData: [],
-        });      });
-      return; // Exit the promise as we are handling validation
-    }
-
-    const reader = new FileReader();
-    reader.onload = async (event: ProgressEvent<FileReader>) => {
-      if (event.target && typeof event.target.result === 'string') {
-        const base64Data = event.target.result.split(',')[1];
-        try {
-          const validationResult = await validateDocumentWithAI({ base64Image: base64Data }, documentType, messages);
-          resolve({ ...validationResult, base64: base64Data });
-        } catch (error) {
-          console.error("Error during validation call (should not happen if validateDocumentWithAI resolves):", error);
-          resolve({
-            isValid: false,
-            reason: messages.ai_connection_error || "Validation processing error",
-            extractedData: [],
-            base64: base64Data
+  messages: Messages
+): Promise<{ isValid: boolean; reason: string; extractedData: Array<Record<string, any>>; base64?: string; originalText?: string }> => {
+  return new Promise(async (resolve) => {
+    if (!file.type.startsWith('image/')) {
+      // Not an image, try to extract text
+      let textContent: string | undefined = undefined;
+      try {
+        textContent = await extractTextFromDocument(file);
+        // Now validate with this text
+        validateDocumentWithAI({ extractedText: textContent }, documentType, messages)
+          .then((validationResult) => resolve({ ...validationResult, base64: undefined, originalText: textContent }))
+          .catch((error: unknown) => { // Added type annotation for error
+            console.error("Error during validation call with extracted text:", error);
+            resolve({
+              isValid: false,
+              reason: messages.ai_connection_error || "Validation processing error after text extraction.",
+              extractedData: [],
+              originalText: textContent
+            });
           });
-        }
-      } else {
-        console.error("File could not be read as a base64 string or event.target is null.");
+      } catch (textExtractionError) {
+        console.error("Error extracting text from document:", textExtractionError);
+        // As per user feedback, resolve as 'not validated' rather than a specific text extraction error message
         resolve({
           isValid: false,
-          reason: messages.file_read_error || "File read error",
-          extractedData: []
+          reason: messages.text_extraction_failed_process_halted || "Text extraction from the document failed. Could not continue with validation.",
+          extractedData: [],
+          originalText: undefined // Text extraction failed
         });
       }
-    };
-    reader.onerror = (error: unknown) => {
-      console.error("Error reading file:", error instanceof Error ? error.message : String(error));
-      resolve({
-        isValid: false,
-        reason: messages.file_read_error || "File read error",
-        extractedData: []
-      });
-    };
-    reader.readAsDataURL(file);
+    } else {
+      // It's an image, proceed with existing FileReader logic
+      const reader = new FileReader();
+      reader.onload = async (event: ProgressEvent<FileReader>) => {
+        if (event.target && typeof event.target.result === 'string') {
+          const base64Data = event.target.result.split(',')[1];
+          try {
+            const validationResult = await validateDocumentWithAI({ base64Image: base64Data }, documentType, messages);
+            resolve({ ...validationResult, base64: base64Data });
+          } catch (error) {
+            console.error("Error during validation call (image):", error);
+            resolve({
+              isValid: false,
+              reason: messages.ai_connection_error || "Validation processing error for image.",
+              extractedData: [],
+              base64: base64Data
+            });
+          }
+        } else {
+          console.error("File could not be read as a base64 string or event.target is null.");
+          resolve({
+            isValid: false,
+            reason: messages.file_read_error || "File read error (image).",
+            extractedData: []
+          });
+        }
+      };
+      reader.onerror = (error: unknown) => { // Added type annotation for error
+        console.error("Error reading file (image):", error instanceof Error ? error.message : String(error));
+        resolve({
+          isValid: false,
+          reason: messages.file_read_error || "File read error (image).",
+          extractedData: []
+        });
+      };
+      reader.readAsDataURL(file);
+    }
   });
 };
 
