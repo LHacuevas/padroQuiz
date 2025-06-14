@@ -61,5 +61,10 @@
   "ai_api_key_not_configured": "Chiave API per il riepilogo IA non configurata.",
   "use_ai_suggestions_button": "Applica Suggerimenti IA",
   "ai_suggestions_applied_message": "Suggerimenti IA applicati!",
-  "no_attributes_extracted": "Nessun attributo estratto."
+  "no_attributes_extracted": "Nessun attributo estratto.",
+  "reset_button_text": "Reimposta Procedura",
+  "reset_confirm_title": "Conferma Reimpostazione",
+  "reset_confirm_message": "Sei sicuro di voler reimpostare l'intera procedura? Tutti i progressi andranno persi.",
+  "reset_confirm_yes": "Sì, Reimposta",
+  "reset_confirm_no": "No, Annulla"
 }

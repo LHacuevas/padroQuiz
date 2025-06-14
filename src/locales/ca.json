@@ -61,5 +61,10 @@
   "ai_api_key_not_configured": "Clau API per a resum IA no configurada.",
   "use_ai_suggestions_button": "Aplicar Suggeriments de IA",
   "ai_suggestions_applied_message": "Suggeriments de IA aplicats!",
-  "no_attributes_extracted": "No hi ha atributs extrets."
+  "no_attributes_extracted": "No hi ha atributs extrets.",
+  "reset_button_text": "Reiniciar Tràmit",
+  "reset_confirm_title": "Confirmar Reinici",
+  "reset_confirm_message": "Estàs segur que vols reiniciar tot el tràmit? Es perdrà tot el progrés.",
+  "reset_confirm_yes": "Sí, Reiniciar",
+  "reset_confirm_no": "No, Cancel·lar"
 }
